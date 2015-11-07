@@ -1,16 +1,11 @@
 package net.byloth.sky;
 
-import android.Manifest;
 import android.app.AlarmManager;
 import android.content.Context;
-import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
 import android.util.Log;
@@ -19,68 +14,51 @@ import android.view.SurfaceHolder;
 
 import net.byloth.engine.DayTime;
 import net.byloth.environment.Sky;
+import net.byloth.sky.updaters.LocationUpdater;
+import net.byloth.sky.updaters.SunUpdater;
 
 /**
  * Created by Matteo on 10/10/2015.
  */
 public class LiveWallpaper extends WallpaperService
 {
-    private double latitude;
-    private double longitude;
+    static private SharedPreferences sharedPreferences;
 
-    private LocationManager locationManager;
-    private LocationListener locationListener;
+    static final public String APPLICATION_NAME = "SkyLiveWallpaper";
 
-    public LiveWallpaper()
+    private SunUpdater sunUpdater;
+    private LocationUpdater locationUpdater;
+
+    static public SharedPreferences getSharedPreferences()
     {
-        locationListener = new LocationListener()
+        return sharedPreferences;
+    }
+
+    @Override
+    public void onCreate()
+    {
+        sunUpdater = new SunUpdater();
+        locationUpdater = new LocationUpdater((LocationManager) getSystemService(Context.LOCATION_SERVICE));
+
+        locationUpdater.setOnLocationUpdate(new LocationUpdater.OnLocationUpdate()
         {
             @Override
-            public void onLocationChanged(Location location)
+            public void onUpdate(double latitude, double longitude)
             {
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-
-                Log.i("SkyLiveWallpaper", "User location has been updated: " + latitude + ", " + longitude);
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras)
-            {
+                if (sunUpdater.isAlarmSet() == false)
+                {
+                    sunUpdater.setAlarm(AlarmManager.INTERVAL_DAY, getApplicationContext());
+                }
 
             }
+        });
 
-            @Override
-            public void onProviderEnabled(String provider)
-            {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider)
-            {
-
-            }
-        };
+        sharedPreferences = getApplicationContext().getSharedPreferences(APPLICATION_NAME, Context.MODE_PRIVATE);
     }
 
     @Override
     public Engine onCreateEngine()
     {
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            if ((checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) && (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED))
-            {
-                locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, locationListener);
-            }
-        }
-        else
-        {
-            locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, locationListener);
-        }
-
         return new RenderingEngine();
     }
 
@@ -90,11 +68,10 @@ public class LiveWallpaper extends WallpaperService
         private Runnable drawRunner;
 
         private DayTime dayTime;
-        private Updater updater;
 
         private Sky sky;
 
-        static final public int FRAME_INTERVAL = 10000;
+        static final public int FRAME_INTERVAL = 1000;
 
         public RenderingEngine()
         {
@@ -110,12 +87,9 @@ public class LiveWallpaper extends WallpaperService
 
             dayTime = new DayTime();
 
-            updater = new Updater();
-            updater.setAlarm(AlarmManager.INTERVAL_DAY, getApplicationContext());
-
             drawingHandler.post(drawRunner);
 
-            Log.i("SkyLiveWallpaper", "Wallpaper is now live!");
+            Log.i(APPLICATION_NAME, "Wallpaper is now live!");
         }
 
         private void draw(Canvas canvas)
@@ -140,7 +114,7 @@ public class LiveWallpaper extends WallpaperService
                 }
                 else
                 {
-                    Log.e("SkyLiveWallpaper", "Wallpaper was NOT drawn correctly!");
+                    Log.e(APPLICATION_NAME, "Wallpaper was NOT drawn correctly!");
                 }
             }
             catch (Exception e)
@@ -155,11 +129,11 @@ public class LiveWallpaper extends WallpaperService
                 }
                 else
                 {
-                    Log.e("SkyLiveWallpaper", "Canvas was NOT unlocked correctly!");
+                    Log.e(APPLICATION_NAME, "Canvas was NOT unlocked correctly!");
                 }
             }
 
-         // Log.i("SkyLiveWallpaper", "Wallpaper was updated & drawn correctly!");
+         // Log.i(APPLICATION_NAME, "Wallpaper was updated & drawn correctly!");
 
             drawingHandler.removeCallbacks(drawRunner);
             drawingHandler.postDelayed(drawRunner, FRAME_INTERVAL);
@@ -172,7 +146,7 @@ public class LiveWallpaper extends WallpaperService
 
             sky = new Sky(width, height, dayTime, getApplicationContext());
 
-            Log.i("SkyLiveWallpaper", "SurfaceHolder has changed: " + width + "x" + height);
+            Log.i(APPLICATION_NAME, "SurfaceHolder has changed: " + width + "x" + height);
         }
         @Override
         public void onSurfaceDestroyed(SurfaceHolder surfaceHolder)
@@ -181,7 +155,7 @@ public class LiveWallpaper extends WallpaperService
 
             drawingHandler.removeCallbacks(drawRunner);
 
-            Log.i("SkyLiveWallpaper", "Wallpaper has been destroyed!");
+            Log.i(APPLICATION_NAME, "Wallpaper has been destroyed!");
         }
 
         @Override
@@ -204,7 +178,7 @@ public class LiveWallpaper extends WallpaperService
                 drawingHandler.removeCallbacks(drawRunner);
             }
 
-            Log.i("SkyLiveWallpaper", "Visibility has changed: " + isVisible);
+            Log.i(APPLICATION_NAME, "Visibility has changed: " + isVisible);
         }
     }
 }

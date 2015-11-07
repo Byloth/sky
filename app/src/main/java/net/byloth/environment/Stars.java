@@ -1,6 +1,7 @@
 package net.byloth.environment;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -14,7 +15,9 @@ import net.byloth.engine.helpers.Randomize;
 import net.byloth.engine.graphics.Color;
 import net.byloth.engine.graphics.TimedColor;
 import net.byloth.engine.graphics.TimedShader;
+import net.byloth.sky.LiveWallpaper;
 import net.byloth.sky.R;
+import net.byloth.sky.updaters.SunUpdater;
 
 /**
  * Created by Matteo on 11/10/2015.
@@ -39,6 +42,8 @@ public class Stars extends View
     {
         super(context);
 
+        dayTime = currentDayTime;
+
         paint = new Paint();
         paint.setAntiAlias(true);
 
@@ -47,22 +52,35 @@ public class Stars extends View
         textureWidth = starsTexture.getWidth() / 2;
         textureHeight = starsTexture.getHeight();
 
-        dayTime = currentDayTime;
-
-        timedShader = new TimedShader(new TimedColor[]
-        {
-            new TimedColor(Sky.END_NIGHT_TIME, Color.WHITE),
-            new TimedColor(Sky.START_DAY_TIME, Color.TRANSPARENT),
-            new TimedColor(Sky.END_DAY_TIME, Color.TRANSPARENT),
-            new TimedColor(Sky.START_NIGHT_TIME, Color.WHITE)
-        });
-
         stars = new Star[MAX_STARS];
 
         for (int index = 0; index < MAX_STARS; index += 1)
         {
             stars[index] = new Star(canvasWidthValue, canvasHeightValue);
         }
+
+        initializeColor();
+    }
+
+    public Stars initializeColor()
+    {
+        SharedPreferences sharedPreferences = LiveWallpaper.getSharedPreferences();
+
+        int nauticalSunriseTime = sharedPreferences.getInt("nautical_sunrise_time", 19151000);
+        int astronomicalSunriseTime = sharedPreferences.getInt("astronomical_sunrise_time", 17711000);
+
+        int nauticalSunsetTime = sharedPreferences.getInt("nautical_sunset_time", 68111000);
+        int astronomicalSunsetTime = sharedPreferences.getInt("astronomical_sunset_time", 69551000);
+
+        timedShader = new TimedShader(new TimedColor[]
+        {
+            new TimedColor(astronomicalSunriseTime, Color.WHITE),
+            new TimedColor(nauticalSunriseTime, Color.TRANSPARENT),
+            new TimedColor(nauticalSunsetTime, Color.TRANSPARENT),
+            new TimedColor(astronomicalSunsetTime, Color.WHITE)
+        });
+
+        return this;
     }
 
     @Override

@@ -1,8 +1,8 @@
 package net.byloth.engine;
 
-import net.byloth.engine.helpers.Maths;
-
 import java.util.Calendar;
+
+import net.byloth.engine.helpers.Maths;
 
 /**
  * Created by Matteo on 11/10/2015.
@@ -19,16 +19,16 @@ public class DayTime
 
     public DayTime()
     {
-        Calendar rightNow = Calendar.getInstance();
+        Calendar now = Calendar.getInstance();
 
-        timeOffset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
+        timeOffset = now.get(Calendar.ZONE_OFFSET) + now.get(Calendar.DST_OFFSET);
     }
 
     public int getMilliseconds()
     {
-        Calendar rightNow = Calendar.getInstance();
+        Calendar now = Calendar.getInstance();
 
-        return (int) ((rightNow.getTimeInMillis() + timeOffset) % MAX_VALUE);
+        return (int) ((now.getTimeInMillis() + timeOffset) % MAX_VALUE);
     }
 
     public float toDegrees()

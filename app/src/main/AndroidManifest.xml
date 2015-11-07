@@ -44,7 +44,7 @@
 
         </activity>
 
-        <receiver android:name=".Updater" />
+        <receiver android:name=".updaters.SunUpdater" />
 
     </application>
 </manifest>
