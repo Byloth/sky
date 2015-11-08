@@ -38,7 +38,7 @@ public class LiveWallpaper extends WallpaperService
     public void onCreate()
     {
         sunUpdater = new SunUpdater();
-        locationUpdater = new LocationUpdater((LocationManager) getSystemService(Context.LOCATION_SERVICE));
+        locationUpdater = new LocationUpdater((LocationManager) getSystemService(Context.LOCATION_SERVICE), this);
 
         locationUpdater.setOnLocationUpdate(new LocationUpdater.OnLocationUpdate()
         {

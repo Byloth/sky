@@ -1,8 +1,12 @@
 package net.byloth.sky.updaters;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -43,9 +47,26 @@ public class LocationUpdater implements LocationListener
         }
     }
 
-    public LocationUpdater(LocationManager locationManager) throws SecurityException
+    public LocationUpdater(LocationManager locationManager, Context context)
     {
-        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            int accessCoarseLocationPermission = context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
+            int accessFineLocationPermission = context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+
+            if ((accessCoarseLocationPermission == PackageManager.PERMISSION_GRANTED) && (accessFineLocationPermission == PackageManager.PERMISSION_GRANTED))
+            {
+                locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);
+            }
+            else
+            {
+                // TODO: Require premissions...
+            }
+        }
+        else
+        {
+            locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);
+        }
     }
 
     public void setOnLocationUpdate(OnLocationUpdate onLocationUpdateInstance)

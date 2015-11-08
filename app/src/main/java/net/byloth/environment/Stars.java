@@ -59,10 +59,10 @@ public class Stars extends View
             stars[index] = new Star(canvasWidthValue, canvasHeightValue);
         }
 
-        initializeColor();
+        initializeColors();
     }
 
-    public Stars initializeColor()
+    public Stars initializeColors()
     {
         SharedPreferences sharedPreferences = LiveWallpaper.getSharedPreferences();
 
