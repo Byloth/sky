@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<wallpaper
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:settingsActivity="net.byloth.sky.SettingsActivity"
+<wallpaper xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:settingsActivity="net.byloth.sky.MainActivity"
     android:thumbnail="@mipmap/ic_launcher" />

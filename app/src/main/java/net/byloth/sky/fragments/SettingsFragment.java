@@ -7,11 +7,6 @@ import net.byloth.sky.R;
 
 public class SettingsFragment extends PreferenceFragment
 {
-    public SettingsFragment()
-    {
-
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {

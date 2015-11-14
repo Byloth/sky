@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">Sky</string>
-    <string name="settings_activity_name">Impostazioni</string>
+
+    <string name="title_activity_main">Sky</string>
+    <string name="title_activity_settings">Impostazioni</string>
+
     <string name="performance_settings_title">Prestazioni ed ottimizzazione</string>
     <string name="developer_settings_title">Impostazioni da sviluppatore</string>
+
+    <string name="navigation_drawer_open">Apri il menù laterale</string>
+    <string name="navigation_drawer_close">Chiudi il menù laterale</string>
+
+    <string name="action_settings">Impostazioni</string>
 </resources>
