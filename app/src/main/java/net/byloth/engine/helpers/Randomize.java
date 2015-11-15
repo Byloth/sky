@@ -1,7 +1,5 @@
 package net.byloth.engine.helpers;
 
-import net.byloth.engine.helpers.Maths;
-
 import java.util.Random;
 
 /**
