@@ -11,4 +11,7 @@
     <string name="navigation_drawer_close">Chiudi il menù laterale</string>
 
     <string name="action_settings">Impostazioni</string>
+
+    <string name="nav_summary">Riepilogo</string>
+    <string name="nav_settings">Impostazioni</string>
 </resources>

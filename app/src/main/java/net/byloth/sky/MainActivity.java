@@ -17,17 +17,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import net.byloth.sky.fragments.SettingsFragment;
+import net.byloth.sky.fragments.SummaryFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
+    protected Toolbar toolbar;
+
     protected DrawerLayout drawerLayout;
+    protected ActionBarDrawerToggle toggle;
+    protected NavigationView navigationView;
+
+    protected FloatingActionButton fab;
 
     protected void replaceFragment(Fragment fragment)
     {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         transaction.replace(R.id.fragment_container, fragment);
-        transaction.addToBackStack(fragment.getClass().getName());
 
         transaction.commit();
     }
@@ -39,10 +46,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setContentView(R.layout.drawer_layout);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -56,28 +63,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle( this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        toggle = new ActionBarDrawerToggle( this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
         drawerLayout.setDrawerListener(toggle);
 
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
     public void onBackPressed()
     {
-        FragmentManager fragmentManager = getFragmentManager();
-
         if (drawerLayout.isDrawerOpen(GravityCompat.START) == true)
         {
             drawerLayout.closeDrawer(GravityCompat.START);
-        }
-        else if (fragmentManager.getBackStackEntryCount() > 0)
-        {
-            fragmentManager.popBackStack();
         }
         else
         {
@@ -115,7 +116,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id)
         {
-            case R.id.nav_camara:
+            case R.id.nav_summary:
+                replaceFragment(new SummaryFragment());
                 break;
 
             case R.id.nav_gallery:
@@ -124,7 +126,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_slideshow:
                 break;
 
-            case R.id.nav_manage:
+            case R.id.nav_settings:
+                replaceFragment(new SettingsFragment());
                 break;
 
             case R.id.nav_share:
