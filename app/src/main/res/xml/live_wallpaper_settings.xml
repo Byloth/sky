@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:byloth="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        android:title="@string/performance_settings_title"
-        android:key="pref_key_storage_settings">
+        android:key="pref_key_storage_settings"
+        android:title="@string/performance_settings_title">
 
-        <EditTextPreference
+        <net.byloth.engine.ui.NumberPickerPreference
+            android:defaultValue="1000"
             android:key="frameInterval"
-            android:numeric="integer"
-            android:defaultValue="10000"
-            android:title="Intervallo tra i frame" />
+            android:negativeButtonText=""
+            android:positiveButtonText=""
+            android:title="@string/frame_interval_pref_title"
+            byloth:maxValue="10000"
+            byloth:minValue="0" />
 
-        <EditTextPreference
-            android:key="numberOfStars"
-            android:numeric="integer"
+        <net.byloth.engine.ui.NumberPickerPreference
             android:defaultValue="250"
-            android:title="Numero di stelle a schermo" />
+            android:key="numberOfStars"
+            android:negativeButtonText=""
+            android:positiveButtonText=""
+            android:title="@string/stars_number_pref_title"
+            byloth:maxValue="1000"
+            byloth:minValue="0" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/developer_settings_title"
-        android:key="pref_key_storage_settings">
+        android:key="pref_key_storage_settings"
+        android:title="@string/developer_settings_title">
 
-        <CheckBoxPreference
+        <SwitchPreference
+            android:defaultValue="false"
             android:key="isDebugging"
-            android:title="Attiva modalità debug"
-            android:defaultValue="false" />
+            android:title="@string/enable_debug_mode_pref_title" />
 
     </PreferenceCategory>
 </PreferenceScreen>

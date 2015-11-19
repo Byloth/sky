@@ -1,7 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="background_default">#FAFAFA</color>
+    <color name="background_message">#FFCDD2</color>
+
+    <color name="white">#FFF</color>
+    <color name="gray">#7F7F7F</color>
+    <color name="black">#000</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="semitransparent">#7F000000</color>
+
+    <color name="red_light">#EF5350</color>
+    <color name="red">#E53935</color>
+    <color name="red_dark">#C62828</color>
+
+    <color name="yellow_light">#FFEE58</color>
+    <color name="yellow">#FDD835</color>
+    <color name="yellow_dark">#F9A825</color>
+
+    <color name="green_light">#66BB6A</color>
+    <color name="green">#43A047</color>
+    <color name="green_dark">#2E7D32</color>
+
+    <color name="cyan_light">#26C6DA</color>
+    <color name="cyan">#00ACC1</color>
+    <color name="cyan_dark">#00838F</color>
+
+    <color name="blue_light">#5C6BC0</color>
+    <color name="blue">#3949AB</color>
+    <color name="blue_dark">#283593</color>
+
+    <color name="fuchsia_light">#EC407A</color>
+    <color name="fuchsia">#D81B60</color>
+    <color name="fuchsia_dark">#AD1457</color>
+
+    <color name="primary">@color/blue</color>
+    <color name="primary_dark">@color/blue_dark</color>
+    <color name="accent">@color/yellow_dark</color>
+
+    <color name="text">#212121</color>
+    <color name="text_light">#757575</color>
 </resources>

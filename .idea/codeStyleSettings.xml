@@ -66,6 +66,9 @@
           </extensions>
         </Objective-C-extensions>
         <XML>
+          <option name="XML_ATTRIBUTE_WRAP" value="2" />
+          <option name="XML_ALIGN_ATTRIBUTES" value="false" />
+          <option name="XML_SPACE_INSIDE_EMPTY_TAG" value="true" />
           <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
         </XML>
         <codeStyleSettings language="JAVA">
