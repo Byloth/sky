@@ -21,6 +21,8 @@ import net.byloth.sky.fragments.SummaryFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
+    protected Fragment currentFragment;
+
     protected Toolbar toolbar;
 
     protected DrawerLayout drawerLayout;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     protected void replaceFragment(Fragment fragment)
     {
+        currentFragment = fragment;
+
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
@@ -63,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        toggle = new ActionBarDrawerToggle( this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        toggle = new ActionBarDrawerToggle( this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
 
         drawerLayout.setDrawerListener(toggle);
 
@@ -71,6 +75,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        if (savedInstanceState != null)
+        {
+            Fragment restoredFragment = getFragmentManager().getFragment(savedInstanceState, "current_fragment");
+
+            replaceFragment(restoredFragment);
+        }
+        else
+        {
+            replaceFragment(new SettingsFragment());
+        }
     }
 
     @Override
@@ -80,6 +95,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             drawerLayout.closeDrawer(GravityCompat.START);
         }
+    /* TODO: Verificare se è veramente necessario implementare il seguente controllo. */
+    /*
+        else if ((currentFragment instanceof SettingsFragment) == false)
+        {
+            replaceFragment(new SettingsFragment());
+        }
+    */
         else
         {
             super.onBackPressed();
@@ -143,5 +165,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        try
+        {
+            getFragmentManager().putFragment(outState, "current_fragment", currentFragment);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }

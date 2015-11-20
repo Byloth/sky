@@ -7,6 +7,11 @@
     <string name="title_activity_main">Sky</string>
     <string name="title_activity_settings">Impostazioni</string>
 
+    <string name="user_position">Posizione dell\'utente</string>
+
+    <string name="lat_field">Latitudine: </string>
+    <string name="lng_field">Longitudine: </string>
+
     <string name="performance_settings_title">Prestazioni ed ottimizzazione</string>
         <string name="frame_interval_pref_title">Intervallo tra i frame</string>
         <string name="stars_number_pref_title">Numero di stelle a schermo</string>
@@ -14,10 +19,11 @@
     <string name="developer_settings_title">Impostazioni da sviluppatore</string>
         <string name="enable_debug_mode_pref_title">Attiva la modalità debug</string>
 
-    <string name="navigation_drawer_open">Apri il menù laterale</string>
-    <string name="navigation_drawer_close">Chiudi il menù laterale</string>
-        <string name="nav_summary">Riepilogo</string>
-        <string name="nav_settings">Impostazioni</string>
+    <string name="drawer_open">Apri il menù laterale</string>
+    <string name="drawer_close">Chiudi il menù laterale</string>
+
+    <string name="nav_summary">Riepilogo</string>
+    <string name="nav_settings">Impostazioni</string>
 
     <string name="action_settings">Impostazioni</string>
 </resources>

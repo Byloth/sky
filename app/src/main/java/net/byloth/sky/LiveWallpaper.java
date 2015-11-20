@@ -22,6 +22,7 @@ import net.byloth.sky.updaters.SunUpdater;
  */
 public class LiveWallpaper extends WallpaperService
 {
+    /* TODO: Verificare se conviene usare questo campo statico al posto dell'helper di default. */
     static private SharedPreferences sharedPreferences;
 
     static final public String APPLICATION_NAME = "SkyLiveWallpaper";
