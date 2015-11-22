@@ -8,52 +8,38 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import net.byloth.sky.R;
+import net.byloth.sky.updaters.LocationUpdater;
 
 public class SummaryFragment extends Fragment
 {
-/*
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
-
-    public static SummaryFragment newInstance(String param1, String param2)
-    {
-        SummaryFragment fragment = new SummaryFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-*/
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-
-    /*
-        if (getArguments() != null)
-        {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    */
-    }
+    protected TextView latitudeView;
+    protected TextView longitudeView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_summary_layout, container, false);
 
-    /* TODO: Implementare il riempimento dei campi della fragment con i dati corretti. */
-    /*
-        ((TextView) view.findViewById(R.id.lat_value)).setText("");
-        ((TextView) view.findViewById(R.id.lng_value)).setText("");
-    */
+        latitudeView = (TextView) view.findViewById(R.id.lat_value);
+        longitudeView = (TextView) view.findViewById(R.id.lng_value);
 
         return view;
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        if (LocationUpdater.hasLocation() == true)
+        {
+            latitudeView.setText(String.format("%1f°", LocationUpdater.getLatitude()));
+            longitudeView.setText(String.format("%1f°", LocationUpdater.getLongitude()));
+        }
+        else
+        {
+            latitudeView.setText("N.A.");
+            longitudeView.setText("N.A.");
+        }
     }
 }

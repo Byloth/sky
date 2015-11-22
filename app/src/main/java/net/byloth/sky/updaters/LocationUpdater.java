@@ -24,6 +24,11 @@ public class LocationUpdater implements LocationListener
 
     private OnLocationUpdate onLocationUpdate;
 
+    static public boolean hasLocation()
+    {
+        return hasLocation;
+    }
+
     static public double getLatitude()
     {
         if (hasLocation == true)

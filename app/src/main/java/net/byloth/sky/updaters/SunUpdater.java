@@ -23,15 +23,15 @@ public class SunUpdater extends BroadcastReceiver
 {
     /* 2016 Spring Equinox (20/03) Times */
     /*
-        Official Sunrise Time   =   21827000;
-        Civil Sunrise Time      =   20591000;
-        Nautical Sunrise Time   =   19151000;
+            Official Sunrise Time = 21827000;
+               Civil Sunrise Time = 20591000;
+            Nautical Sunrise Time = 19151000;
         Astronomical Sunrise Time = 17711000;
 
-        Official Sunset Time    =   65435000;
-        Civil Sunset Time       =   66671000;
-        Nautical Sunset Time    =   68111000;
-        Astronomical Sunset Time =  69551000;
+             Official Sunset Time = 65435000;
+                Civil Sunset Time = 66671000;
+             Nautical Sunset Time = 68111000;
+         Astronomical Sunset Time = 69551000;
     */
 
     static final private int RISING_TIME = 6;
@@ -83,11 +83,11 @@ public class SunUpdater extends BroadcastReceiver
 
         if (localHourAngle > 1)
         {
-            // TODO: Il sole non sorgerà mai.
+            // Il sole non sorgerà mai...
         }
         else if (localHourAngle < -1)
         {
-            // TODO: Il sole non tramonterà mai.
+            // Il sole non tramonterà mai...
         }
 
         switch (timeType)
@@ -187,13 +187,6 @@ public class SunUpdater extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent)
     {
-     // PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-     // PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-
-     // wakeLock.acquire();
-     // TODO: Something!
-     // wakeLock.release();
-
         Calendar now = Calendar.getInstance();
         TimeZone timeZone = now.getTimeZone();
 

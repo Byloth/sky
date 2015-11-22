@@ -23,7 +23,7 @@
         android:textAppearance="@style/MyAppTheme.TextAppearance.CategoryTitle" />
 
     <LinearLayout
-        android:id="@+id/latitude_fields_container"
+        android:id="@+id/lat_fields_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -34,7 +34,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/latitude_title"
+            android:id="@+id/lat_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5sp"
@@ -43,7 +43,7 @@
             android:textAppearance="@style/MyAppTheme.TextAppearance" />
 
         <TextView
-            android:id="@+id/latitude_value"
+            android:id="@+id/lat_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0.0"
@@ -52,18 +52,18 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/longitude_fields_container"
+        android:id="@+id/lng_fields_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/latitude_fields_container"
+        android:layout_below="@+id/lat_fields_container"
         android:layout_marginBottom="@dimen/text_vertical_margin"
         android:layout_marginTop="@dimen/text_vertical_margin"
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/longitude_title"
+            android:id="@+id/lng_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5sp"
@@ -72,7 +72,7 @@
             android:textAppearance="@style/MyAppTheme.TextAppearance" />
 
         <TextView
-            android:id="@+id/longitude_value"
+            android:id="@+id/lng_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0.0"
