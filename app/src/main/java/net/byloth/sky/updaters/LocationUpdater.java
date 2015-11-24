@@ -65,6 +65,8 @@ public class LocationUpdater implements LocationListener
             }
             else
             {
+                Log.e(LiveWallpaper.APPLICATION_NAME, "Permission denied to access user's location!");
+
                 // TODO: Require premissions...
             }
         }
@@ -82,16 +84,19 @@ public class LocationUpdater implements LocationListener
     @Override
     public void onLocationChanged(Location location)
     {
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-
-        hasLocation = true;
-
-        Log.i(LiveWallpaper.APPLICATION_NAME, "User location has been updated: " + latitude + ", " + longitude);
-
-        if (onLocationUpdate != null)
+        if ((latitude != location.getLatitude()) && (longitude != location.getLongitude()))
         {
-            onLocationUpdate.onUpdate(latitude, longitude);
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+
+            hasLocation = true;
+
+            Log.i(LiveWallpaper.APPLICATION_NAME, "User location has been updated: " + latitude + ", " + longitude);
+
+            if (onLocationUpdate != null)
+            {
+                onLocationUpdate.onUpdate(latitude, longitude);
+            }
         }
     }
 

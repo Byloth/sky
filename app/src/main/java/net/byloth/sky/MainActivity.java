@@ -84,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else
         {
+            navigationView.setCheckedItem(R.id.nav_settings);
+
             replaceFragment(new SettingsFragment());
         }
     }

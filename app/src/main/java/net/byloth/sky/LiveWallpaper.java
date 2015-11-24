@@ -177,7 +177,7 @@ public class LiveWallpaper extends WallpaperService
                 drawingHandler.removeCallbacks(drawRunner);
             }
 
-            Log.i(APPLICATION_NAME, "Visibility has changed: " + isVisible);
+         // Log.i(APPLICATION_NAME, "Visibility has changed: " + isVisible);
         }
     }
 }
