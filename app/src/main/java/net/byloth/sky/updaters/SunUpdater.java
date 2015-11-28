@@ -21,19 +21,6 @@ import net.byloth.sky.LiveWallpaper;
  */
 public class SunUpdater extends BroadcastReceiver
 {
-    /* 2016 Spring Equinox (20/03) Times */
-    /*
-            Official Sunrise Time = 21827000;
-               Civil Sunrise Time = 20591000;
-            Nautical Sunrise Time = 19151000;
-        Astronomical Sunrise Time = 17711000;
-
-             Official Sunset Time = 65435000;
-                Civil Sunset Time = 66671000;
-             Nautical Sunset Time = 68111000;
-         Astronomical Sunset Time = 69551000;
-    */
-
     static final private int RISING_TIME = 6;
     static final private int SETTING_TIME = 18;
 
@@ -41,8 +28,52 @@ public class SunUpdater extends BroadcastReceiver
     static final public float CIVIL_ZENITH = 96;
     static final public float NAUTICAL_ZENITH = 102;
     static final public float ASTRONOMICAL_ZENITH = 108;
+    
+    static private int officialSunriseTime = 21827000;
+    static private int civilSunriseTime = 20591000;
+    static private int nauticalSunriseTime = 19151000;
+    static private int astronomicalSunriseTime = 17711000;
 
+    static private int officialSunsetTime = 65435000;
+    static private int civilSunsetTime = 66671000;
+    static private int nauticalSunsetTime = 68111000;
+    static private int astronomicalSunsetTime = 69551000;
+    
     private boolean isSet;
+    
+    static public int getOfficialSunriseTime()
+    {
+        return officialSunriseTime;
+    }
+    static public int getCivilSunriseTime()
+    {
+        return civilSunriseTime;
+    }
+    static public int getNauticalSunriseTime()
+    {
+        return nauticalSunriseTime;
+    }
+    static public int getAstronomicalSunriseTime()
+    {
+        return astronomicalSunriseTime;
+    }
+
+    static public int getOfficialSunsetTime()
+    {
+        return officialSunsetTime;
+    }
+    static public int getCivilSunsetTime()
+    {
+        return civilSunsetTime;
+    }
+    static public int getNauticalSunsetTime()
+    {
+        return nauticalSunsetTime;
+    }
+    static public int getAstronomicalSunsetTime()
+    {
+        return astronomicalSunsetTime;
+    }
 
     private void calculateDeclination(Bundle parametersBundle)
     {
@@ -126,14 +157,10 @@ public class SunUpdater extends BroadcastReceiver
 
         calculateDeclination(parametersBundle);
 
-        SharedPreferences.Editor editor = LiveWallpaper.getSharedPreferences().edit();
-
-        editor.putInt("official_sunrise_time", calculateZenithTime(RISING_TIME, OFFICIAL_ZENITH, parametersBundle));
-        editor.putInt("civil_sunrise_time", calculateZenithTime(RISING_TIME, CIVIL_ZENITH, parametersBundle));
-        editor.putInt("nautical_sunrise_time", calculateZenithTime(RISING_TIME, NAUTICAL_ZENITH, parametersBundle));
-        editor.putInt("astronomical_sunrise_time", calculateZenithTime(RISING_TIME, ASTRONOMICAL_ZENITH, parametersBundle));
-
-        editor.apply();
+        officialSunriseTime = calculateZenithTime(RISING_TIME, OFFICIAL_ZENITH, parametersBundle);
+        civilSunriseTime = calculateZenithTime(RISING_TIME, CIVIL_ZENITH, parametersBundle);
+        nauticalSunriseTime = calculateZenithTime(RISING_TIME, NAUTICAL_ZENITH, parametersBundle);
+        astronomicalSunriseTime = calculateZenithTime(RISING_TIME, ASTRONOMICAL_ZENITH, parametersBundle);
     }
     private void updateSettingTimes(Bundle inputBundle)
     {
@@ -149,14 +176,10 @@ public class SunUpdater extends BroadcastReceiver
 
         calculateDeclination(parametersBundle);
 
-        SharedPreferences.Editor editor = LiveWallpaper.getSharedPreferences().edit();
-
-        editor.putInt("official_sunset_time", calculateZenithTime(SETTING_TIME, OFFICIAL_ZENITH, parametersBundle));
-        editor.putInt("civil_sunset_time", calculateZenithTime(SETTING_TIME, CIVIL_ZENITH, parametersBundle));
-        editor.putInt("nautical_sunset_time", calculateZenithTime(SETTING_TIME, NAUTICAL_ZENITH, parametersBundle));
-        editor.putInt("astronomical_sunset_time", calculateZenithTime(SETTING_TIME, ASTRONOMICAL_ZENITH, parametersBundle));
-
-        editor.apply();
+        officialSunsetTime = calculateZenithTime(SETTING_TIME, OFFICIAL_ZENITH, parametersBundle);
+        civilSunsetTime = calculateZenithTime(SETTING_TIME, CIVIL_ZENITH, parametersBundle);
+        nauticalSunsetTime = calculateZenithTime(SETTING_TIME, NAUTICAL_ZENITH, parametersBundle);
+        astronomicalSunsetTime = calculateZenithTime(SETTING_TIME, ASTRONOMICAL_ZENITH, parametersBundle);
     }
 
     public SunUpdater()

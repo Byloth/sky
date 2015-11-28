@@ -2,7 +2,6 @@ package net.byloth.sky;
 
 import android.app.AlarmManager;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.location.LocationManager;
@@ -22,17 +21,10 @@ import net.byloth.sky.updaters.SunUpdater;
  */
 public class LiveWallpaper extends WallpaperService
 {
-    static private SharedPreferences sharedPreferences;
-
     static final public String APPLICATION_NAME = "SkyLiveWallpaper";
 
     private SunUpdater sunUpdater;
     private LocationUpdater locationUpdater;
-
-    static public SharedPreferences getSharedPreferences()
-    {
-        return sharedPreferences;
-    }
 
     @Override
     public void onCreate()
@@ -51,8 +43,6 @@ public class LiveWallpaper extends WallpaperService
                 }
             }
         });
-
-        sharedPreferences = getApplicationContext().getSharedPreferences(APPLICATION_NAME, Context.MODE_PRIVATE);
     }
 
     @Override

@@ -7,13 +7,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import net.byloth.engine.DayTime;
 import net.byloth.sky.R;
 import net.byloth.sky.updaters.LocationUpdater;
+import net.byloth.sky.updaters.SunUpdater;
 
 public class SummaryFragment extends Fragment
 {
-    protected TextView latitudeView;
-    protected TextView longitudeView;
+    private TextView latitudeView;
+    private TextView longitudeView;
+
+    private TextView sunriseOfficialView;
+    private TextView sunriseCivilView;
+    private TextView sunriseNauticalView;
+    private TextView sunriseAstronomicalView;
+
+    private TextView sunsetOfficialView;
+    private TextView sunsetCivilView;
+    private TextView sunsetNauticalView;
+    private TextView sunsetAstronomicalView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -22,6 +34,16 @@ public class SummaryFragment extends Fragment
 
         latitudeView = (TextView) view.findViewById(R.id.lat_value);
         longitudeView = (TextView) view.findViewById(R.id.lng_value);
+
+        sunriseOfficialView = (TextView) view.findViewById(R.id.official_rising_time_value);
+        sunriseCivilView = (TextView) view.findViewById(R.id.civil_rising_time_value);
+        sunriseNauticalView = (TextView) view.findViewById(R.id.nautical_rising_time_value);
+        sunriseAstronomicalView = (TextView) view.findViewById(R.id.astronomical_rising_time_value);
+
+        sunsetOfficialView = (TextView) view.findViewById(R.id.official_setting_time_value);
+        sunsetCivilView = (TextView) view.findViewById(R.id.civil_setting_time_value);
+        sunsetNauticalView = (TextView) view.findViewById(R.id.nautical_setting_time_value);
+        sunsetAstronomicalView = (TextView) view.findViewById(R.id.astronomical_setting_time_value);
 
         return view;
     }
@@ -33,13 +55,23 @@ public class SummaryFragment extends Fragment
 
         if (LocationUpdater.hasLocation() == true)
         {
-            latitudeView.setText(String.format("%1f°", LocationUpdater.getLatitude()));
-            longitudeView.setText(String.format("%1f°", LocationUpdater.getLongitude()));
+            latitudeView.setText(String.format("%f°", LocationUpdater.getLatitude()));
+            longitudeView.setText(String.format("%f°", LocationUpdater.getLongitude()));
         }
         else
         {
             latitudeView.setText("N.A.");
             longitudeView.setText("N.A.");
         }
+
+        sunriseOfficialView.setText(DayTime.toString(SunUpdater.getOfficialSunriseTime()));
+        sunriseCivilView.setText(DayTime.toString(SunUpdater.getCivilSunriseTime()));
+        sunriseNauticalView.setText(DayTime.toString(SunUpdater.getNauticalSunriseTime()));
+        sunriseAstronomicalView.setText(DayTime.toString(SunUpdater.getAstronomicalSunriseTime()));
+
+        sunsetOfficialView.setText(DayTime.toString(SunUpdater.getOfficialSunsetTime()));
+        sunsetCivilView.setText(DayTime.toString(SunUpdater.getCivilSunsetTime()));
+        sunsetNauticalView.setText(DayTime.toString(SunUpdater.getNauticalSunsetTime()));
+        sunsetAstronomicalView.setText(DayTime.toString(SunUpdater.getAstronomicalSunsetTime()));
     }
 }

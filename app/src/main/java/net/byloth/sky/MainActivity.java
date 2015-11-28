@@ -21,17 +21,17 @@ import net.byloth.sky.fragments.SummaryFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
-    protected Fragment currentFragment;
+    private Fragment currentFragment;
 
-    protected Toolbar toolbar;
+    private Toolbar toolbar;
 
-    protected DrawerLayout drawerLayout;
-    protected ActionBarDrawerToggle toggle;
-    protected NavigationView navigationView;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle toggle;
+    private NavigationView navigationView;
 
-    protected FloatingActionButton fab;
+    private FloatingActionButton fab;
 
-    protected void replaceFragment(Fragment fragment)
+    private void replaceFragment(Fragment fragment)
     {
         currentFragment = fragment;
 

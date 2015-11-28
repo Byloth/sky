@@ -64,13 +64,11 @@ public class Stars extends View
 
     public Stars initializeColors()
     {
-        SharedPreferences sharedPreferences = LiveWallpaper.getSharedPreferences();
+        int nauticalSunriseTime = SunUpdater.getNauticalSunriseTime();
+        int astronomicalSunriseTime = SunUpdater.getAstronomicalSunriseTime();
 
-        int nauticalSunriseTime = sharedPreferences.getInt("nautical_sunrise_time", 19151000);
-        int astronomicalSunriseTime = sharedPreferences.getInt("astronomical_sunrise_time", 17711000);
-
-        int nauticalSunsetTime = sharedPreferences.getInt("nautical_sunset_time", 68111000);
-        int astronomicalSunsetTime = sharedPreferences.getInt("astronomical_sunset_time", 69551000);
+        int nauticalSunsetTime = SunUpdater.getNauticalSunsetTime();
+        int astronomicalSunsetTime = SunUpdater.getAstronomicalSunsetTime();
 
         timedShader = new TimedShader(new TimedColor[]
         {
@@ -92,7 +90,7 @@ public class Stars extends View
 
         paint.setAlpha(currentAlpha);
 
-//TODO: paint.setColorFilter(new PorterDuffColorFilter(timedShader.getCurrentColor(dayTime.getMilliseconds()).toInt(), PorterDuff.Mode.MULTIPLY));
+     // TODO: paint.setColorFilter(new PorterDuffColorFilter(timedShader.getCurrentColor(dayTime.getMilliseconds()).toInt(), PorterDuff.Mode.MULTIPLY));
 
         for (Star star : stars)
         {

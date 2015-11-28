@@ -17,6 +17,21 @@ public class DayTime
     static final public float DEGREES_UNIT = Maths.MAX_DEGREES / MAX_VALUE;
     static final public float RADIANS_UNIT = Maths.MAX_RADIANS / MAX_VALUE;
 
+    public static String toString(int dayTimeValue)
+    {
+        dayTimeValue = dayTimeValue / 1000;
+
+        int seconds = dayTimeValue % 60;
+        dayTimeValue = dayTimeValue / 60;
+
+        int minutes = dayTimeValue % 60;
+        dayTimeValue = dayTimeValue / 60;
+
+        int hours = dayTimeValue; // % 24
+
+        return String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+    }
+
     public DayTime()
     {
         Calendar now = Calendar.getInstance();

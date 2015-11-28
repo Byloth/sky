@@ -22,7 +22,7 @@ public class TimedShader
         }
     }
 
-    protected int getStartingColorIndex(float currentTime)
+    private int getStartingColorIndex(float currentTime)
     {
         int index = -1;
 

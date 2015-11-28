@@ -14,6 +14,7 @@ import net.byloth.engine.graphics.Color;
 import net.byloth.engine.graphics.TimedColor;
 import net.byloth.engine.graphics.TimedShader;
 import net.byloth.sky.LiveWallpaper;
+import net.byloth.sky.updaters.SunUpdater;
 
 /**
  * Created by Matteo on 10/10/2015.
@@ -82,13 +83,11 @@ public class Sky extends View
 
     public Sky initializeColors()
     {
-        SharedPreferences sharedPreferences = LiveWallpaper.getSharedPreferences();
+        int officialSunriseTime = SunUpdater.getOfficialSunriseTime();
+        int astronomicalSunriseTime = SunUpdater.getAstronomicalSunriseTime();
 
-        int officialSunriseTime = sharedPreferences.getInt("official_sunrise_time", 21827000);
-        int astronomicalSunriseTime = sharedPreferences.getInt("astronomical_sunrise_time", 17711000);
-
-        int officialSunsetTime = sharedPreferences.getInt("official_sunset_time", 65435000);
-        int astronomicalSunsetTime = sharedPreferences.getInt("astronomical_sunset_time", 69551000);
+        int officialSunsetTime = SunUpdater.getOfficialSunsetTime();
+        int astronomicalSunsetTime = SunUpdater.getAstronomicalSunsetTime();
 
         int startDayTime = officialSunriseTime + (officialSunriseTime - astronomicalSunriseTime);
         int endDayTime = officialSunsetTime + (officialSunsetTime - astronomicalSunsetTime);
