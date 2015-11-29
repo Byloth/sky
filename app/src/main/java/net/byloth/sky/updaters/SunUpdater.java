@@ -82,8 +82,8 @@ public class SunUpdater extends BroadcastReceiver
         float approximateTime = parametersBundle.getFloat("approximate_time");
 
         float meanAnomaly = (0.9856f * approximateTime) - 3.289f;
-        float trueLongitude = (meanAnomaly + (1.916f * Maths.sine(Maths.toRadians(meanAnomaly))) + (0.02f * Maths.sine(Maths.toRadians(2 * meanAnomaly))) + 282.634f) % 360;
-        float rightAscension = Maths.toDegrees(Maths.arcTangent(0.91764f * Maths.tangent(Maths.toRadians(trueLongitude)))) % 360;
+        float trueLongitude = Maths.adjustInRange(meanAnomaly + (1.916f * Maths.sine(Maths.toRadians(meanAnomaly))) + (0.02f * Maths.sine(Maths.toRadians(2 * meanAnomaly))) + 282.634f, 360);
+        float rightAscension = Maths.adjustInRange(Maths.toDegrees(Maths.arcTangent(0.91764f * Maths.tangent(Maths.toRadians(trueLongitude)))), 360);
         float trueLongitudeQuadrant = Maths.roundDown(trueLongitude / 90) * 90;
         float rightAscensionQuadrant = Maths.roundDown(rightAscension / 90) * 90;
 
@@ -116,11 +116,11 @@ public class SunUpdater extends BroadcastReceiver
 
         if (localHourAngle > 1)
         {
-            // Il sole non sorgerà mai...
+            Log.i(LiveWallpaper.APPLICATION_NAME, "Today, the Sun will never rising...");
         }
         else if (localHourAngle < -1)
         {
-            // Il sole non tramonterà mai...
+            Log.i(LiveWallpaper.APPLICATION_NAME, "Today, the Sun will never setting...");
         }
 
         switch (timeType)
@@ -138,7 +138,8 @@ public class SunUpdater extends BroadcastReceiver
         }
 
         float localMeanTime = localHourAngle + rightAscension - (0.06571f * approximateTime) - 6.622f;
-        float utcMeanTime = (float) ((localMeanTime - (longitude / 15)) % 24);
+
+        float utcMeanTime = Maths.adjustInRange(localMeanTime - (longitude / 15), 24);
 
         int localTime = (int) ((utcMeanTime * 3600000) + timeZoneOffset);
 
@@ -224,7 +225,7 @@ public class SunUpdater extends BroadcastReceiver
 
         Bundle parametersBundle = new Bundle();
 
-        parametersBundle.putInt("day_oy_year", now.get(Calendar.DAY_OF_YEAR));
+        parametersBundle.putInt("day_of_year", now.get(Calendar.DAY_OF_YEAR));
         parametersBundle.putInt("time_zone_offset", timeZone.getRawOffset());
         parametersBundle.putDouble("latitude", LocationUpdater.getLatitude());
         parametersBundle.putDouble("longitude", LocationUpdater.getLongitude());

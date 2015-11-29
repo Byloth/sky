@@ -12,6 +12,37 @@ final public class Maths
 
     private Maths() { }
 
+    static public float adjustInRange(double value, double maximumValue)
+    {
+        return adjustInRange(value, 0, maximumValue);
+    }
+    static public float adjustInRange(double value, double minimumValue, double maximumValue)
+    {
+        if (minimumValue <= maximumValue)
+        {
+            if (value < minimumValue)
+            {
+                value += maximumValue;
+
+                return adjustInRange(value, minimumValue, maximumValue);
+            }
+            else if (value >= maximumValue)
+            {
+                value -= maximumValue;
+
+                return adjustInRange(value, minimumValue, maximumValue);
+            }
+            else
+            {
+                return (float) value;
+            }
+        }
+        else
+        {
+            throw new IllegalArgumentException();
+        }
+    }
+
     static public float arcSine(double value)
     {
         return (float) Math.asin(value);
