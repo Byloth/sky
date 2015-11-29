@@ -10,21 +10,41 @@ public class TimedColor
     private int time;
     private Color color;
 
+    private GetTimedColorParameters getTimedColorParameters;
+
     public TimedColor()
     {
         time = DayTime.MIN_VALUE;
         color = new Color();
+
+        getTimedColorParameters = null;
     }
     public TimedColor(int timeValue, Color colorValue)
     {
         setTime(timeValue);
 
         color = colorValue;
+
+        getTimedColorParameters = null;
+    }
+    public TimedColor(GetTimedColorParameters getTimedColorParametersInstance)
+    {
+        time = DayTime.MIN_VALUE;
+        color = new Color();
+
+        getTimedColorParameters = getTimedColorParametersInstance;
     }
 
     public int getTime()
     {
-        return time;
+        if (getTimedColorParameters != null)
+        {
+            return getTimedColorParameters.getTime();
+        }
+        else
+        {
+            return time;
+        }
     }
     public TimedColor setTime(int timeValue)
     {
@@ -42,7 +62,14 @@ public class TimedColor
 
     public Color getColor()
     {
-        return color;
+        if (getTimedColorParameters != null)
+        {
+            return getTimedColorParameters.getColor();
+        }
+        else
+        {
+            return color;
+        }
     }
     public TimedColor setColor(Color colorValue)
     {
@@ -69,5 +96,11 @@ public class TimedColor
         }
 
         return false;
+    }
+
+    public interface GetTimedColorParameters
+    {
+        int getTime();
+        Color getColor();
     }
 }

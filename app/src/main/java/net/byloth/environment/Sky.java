@@ -62,26 +62,7 @@ public class Sky extends View
         new Color(0, 13, 25)
     };
 
-    public Sky(int canvasWidthValue, int canvasHeightValue, DayTime currentDayTime, final Context context)
-    {
-        super(context);
-
-        canvasWidth = canvasWidthValue;
-        canvasHeight = canvasHeightValue;
-
-        dayTime = currentDayTime;
-
-        stars = new Stars(canvasWidthValue, canvasHeightValue, currentDayTime, context);
-
-        paint = new Paint();
-        paint.setAntiAlias(true);
-
-        position = new RectF(0, 0, canvasWidthValue, canvasHeightValue);
-
-        initializeColors();
-    }
-
-    public Sky initializeColors()
+    private void initializeColors()
     {
         int officialSunriseTime = SunUpdater.getOfficialSunriseTime();
         int astronomicalSunriseTime = SunUpdater.getAstronomicalSunriseTime();
@@ -122,6 +103,32 @@ public class Sky extends View
                 new TimedColor(astronomicalSunsetTime, nightColors[2])
             })
         };
+    }
+
+    public Sky(int canvasWidthValue, int canvasHeightValue, DayTime currentDayTime, final Context context)
+    {
+        super(context);
+
+        canvasWidth = canvasWidthValue;
+        canvasHeight = canvasHeightValue;
+
+        dayTime = currentDayTime;
+
+        stars = new Stars(canvasWidthValue, canvasHeightValue, currentDayTime, context);
+
+        paint = new Paint();
+        paint.setAntiAlias(true);
+
+        position = new RectF(0, 0, canvasWidthValue, canvasHeightValue);
+
+        initializeColors();
+    }
+
+    public Sky reinitializeColors()
+    {
+        initializeColors();
+
+        stars.reinitializeColors();
 
         return this;
     }

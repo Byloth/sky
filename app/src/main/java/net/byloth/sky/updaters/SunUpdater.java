@@ -41,6 +41,8 @@ public class SunUpdater extends BroadcastReceiver
     
     private boolean isSet;
     
+    private OnSunUpdate onSunUpdate;
+    
     static public int getOfficialSunriseTime()
     {
         return officialSunriseTime;
@@ -206,6 +208,13 @@ public class SunUpdater extends BroadcastReceiver
     {
         return isSet;
     }
+    
+    public SunUpdater setOnSunUpdate(OnSunUpdate onSunUpdateInstance)
+    {
+        onSunUpdate = onSunUpdateInstance;
+
+        return this;
+    }
 
     @Override
     public void onReceive(Context context, Intent intent)
@@ -222,8 +231,30 @@ public class SunUpdater extends BroadcastReceiver
 
         updateRisingTimes(parametersBundle);
         updateSettingTimes(parametersBundle);
+        
+        if (onSunUpdate != null)
+        {
+            Bundle sunUpdatedTimes = new Bundle();
+
+            sunUpdatedTimes.putInt("official_sunrise_time", officialSunriseTime);
+            sunUpdatedTimes.putInt("civil_sunrise_time", civilSunriseTime);
+            sunUpdatedTimes.putInt("nautical_sunrise_time", nauticalSunriseTime);
+            sunUpdatedTimes.putInt("astronomical_sunrise_time", astronomicalSunriseTime);
+
+            sunUpdatedTimes.putInt("official_sunset_time", officialSunsetTime);
+            sunUpdatedTimes.putInt("civil_sunset_time", civilSunsetTime);
+            sunUpdatedTimes.putInt("nautical_sunset_time", nauticalSunsetTime);
+            sunUpdatedTimes.putInt("astronomical_sunset_time", astronomicalSunsetTime);
+
+            onSunUpdate.onUpdate(sunUpdatedTimes);
+        }
 
         Log.i(LiveWallpaper.APPLICATION_NAME, "Today's rising / setting time have been updated!");
         Toast.makeText(context, "\t\tLe ore di alba e tramonto\nodierne sono state aggiornate!", Toast.LENGTH_LONG).show();
+    }
+    
+    public interface OnSunUpdate
+    {
+        void onUpdate(Bundle sunUpdatedTimes);
     }
 }

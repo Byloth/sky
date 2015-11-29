@@ -76,9 +76,11 @@ public class LocationUpdater implements LocationListener
         }
     }
 
-    public void setOnLocationUpdate(OnLocationUpdate onLocationUpdateInstance)
+    public LocationUpdater setOnLocationUpdate(OnLocationUpdate onLocationUpdateInstance)
     {
         onLocationUpdate = onLocationUpdateInstance;
+
+        return this;
     }
 
     @Override
@@ -120,6 +122,6 @@ public class LocationUpdater implements LocationListener
 
     public interface OnLocationUpdate
     {
-        void onUpdate(double latitude, double longitude);
+        void onUpdate(double locationLatitude, double locationLongitude);
     }
 }

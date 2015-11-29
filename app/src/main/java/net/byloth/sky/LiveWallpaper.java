@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
 import android.util.Log;
@@ -23,19 +24,17 @@ public class LiveWallpaper extends WallpaperService
 {
     static final public String APPLICATION_NAME = "SkyLiveWallpaper";
 
-    private SunUpdater sunUpdater;
     private LocationUpdater locationUpdater;
+    private SunUpdater sunUpdater;
 
     @Override
     public void onCreate()
     {
-        sunUpdater = new SunUpdater();
         locationUpdater = new LocationUpdater((LocationManager) getSystemService(Context.LOCATION_SERVICE), this);
-
         locationUpdater.setOnLocationUpdate(new LocationUpdater.OnLocationUpdate()
         {
             @Override
-            public void onUpdate(double latitude, double longitude)
+            public void onUpdate(double locationLatitude, double locationLongitude)
             {
                 if (sunUpdater.isAlarmSet() == false)
                 {
@@ -43,6 +42,8 @@ public class LiveWallpaper extends WallpaperService
                 }
             }
         });
+
+        sunUpdater = new SunUpdater();
     }
 
     @Override
@@ -77,6 +78,15 @@ public class LiveWallpaper extends WallpaperService
             dayTime = new DayTime();
 
             drawingHandler.post(drawRunner);
+
+            sunUpdater.setOnSunUpdate(new SunUpdater.OnSunUpdate()
+            {
+                @Override
+                public void onUpdate(Bundle sunUpdatedTimes)
+                {
+                    sky.reinitializeColors();
+                }
+            });
 
             Log.i(APPLICATION_NAME, "Wallpaper is now live!");
         }

@@ -24,6 +24,8 @@ import net.byloth.sky.updaters.SunUpdater;
  */
 public class Stars extends View
 {
+    static final public int MAX_STARS = 250;
+
     private int textureWidth;
     private int textureHeight;
 
@@ -36,7 +38,22 @@ public class Stars extends View
 
     private Star[] stars;
 
-    static final public int MAX_STARS = 250;
+    private void initializeColors()
+    {
+        int nauticalSunriseTime = SunUpdater.getNauticalSunriseTime();
+        int astronomicalSunriseTime = SunUpdater.getAstronomicalSunriseTime();
+
+        int nauticalSunsetTime = SunUpdater.getNauticalSunsetTime();
+        int astronomicalSunsetTime = SunUpdater.getAstronomicalSunsetTime();
+
+        timedShader = new TimedShader(new TimedColor[]
+        {
+            new TimedColor(astronomicalSunriseTime, Color.WHITE),
+            new TimedColor(nauticalSunriseTime, Color.TRANSPARENT),
+            new TimedColor(nauticalSunsetTime, Color.TRANSPARENT),
+            new TimedColor(astronomicalSunsetTime, Color.WHITE)
+        });
+    }
 
     public Stars(int canvasWidthValue, int canvasHeightValue, DayTime currentDayTime, Context context)
     {
@@ -62,21 +79,9 @@ public class Stars extends View
         initializeColors();
     }
 
-    public Stars initializeColors()
+    public Stars reinitializeColors()
     {
-        int nauticalSunriseTime = SunUpdater.getNauticalSunriseTime();
-        int astronomicalSunriseTime = SunUpdater.getAstronomicalSunriseTime();
-
-        int nauticalSunsetTime = SunUpdater.getNauticalSunsetTime();
-        int astronomicalSunsetTime = SunUpdater.getAstronomicalSunsetTime();
-
-        timedShader = new TimedShader(new TimedColor[]
-        {
-            new TimedColor(astronomicalSunriseTime, Color.WHITE),
-            new TimedColor(nauticalSunriseTime, Color.TRANSPARENT),
-            new TimedColor(nauticalSunsetTime, Color.TRANSPARENT),
-            new TimedColor(astronomicalSunsetTime, Color.WHITE)
-        });
+        initializeColors();
 
         return this;
     }
