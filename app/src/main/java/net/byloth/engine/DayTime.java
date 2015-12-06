@@ -19,17 +19,14 @@ public class DayTime
 
     public static String toString(int dayTimeValue)
     {
-        dayTimeValue = dayTimeValue / 1000;
-
-        int seconds = dayTimeValue % 60;
-        dayTimeValue = dayTimeValue / 60;
+        dayTimeValue = dayTimeValue / 60000;
 
         int minutes = dayTimeValue % 60;
         dayTimeValue = dayTimeValue / 60;
 
         int hours = dayTimeValue; // % 24
 
-        return String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+        return String.format("%02d", hours) + ":" + String.format("%02d", minutes);
     }
 
     public DayTime()
