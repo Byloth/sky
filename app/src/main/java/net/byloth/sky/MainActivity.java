@@ -1,11 +1,19 @@
 package net.byloth.sky;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,8 +27,12 @@ import android.view.MenuItem;
 import net.byloth.sky.fragments.SettingsFragment;
 import net.byloth.sky.fragments.SummaryFragment;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
+    static final private int PERMISSION_REQUEST_LOCATION = 1;
+
     private Fragment currentFragment;
 
     private Toolbar toolbar;
@@ -41,6 +53,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         transaction.replace(R.id.fragment_container, fragment);
 
         transaction.commit();
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private void askForPermissions()
+    {
+        Context context = getApplicationContext();
+
+        int accessFineLocationPermission = context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+
+        if (accessFineLocationPermission == PackageManager.PERMISSION_DENIED)
+        {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION) == true)
+            {
+                // TODO: Show an expanation to the user *asynchronously*.
+            }
+            else
+            {
+                ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, MainActivity.PERMISSION_REQUEST_LOCATION);
+            }
+        }
     }
 
     @Override
@@ -87,6 +119,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.setCheckedItem(R.id.nav_settings);
 
             replaceFragment(new SettingsFragment());
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            askForPermissions();
         }
     }
 
@@ -167,6 +204,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
+    {
+        switch (requestCode)
+        {
+            case MainActivity.PERMISSION_REQUEST_LOCATION:
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED))
+                {
+                    // TODO: Do something!
+                }
+
+                break;
+
+            default:
+                Log.w(LiveWallpaper.APPLICATION_NAME, "Oh, oh! Something went fu***n' wrong!");
+
+                break;
+        }
     }
 
     @Override

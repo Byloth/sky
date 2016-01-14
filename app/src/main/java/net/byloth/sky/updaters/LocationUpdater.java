@@ -52,16 +52,20 @@ public class LocationUpdater implements LocationListener
         }
     }
 
+    private void requestLocationUpdates(LocationManager locationManager) throws SecurityException
+    {
+        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);
+    }
+
     public LocationUpdater(LocationManager locationManager, Context context)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
-            int accessCoarseLocationPermission = context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
             int accessFineLocationPermission = context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
 
-            if ((accessCoarseLocationPermission == PackageManager.PERMISSION_GRANTED) && (accessFineLocationPermission == PackageManager.PERMISSION_GRANTED))
+            if (accessFineLocationPermission == PackageManager.PERMISSION_GRANTED)
             {
-                locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);
+                requestLocationUpdates(locationManager);
             }
             else
             {
@@ -72,7 +76,7 @@ public class LocationUpdater implements LocationListener
         }
         else
         {
-            locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);
+            requestLocationUpdates(locationManager);
         }
     }
 
