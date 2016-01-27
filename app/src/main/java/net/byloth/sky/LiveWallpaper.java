@@ -15,7 +15,7 @@ import android.view.SurfaceHolder;
 import net.byloth.engine.DayTime;
 import net.byloth.environment.Sky;
 import net.byloth.sky.updaters.LocationUpdater;
-import net.byloth.sky.updaters.SunUpdater;
+import net.byloth.sky.updaters.SunTimesUpdater;
 
 /**
  * Created by Matteo on 10/10/2015.
@@ -25,7 +25,7 @@ public class LiveWallpaper extends WallpaperService
     static final public String APPLICATION_NAME = "SkyLiveWallpaper";
 
     private LocationUpdater locationUpdater;
-    private SunUpdater sunUpdater;
+    private SunTimesUpdater sunTimesUpdater;
 
     @Override
     public void onCreate()
@@ -36,14 +36,14 @@ public class LiveWallpaper extends WallpaperService
             @Override
             public void onUpdate(double locationLatitude, double locationLongitude)
             {
-                if (sunUpdater.isAlarmSet() == false)
+                if (sunTimesUpdater.isAlarmSet() == false)
                 {
-                    sunUpdater.setAlarm(AlarmManager.INTERVAL_DAY, getApplicationContext());
+                    sunTimesUpdater.setAlarm(AlarmManager.INTERVAL_DAY, getApplicationContext());
                 }
             }
         });
 
-        sunUpdater = new SunUpdater();
+        sunTimesUpdater = new SunTimesUpdater();
     }
 
     @Override
@@ -79,12 +79,14 @@ public class LiveWallpaper extends WallpaperService
 
             drawingHandler.post(drawRunner);
 
-            sunUpdater.setOnSunUpdate(new SunUpdater.OnSunUpdate()
+            sunTimesUpdater.setOnSunTimesUpdate(new SunTimesUpdater.OnSunTimesUpdate()
             {
                 @Override
-                public void onUpdate(Bundle sunUpdatedTimes)
+                public void onUpdate(Bundle sunTimesUpdatedValues)
                 {
                     sky.reinitializeColors();
+
+                    Log.i(APPLICATION_NAME, "Wallpaper's colors have just been updated!");
                 }
             });
 

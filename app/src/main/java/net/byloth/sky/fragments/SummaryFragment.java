@@ -10,7 +10,7 @@ import android.widget.TextView;
 import net.byloth.engine.DayTime;
 import net.byloth.sky.R;
 import net.byloth.sky.updaters.LocationUpdater;
-import net.byloth.sky.updaters.SunUpdater;
+import net.byloth.sky.updaters.SunTimesUpdater;
 
 public class SummaryFragment extends Fragment
 {
@@ -64,14 +64,14 @@ public class SummaryFragment extends Fragment
             longitudeView.setText("N.A.");
         }
 
-        sunriseOfficialView.setText(DayTime.toString(SunUpdater.getOfficialSunriseTime()));
-        sunriseCivilView.setText(DayTime.toString(SunUpdater.getCivilSunriseTime()));
-        sunriseNauticalView.setText(DayTime.toString(SunUpdater.getNauticalSunriseTime()));
-        sunriseAstronomicalView.setText(DayTime.toString(SunUpdater.getAstronomicalSunriseTime()));
+        sunriseOfficialView.setText(DayTime.toString(SunTimesUpdater.getOfficialSunriseTime()));
+        sunriseCivilView.setText(DayTime.toString(SunTimesUpdater.getCivilSunriseTime()));
+        sunriseNauticalView.setText(DayTime.toString(SunTimesUpdater.getNauticalSunriseTime()));
+        sunriseAstronomicalView.setText(DayTime.toString(SunTimesUpdater.getAstronomicalSunriseTime()));
 
-        sunsetOfficialView.setText(DayTime.toString(SunUpdater.getOfficialSunsetTime()));
-        sunsetCivilView.setText(DayTime.toString(SunUpdater.getCivilSunsetTime()));
-        sunsetNauticalView.setText(DayTime.toString(SunUpdater.getNauticalSunsetTime()));
-        sunsetAstronomicalView.setText(DayTime.toString(SunUpdater.getAstronomicalSunsetTime()));
+        sunsetOfficialView.setText(DayTime.toString(SunTimesUpdater.getOfficialSunsetTime()));
+        sunsetCivilView.setText(DayTime.toString(SunTimesUpdater.getCivilSunsetTime()));
+        sunsetNauticalView.setText(DayTime.toString(SunTimesUpdater.getNauticalSunsetTime()));
+        sunsetAstronomicalView.setText(DayTime.toString(SunTimesUpdater.getAstronomicalSunsetTime()));
     }
 }

@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -19,7 +18,7 @@ import net.byloth.sky.LiveWallpaper;
 /**
  * Created by Matteo on 23/10/2015.
  */
-public class SunUpdater extends BroadcastReceiver
+public class SunTimesUpdater extends BroadcastReceiver
 {
     static final private int RISING_TIME = 6;
     static final private int SETTING_TIME = 18;
@@ -41,7 +40,7 @@ public class SunUpdater extends BroadcastReceiver
     
     private boolean isSet;
     
-    private OnSunUpdate onSunUpdate;
+    private OnSunTimesUpdate onSunTimesUpdate;
     
     static public int getOfficialSunriseTime()
     {
@@ -185,40 +184,7 @@ public class SunUpdater extends BroadcastReceiver
         astronomicalSunsetTime = calculateZenithTime(SETTING_TIME, ASTRONOMICAL_ZENITH, parametersBundle);
     }
 
-    public SunUpdater()
-    {
-        isSet = false;
-    }
-
-    public SunUpdater setAlarm(long repeatingInterval, Context context)
-    {
-        Intent intent = new Intent(context, SunUpdater.class);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-
-        alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), repeatingInterval, pendingIntent);
-
-        isSet = true;
-
-        Log.i(LiveWallpaper.APPLICATION_NAME, "SunUpdater's alarm has been set correctly!");
-
-        return this;
-    }
-
-    public boolean isAlarmSet()
-    {
-        return isSet;
-    }
-    
-    public SunUpdater setOnSunUpdate(OnSunUpdate onSunUpdateInstance)
-    {
-        onSunUpdate = onSunUpdateInstance;
-
-        return this;
-    }
-
-    @Override
-    public void onReceive(Context context, Intent intent)
+    private void updateSunTimes()
     {
         Calendar now = Calendar.getInstance();
         TimeZone timeZone = now.getTimeZone();
@@ -232,30 +198,93 @@ public class SunUpdater extends BroadcastReceiver
 
         updateRisingTimes(parametersBundle);
         updateSettingTimes(parametersBundle);
-        
-        if (onSunUpdate != null)
+
+        if (onSunTimesUpdate != null)
         {
-            Bundle sunUpdatedTimes = new Bundle();
+            Bundle sunTimesUpdatedValues = new Bundle();
 
-            sunUpdatedTimes.putInt("official_sunrise_time", officialSunriseTime);
-            sunUpdatedTimes.putInt("civil_sunrise_time", civilSunriseTime);
-            sunUpdatedTimes.putInt("nautical_sunrise_time", nauticalSunriseTime);
-            sunUpdatedTimes.putInt("astronomical_sunrise_time", astronomicalSunriseTime);
+            sunTimesUpdatedValues.putInt("official_sunrise_time", officialSunriseTime);
+            sunTimesUpdatedValues.putInt("civil_sunrise_time", civilSunriseTime);
+            sunTimesUpdatedValues.putInt("nautical_sunrise_time", nauticalSunriseTime);
+            sunTimesUpdatedValues.putInt("astronomical_sunrise_time", astronomicalSunriseTime);
 
-            sunUpdatedTimes.putInt("official_sunset_time", officialSunsetTime);
-            sunUpdatedTimes.putInt("civil_sunset_time", civilSunsetTime);
-            sunUpdatedTimes.putInt("nautical_sunset_time", nauticalSunsetTime);
-            sunUpdatedTimes.putInt("astronomical_sunset_time", astronomicalSunsetTime);
+            sunTimesUpdatedValues.putInt("official_sunset_time", officialSunsetTime);
+            sunTimesUpdatedValues.putInt("civil_sunset_time", civilSunsetTime);
+            sunTimesUpdatedValues.putInt("nautical_sunset_time", nauticalSunsetTime);
+            sunTimesUpdatedValues.putInt("astronomical_sunset_time", astronomicalSunsetTime);
 
-            onSunUpdate.onUpdate(sunUpdatedTimes);
+            onSunTimesUpdate.onUpdate(sunTimesUpdatedValues);
         }
+        else
+        {
+            /* TODO: Capire perché, il callback, ha valore nullo!
+             *
+             * Probabilmente è per quel problema, già incontrato che,
+             *  durante la chiamata ad un BroadcastReceiver, ne
+             *  creava una nuova istanza annullando eventuali settaggi
+             *  alle variabili locali del primo oggetto...
+             *
+             * Trovare una possibile soluzione... Un callback statico
+             *  e fisso? */
+            
+            Log.e(LiveWallpaper.APPLICATION_NAME, "Current OnSunTimesUpdate instance has 'NULL' value!");
+        }
+    }
 
-        Log.i(LiveWallpaper.APPLICATION_NAME, "Today's rising / setting time have been updated!");
+    public SunTimesUpdater()
+    {
+        isSet = false;
+    }
+
+    public SunTimesUpdater forceUpdate()
+    {
+        /* TODO: eseguire il metodo 'updateSunTimes' in modo asincrono. */
+
+        updateSunTimes();
+
+        return this;
+    }
+
+    public SunTimesUpdater setAlarm(long repeatingInterval, Context context)
+    {
+        Intent intent = new Intent(context, SunTimesUpdater.class);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+        alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), repeatingInterval, pendingIntent);
+
+        isSet = true;
+
+        Log.i(LiveWallpaper.APPLICATION_NAME, "SunTimesUpdater's alarm has been set correctly!");
+
+        return this;
+    }
+
+    public boolean isAlarmSet()
+    {
+        return isSet;
+    }
+    
+    public SunTimesUpdater setOnSunTimesUpdate(OnSunTimesUpdate onSunTimesUpdateInstance)
+    {
+        onSunTimesUpdate = onSunTimesUpdateInstance;
+
+        Log.i(LiveWallpaper.APPLICATION_NAME, "SunTimesUpdater's OnSunTimesUpdate instance has been set correctly!");
+
+        return this;
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent)
+    {
+        updateSunTimes();
+
+        Log.i(LiveWallpaper.APPLICATION_NAME, "Today's rising / setting times have been updated!");
         Toast.makeText(context, "\t\tLe ore di alba e tramonto\nodierne sono state aggiornate!", Toast.LENGTH_LONG).show();
     }
     
-    public interface OnSunUpdate
+    public interface OnSunTimesUpdate
     {
-        void onUpdate(Bundle sunUpdatedTimes);
+        void onUpdate(Bundle sunTimesUpdatedValues);
     }
 }

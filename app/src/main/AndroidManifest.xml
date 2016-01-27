@@ -33,7 +33,7 @@
 
         </service>
 
-        <receiver android:name=".updaters.SunUpdater" />
+        <receiver android:name=".updaters.SunTimesUpdater" />
 
         <activity
             android:name=".MainActivity"
