@@ -33,6 +33,8 @@ public class LiveWallpaper extends WallpaperService
         locationUpdater = new LocationUpdater((LocationManager) getSystemService(Context.LOCATION_SERVICE), this);
         locationUpdater.setOnLocationUpdate(new LocationUpdater.OnLocationUpdate()
         {
+            /* TODO: Valutare se optare per un callback che viene chiamato una sola volta, all'avvio (es. onFirstUpdate). */
+
             @Override
             public void onUpdate(double locationLatitude, double locationLongitude)
             {

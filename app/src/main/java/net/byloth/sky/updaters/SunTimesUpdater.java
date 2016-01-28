@@ -37,9 +37,9 @@ public class SunTimesUpdater extends BroadcastReceiver
     static private int civilSunsetTime = 66671000;
     static private int nauticalSunsetTime = 68111000;
     static private int astronomicalSunsetTime = 69551000;
-    
+
     private boolean isSet;
-    
+
     private OnSunTimesUpdate onSunTimesUpdate;
     
     static public int getOfficialSunriseTime()
@@ -226,7 +226,7 @@ public class SunTimesUpdater extends BroadcastReceiver
              *
              * Trovare una possibile soluzione... Un callback statico
              *  e fisso? */
-            
+
             Log.e(LiveWallpaper.APPLICATION_NAME, "Current OnSunTimesUpdate instance has 'NULL' value!");
         }
     }
@@ -264,7 +264,7 @@ public class SunTimesUpdater extends BroadcastReceiver
     {
         return isSet;
     }
-    
+
     public SunTimesUpdater setOnSunTimesUpdate(OnSunTimesUpdate onSunTimesUpdateInstance)
     {
         onSunTimesUpdate = onSunTimesUpdateInstance;
@@ -282,7 +282,7 @@ public class SunTimesUpdater extends BroadcastReceiver
         Log.i(LiveWallpaper.APPLICATION_NAME, "Today's rising / setting times have been updated!");
         Toast.makeText(context, "\t\tLe ore di alba e tramonto\nodierne sono state aggiornate!", Toast.LENGTH_LONG).show();
     }
-    
+
     public interface OnSunTimesUpdate
     {
         void onUpdate(Bundle sunTimesUpdatedValues);
