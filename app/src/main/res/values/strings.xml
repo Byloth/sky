@@ -20,7 +20,7 @@
         <string name="astronomical_field">Astronomico:</string>
 
     <string name="performance_settings_title">Prestazioni ed ottimizzazione</string>
-        <string name="frame_interval_pref_title">Intervallo tra i frame</string>
+        <string name="frame_per_second_pref_title">Frame di aggiornamento per secondo</string>
         <string name="stars_number_pref_title">Numero di stelle a schermo</string>
 
     <string name="developer_settings_title">Impostazioni da sviluppatore</string>

@@ -22,10 +22,10 @@ public class NumberPickerPreference extends DialogPreference
     static final private String ATTR_MAX_VALUE = "maxValue";
     static final private String ATTR_STEP = "step";
 
-    private int defaultValue;
-
     private int minValue;
     private int maxValue;
+
+    private int defaultValue;
 
     private int step;
 
@@ -40,29 +40,53 @@ public class NumberPickerPreference extends DialogPreference
         setPersistent(false);
         setDialogLayoutResource(R.layout.number_picker_pref_layout);
 
-        defaultValue = attrs.getAttributeIntValue(ANDROID_NS, ATTR_DEFAULT_VALUE, 0);
-
         minValue = attrs.getAttributeIntValue(PREFERENCE_NS, ATTR_MIN_VALUE, 0);
-        maxValue = attrs.getAttributeIntValue(PREFERENCE_NS, ATTR_MAX_VALUE, 0);
+        maxValue = attrs.getAttributeIntValue(PREFERENCE_NS, ATTR_MAX_VALUE, 100);
+
+        if (minValue > maxValue)
+        {
+            throw new IllegalArgumentException();
+        }
+
+        defaultValue = attrs.getAttributeIntValue(ANDROID_NS, ATTR_DEFAULT_VALUE, 0);
 
         if ((defaultValue < minValue) || (defaultValue > maxValue))
         {
             throw new IllegalArgumentException();
         }
 
-        step = attrs.getAttributeIntValue(PREFERENCE_NS, ATTR_STEP, 0);
+        step = attrs.getAttributeIntValue(PREFERENCE_NS, ATTR_STEP, 1);
 
-        int valuesCount = (maxValue - minValue) / step;
-
-        displayedValues = new String[valuesCount];
-
-        for (int index = minValue; index < valuesCount; index += 1)
+        if (step < 1)
         {
-            int value = minValue + (step * index);
+            throw new IllegalArgumentException();
+        }
+        else
+        {
+            maxValue += step;
+            
+            if (step > 1)
+            {
+                maxValue = (maxValue - minValue) / step;
 
-            Log.d("NumberPickerPreference", "Valore: " + value);
+                Log.d("NumberPickerPreference", "MAX Value: " + maxValue);
 
-            displayedValues[index] = String.valueOf(value);
+                // minValue = minValue / step;
+                // maxValue = (maxValue / step) - minValue;
+
+                // defaultValue = defaultValue / step;
+
+                displayedValues = new String[maxValue];
+
+                for (int index = 0; index < maxValue; index += 1)
+                {
+                    int value = minValue + (step * index);
+
+                    displayedValues[index] = String.valueOf(value);
+
+                    Log.d("NumberPickerPreference", "Current value: " + value);
+                }
+            }
         }
     }
 
@@ -78,6 +102,9 @@ public class NumberPickerPreference extends DialogPreference
 
         numberPicker.setValue(defaultValue);
 
-        numberPicker.setDisplayedValues(displayedValues);
+        if (displayedValues != null)
+        {
+            numberPicker.setDisplayedValues(displayedValues);
+        }
     }
 }
