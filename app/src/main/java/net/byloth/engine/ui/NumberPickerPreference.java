@@ -1,6 +1,7 @@
 package net.byloth.engine.ui;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -37,7 +38,6 @@ public class NumberPickerPreference extends DialogPreference
     {
         super(context, attrs);
 
-        setPersistent(false);
         setDialogLayoutResource(R.layout.number_picker_pref_layout);
 
         minValue = attrs.getAttributeIntValue(PREFERENCE_NS, ATTR_MIN_VALUE, 0);
@@ -61,32 +61,23 @@ public class NumberPickerPreference extends DialogPreference
         {
             throw new IllegalArgumentException();
         }
-        else
+        else if (step > 1)
         {
-            maxValue += step;
-            
-            if (step > 1)
+            int valuesCount = (maxValue / step) + 1;
+
+            displayedValues = new String[valuesCount];
+
+            for (int index = 0; index < valuesCount; index += 1)
             {
-                maxValue = (maxValue - minValue) / step;
+                int value = minValue + (step * index);
 
-                Log.d("NumberPickerPreference", "MAX Value: " + maxValue);
-
-                // minValue = minValue / step;
-                // maxValue = (maxValue / step) - minValue;
-
-                // defaultValue = defaultValue / step;
-
-                displayedValues = new String[maxValue];
-
-                for (int index = 0; index < maxValue; index += 1)
-                {
-                    int value = minValue + (step * index);
-
-                    displayedValues[index] = String.valueOf(value);
-
-                    Log.d("NumberPickerPreference", "Current value: " + value);
-                }
+                displayedValues[index] = String.valueOf(value);
             }
+
+            minValue = minValue / step;
+            maxValue = maxValue / step;
+
+            defaultValue = defaultValue / step;
         }
     }
 
@@ -95,16 +86,24 @@ public class NumberPickerPreference extends DialogPreference
     {
         super.onBindDialogView(view);
 
+        int persistedValue = getPersistedInt(defaultValue);
+
         numberPicker = (NumberPicker) view.findViewById(R.id.preference_number_picker);
 
         numberPicker.setMinValue(minValue);
         numberPicker.setMaxValue(maxValue);
 
-        numberPicker.setValue(defaultValue);
+        numberPicker.setValue(persistedValue);
 
         if (displayedValues != null)
         {
             numberPicker.setDisplayedValues(displayedValues);
         }
+    }
+
+    @Override
+    protected void onDialogClosed(boolean positiveResult)
+    {
+        persistInt(numberPicker.getValue());
     }
 }
