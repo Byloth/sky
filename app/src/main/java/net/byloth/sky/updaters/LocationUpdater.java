@@ -1,21 +1,24 @@
 package net.byloth.sky.updaters;
 
 import android.Manifest;
+import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 
-import net.byloth.sky.LiveWallpaper;
+import net.byloth.sky.WallpaperDrawer;
 
 /**
  * Created by Matteo on 30/10/2015.
  */
-public class LocationUpdater implements LocationListener
+public class LocationUpdater extends Service implements LocationListener
 {
     static private boolean hasLocation = false;
 
@@ -57,8 +60,25 @@ public class LocationUpdater implements LocationListener
         locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);
     }
 
-    public LocationUpdater(LocationManager locationManager, Context context)
+    public LocationUpdater setOnLocationUpdate(OnLocationUpdate onLocationUpdateInstance)
     {
+        onLocationUpdate = onLocationUpdateInstance;
+
+        return this;
+    }
+
+    @Override
+    public IBinder onBind(Intent intent)
+    {
+        return null;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
+        Context context = getApplicationContext();
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
             int accessFineLocationPermission = context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
@@ -69,7 +89,7 @@ public class LocationUpdater implements LocationListener
             }
             else
             {
-                Log.e(LiveWallpaper.APPLICATION_NAME, "Permission denied to access user's location!");
+                Log.e(WallpaperDrawer.APPLICATION_NAME, "Permission denied to access user's location!");
 
                 // TODO: Require premissions...
             }
@@ -78,13 +98,8 @@ public class LocationUpdater implements LocationListener
         {
             requestLocationUpdates(locationManager);
         }
-    }
 
-    public LocationUpdater setOnLocationUpdate(OnLocationUpdate onLocationUpdateInstance)
-    {
-        onLocationUpdate = onLocationUpdateInstance;
-
-        return this;
+        return START_STICKY;
     }
 
     @Override
@@ -97,7 +112,7 @@ public class LocationUpdater implements LocationListener
 
             hasLocation = true;
 
-            Log.i(LiveWallpaper.APPLICATION_NAME, "User location has been updated: " + latitude + ", " + longitude);
+            Log.i(WallpaperDrawer.APPLICATION_NAME, "User location has been updated: " + latitude + ", " + longitude);
 
             if (onLocationUpdate != null)
             {

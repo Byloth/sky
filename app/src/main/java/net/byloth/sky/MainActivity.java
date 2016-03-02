@@ -3,16 +3,13 @@ package net.byloth.sky;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -26,8 +23,6 @@ import android.view.MenuItem;
 
 import net.byloth.sky.fragments.SettingsFragment;
 import net.byloth.sky.fragments.SummaryFragment;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
@@ -222,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             default:
-                Log.w(LiveWallpaper.APPLICATION_NAME, "Oh, oh! Something went fu***n' wrong!");
+                Log.w(WallpaperDrawer.APPLICATION_NAME, "Oh, oh! Something went fu***n' wrong!");
 
                 break;
         }
