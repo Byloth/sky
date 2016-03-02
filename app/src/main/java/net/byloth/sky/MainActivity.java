@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             default:
-                Log.w(WallpaperDrawer.APPLICATION_NAME, "Oh, oh! Something went fu***n' wrong!");
+                Log.w(LiveWallpaper.APPLICATION_NAME, "Oh, oh! Something went fu***n' wrong!");
 
                 break;
         }

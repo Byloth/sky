@@ -13,7 +13,8 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import net.byloth.engine.helpers.Maths;
-import net.byloth.sky.WallpaperDrawer;
+import net.byloth.sky.LiveWallpaper;
+import net.byloth.sky.LiveWallpaper;
 
 /**
  * Created by Matteo on 23/10/2015.
@@ -115,11 +116,11 @@ public class SunTimesUpdater extends BroadcastReceiver
 
         if (localHourAngle > 1)
         {
-            Log.i(WallpaperDrawer.APPLICATION_NAME, "Today, the Sun will never rising...");
+            Log.i(LiveWallpaper.APPLICATION_NAME, "Today, the Sun will never rising...");
         }
         else if (localHourAngle < -1)
         {
-            Log.i(WallpaperDrawer.APPLICATION_NAME, "Today, the Sun will never setting...");
+            Log.i(LiveWallpaper.APPLICATION_NAME, "Today, the Sun will never setting...");
         }
 
         switch (timeType)
@@ -227,7 +228,7 @@ public class SunTimesUpdater extends BroadcastReceiver
              * Trovare una possibile soluzione... Un callback statico
              *  e fisso? */
 
-            Log.e(WallpaperDrawer.APPLICATION_NAME, "Current OnSunTimesUpdate instance has 'NULL' value!");
+            Log.e(LiveWallpaper.APPLICATION_NAME, "Current OnSunTimesUpdate instance has 'NULL' value!");
         }
     }
 
@@ -255,7 +256,7 @@ public class SunTimesUpdater extends BroadcastReceiver
 
         isSet = true;
 
-        Log.i(WallpaperDrawer.APPLICATION_NAME, "SunTimesUpdater's alarm has been set correctly!");
+        Log.i(LiveWallpaper.APPLICATION_NAME, "SunTimesUpdater's alarm has been set correctly!");
 
         return this;
     }
@@ -269,7 +270,7 @@ public class SunTimesUpdater extends BroadcastReceiver
     {
         onSunTimesUpdate = onSunTimesUpdateInstance;
 
-        Log.i(WallpaperDrawer.APPLICATION_NAME, "SunTimesUpdater's OnSunTimesUpdate instance has been set correctly!");
+        Log.i(LiveWallpaper.APPLICATION_NAME, "SunTimesUpdater's OnSunTimesUpdate instance has been set correctly!");
 
         return this;
     }
@@ -279,7 +280,7 @@ public class SunTimesUpdater extends BroadcastReceiver
     {
         updateSunTimes();
 
-        Log.i(WallpaperDrawer.APPLICATION_NAME, "Today's rising / setting times have been updated!");
+        Log.i(LiveWallpaper.APPLICATION_NAME, "Today's rising / setting times have been updated!");
         Toast.makeText(context, "\t\tLe ore di alba e tramonto\nodierne sono state aggiornate!", Toast.LENGTH_LONG).show();
     }
 

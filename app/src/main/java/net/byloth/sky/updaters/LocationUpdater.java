@@ -8,23 +8,28 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import net.byloth.sky.LiveWallpaper;
 import net.byloth.sky.WallpaperDrawer;
 
 /**
  * Created by Matteo on 30/10/2015.
  */
-public class LocationUpdater extends Service implements LocationListener
+public class LocationUpdater extends Service
 {
     static private boolean hasLocation = false;
 
     static private double latitude;
     static private double longitude;
 
+    private ServiceBinder locationUpdaterBinder;
+
+    private LocationListener locationListener;
     private OnLocationUpdate onLocationUpdate;
 
     static public boolean hasLocation()
@@ -57,7 +62,43 @@ public class LocationUpdater extends Service implements LocationListener
 
     private void requestLocationUpdates(LocationManager locationManager) throws SecurityException
     {
-        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);
+        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, locationListener);
+    }
+
+    public LocationUpdater()
+    {
+        locationUpdaterBinder = new ServiceBinder();
+
+        locationListener = new LocationListener()
+        {
+            @Override
+            public void onLocationChanged(Location location)
+            {
+                if ((latitude != location.getLatitude()) && (longitude != location.getLongitude()))
+                {
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+
+                    hasLocation = true;
+
+                    Log.i(LiveWallpaper.APPLICATION_NAME, "User location has been updated: " + latitude + ", " + longitude);
+
+                    if (onLocationUpdate != null)
+                    {
+                        onLocationUpdate.onUpdate(latitude, longitude);
+                    }
+                }
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) { }
+
+            @Override
+            public void onProviderEnabled(String provider) { }
+
+            @Override
+            public void onProviderDisabled(String provider) { }
+        };
     }
 
     public LocationUpdater setOnLocationUpdate(OnLocationUpdate onLocationUpdateInstance)
@@ -70,7 +111,7 @@ public class LocationUpdater extends Service implements LocationListener
     @Override
     public IBinder onBind(Intent intent)
     {
-        return null;
+        return locationUpdaterBinder;
     }
 
     @Override
@@ -89,7 +130,7 @@ public class LocationUpdater extends Service implements LocationListener
             }
             else
             {
-                Log.e(WallpaperDrawer.APPLICATION_NAME, "Permission denied to access user's location!");
+                Log.e(LiveWallpaper.APPLICATION_NAME, "Permission denied to access user's location!");
 
                 // TODO: Require premissions...
             }
@@ -102,45 +143,16 @@ public class LocationUpdater extends Service implements LocationListener
         return START_STICKY;
     }
 
-    @Override
-    public void onLocationChanged(Location location)
-    {
-        if ((latitude != location.getLatitude()) && (longitude != location.getLongitude()))
-        {
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-
-            hasLocation = true;
-
-            Log.i(WallpaperDrawer.APPLICATION_NAME, "User location has been updated: " + latitude + ", " + longitude);
-
-            if (onLocationUpdate != null)
-            {
-                onLocationUpdate.onUpdate(latitude, longitude);
-            }
-        }
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras)
-    {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider)
-    {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider)
-    {
-
-    }
-
     public interface OnLocationUpdate
     {
         void onUpdate(double locationLatitude, double locationLongitude);
+    }
+
+    public class ServiceBinder extends Binder
+    {
+        public LocationUpdater getLocationUpdater()
+        {
+            return LocationUpdater.this;
+        }
     }
 }

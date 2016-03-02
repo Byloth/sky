@@ -1,12 +1,16 @@
 package net.byloth.sky;
 
 import android.app.AlarmManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.service.wallpaper.WallpaperService;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -22,23 +26,50 @@ import net.byloth.sky.updaters.SunTimesUpdater;
  */
 public class WallpaperDrawer extends WallpaperService
 {
+    private LocationUpdater locationUpdater;
+
+    private ServiceConnection locationUpdaterConnection;
+
+    public WallpaperDrawer()
+    {
+        locationUpdaterConnection = new ServiceConnection()
+        {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service)
+            {
+                locationUpdater = ((LocationUpdater.ServiceBinder) service).getLocationUpdater();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name)
+            {
+                locationUpdater = null;
+            }
+        };
+    };
+
     @Override
     public void onCreate()
     {
-        locationUpdater = new LocationUpdater((LocationManager) getSystemService(Context.LOCATION_SERVICE), this);
-        locationUpdater.setOnLocationUpdate(new LocationUpdater.OnLocationUpdate()
-        {
-            /* TODO: Valutare se optare per un callback che viene chiamato una sola volta, all'avvio (es. onFirstUpdate). */
+        Intent bindingIntent = new Intent(this, LocationUpdater.class);
 
-            @Override
-            public void onUpdate(double locationLatitude, double locationLongitude)
+        bindService(bindingIntent, locationUpdaterConnection, Context.BIND_AUTO_CREATE);
+        /*
+            locationUpdater = new LocationUpdater((LocationManager) getSystemService(Context.LOCATION_SERVICE), this);
+            locationUpdater.setOnLocationUpdate(new LocationUpdater.OnLocationUpdate()
             {
-                if (sunTimesUpdater.isAlarmSet() == false)
+                /* TODO: Valutare se optare per un callback che viene chiamato una sola volta, all'avvio (es. onFirstUpdate). */
+                /*
+                @Override
+                public void onUpdate(double locationLatitude, double locationLongitude)
                 {
-                    sunTimesUpdater.setAlarm(AlarmManager.INTERVAL_DAY, getApplicationContext());
+                    if (sunTimesUpdater.isAlarmSet() == false)
+                    {
+                        sunTimesUpdater.setAlarm(AlarmManager.INTERVAL_DAY, getApplicationContext());
+                    }
                 }
-            }
-        });
+            });
+        */
 
         sunTimesUpdater = new SunTimesUpdater();
     }
