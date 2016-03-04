@@ -88,11 +88,17 @@ public class NumberPickerPreference extends DialogPreference
 
         int persistedValue = getPersistedInt(defaultValue);
 
+        if (step > 1)
+        {
+            persistedValue = persistedValue / step;
+        }
+
         numberPicker = (NumberPicker) view.findViewById(R.id.preference_number_picker);
 
         numberPicker.setMinValue(minValue);
         numberPicker.setMaxValue(maxValue);
 
+        // TODO: Prima di impostare il valore del NumberPicker, è necessario verificare che sia valido.
         numberPicker.setValue(persistedValue);
 
         if (displayedValues != null)
@@ -104,6 +110,17 @@ public class NumberPickerPreference extends DialogPreference
     @Override
     protected void onDialogClosed(boolean positiveResult)
     {
-        persistInt(numberPicker.getValue());
+        int numberPickerValue;
+
+        if (step > 1)
+        {
+            numberPickerValue = numberPicker.getValue() * step;
+        }
+        else
+        {
+            numberPickerValue = numberPicker.getValue();
+        }
+
+        persistInt(numberPickerValue);
     }
 }
