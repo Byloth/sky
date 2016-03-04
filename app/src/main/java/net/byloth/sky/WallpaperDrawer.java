@@ -26,27 +26,37 @@ import net.byloth.sky.updaters.SunTimesUpdater;
  */
 public class WallpaperDrawer extends WallpaperService
 {
-    private LocationUpdater locationUpdater;
-
+    private boolean locationUpdaterBound;
     private ServiceConnection locationUpdaterConnection;
+
+    private LocationUpdater locationUpdater;
+    private SunTimesUpdater sunTimesUpdater;
 
     public WallpaperDrawer()
     {
+        locationUpdaterBound = false;
+
         locationUpdaterConnection = new ServiceConnection()
         {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service)
             {
                 locationUpdater = ((LocationUpdater.ServiceBinder) service).getLocationUpdater();
+                locationUpdaterBound = true;
+
+                Log.i(LiveWallpaper.APPLICATION_NAME, "Bound!");
             }
 
             @Override
             public void onServiceDisconnected(ComponentName name)
             {
                 locationUpdater = null;
+                locationUpdaterBound = false;
+
+                Log.i(LiveWallpaper.APPLICATION_NAME, "Unbound!");
             }
         };
-    };
+    }
 
     @Override
     public void onCreate()
@@ -72,6 +82,17 @@ public class WallpaperDrawer extends WallpaperService
         */
 
         sunTimesUpdater = new SunTimesUpdater();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+
+        if (locationUpdaterBound == true)
+        {
+            unbindService(locationUpdaterConnection);
+        }
     }
 
     @Override
@@ -114,11 +135,11 @@ public class WallpaperDrawer extends WallpaperService
                 {
                     sky.reinitializeColors();
 
-                    Log.i(APPLICATION_NAME, "Wallpaper's colors have just been updated!");
+                    Log.i(LiveWallpaper.APPLICATION_NAME, "Wallpaper's colors have just been updated!");
                 }
             });
 
-            Log.i(APPLICATION_NAME, "Wallpaper is now live!");
+            Log.i(LiveWallpaper.APPLICATION_NAME, "Wallpaper is now live!");
         }
 
         private void draw(Canvas canvas)
@@ -143,7 +164,7 @@ public class WallpaperDrawer extends WallpaperService
                 }
                 else
                 {
-                    Log.e(APPLICATION_NAME, "Wallpaper was NOT drawn correctly!");
+                    Log.e(LiveWallpaper.APPLICATION_NAME, "Wallpaper was NOT drawn correctly!");
                 }
             }
             catch (Exception e)
@@ -158,11 +179,11 @@ public class WallpaperDrawer extends WallpaperService
                 }
                 else
                 {
-                    Log.e(APPLICATION_NAME, "Canvas was NOT unlocked correctly!");
+                    Log.e(LiveWallpaper.APPLICATION_NAME, "Canvas was NOT unlocked correctly!");
                 }
             }
 
-         // Log.i(APPLICATION_NAME, "Wallpaper was updated & drawn correctly!");
+         // Log.i(LiveWallpaper.APPLICATION_NAME, "Wallpaper was updated & drawn correctly!");
 
             drawingHandler.removeCallbacks(drawRunner);
             drawingHandler.postDelayed(drawRunner, FRAME_INTERVAL);
@@ -175,7 +196,7 @@ public class WallpaperDrawer extends WallpaperService
 
             sky = new Sky(width, height, dayTime, getApplicationContext());
 
-            Log.i(APPLICATION_NAME, "SurfaceHolder has changed: " + width + "x" + height);
+            Log.i(LiveWallpaper.APPLICATION_NAME, "SurfaceHolder has changed: " + width + "x" + height);
         }
         @Override
         public void onSurfaceDestroyed(SurfaceHolder surfaceHolder)
@@ -184,7 +205,7 @@ public class WallpaperDrawer extends WallpaperService
 
             drawingHandler.removeCallbacks(drawRunner);
 
-            Log.i(APPLICATION_NAME, "Wallpaper has been destroyed!");
+            Log.i(LiveWallpaper.APPLICATION_NAME, "Wallpaper has been destroyed!");
         }
 
         @Override
@@ -207,7 +228,7 @@ public class WallpaperDrawer extends WallpaperService
                 drawingHandler.removeCallbacks(drawRunner);
             }
 
-         // Log.i(APPLICATION_NAME, "Visibility has changed: " + isVisible);
+         // Log.i(LiveWallpaper.APPLICATION_NAME, "Visibility has changed: " + isVisible);
         }
     }
 }
