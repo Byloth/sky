@@ -1,16 +1,11 @@
 package net.byloth.sky;
 
 import android.app.AlarmManager;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.location.LocationManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.service.wallpaper.WallpaperService;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -18,7 +13,6 @@ import android.view.SurfaceHolder;
 
 import net.byloth.engine.DayTime;
 import net.byloth.environment.Sky;
-import net.byloth.sky.updaters.LocationUpdater;
 import net.byloth.sky.updaters.SunTimesUpdater;
 
 /**
@@ -26,73 +20,26 @@ import net.byloth.sky.updaters.SunTimesUpdater;
  */
 public class WallpaperDrawer extends WallpaperService
 {
-    private boolean locationUpdaterBound;
-    private ServiceConnection locationUpdaterConnection;
-
-    private LocationUpdater locationUpdater;
     private SunTimesUpdater sunTimesUpdater;
-
-    public WallpaperDrawer()
-    {
-        locationUpdaterBound = false;
-
-        locationUpdaterConnection = new ServiceConnection()
-        {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service)
-            {
-                locationUpdater = ((LocationUpdater.ServiceBinder) service).getLocationUpdater();
-                locationUpdaterBound = true;
-
-                Log.i(LiveWallpaper.APPLICATION_NAME, "Bound!");
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name)
-            {
-                locationUpdater = null;
-                locationUpdaterBound = false;
-
-                Log.i(LiveWallpaper.APPLICATION_NAME, "Unbound!");
-            }
-        };
-    }
 
     @Override
     public void onCreate()
     {
-        Intent bindingIntent = new Intent(this, LocationUpdater.class);
+        LiveWallpaper liveWallpaper = (LiveWallpaper) getApplication();
 
-        bindService(bindingIntent, locationUpdaterConnection, Context.BIND_AUTO_CREATE);
-        /*
-            locationUpdater = new LocationUpdater((LocationManager) getSystemService(Context.LOCATION_SERVICE), this);
-            locationUpdater.setOnLocationUpdate(new LocationUpdater.OnLocationUpdate()
+        liveWallpaper.setOnLocationUpdate(new LiveWallpaper.OnLocationUpdate()
+        {
+            @Override
+            public void onUpdate(Location location)
             {
-                /* TODO: Valutare se optare per un callback che viene chiamato una sola volta, all'avvio (es. onFirstUpdate). */
-                /*
-                @Override
-                public void onUpdate(double locationLatitude, double locationLongitude)
+                if (sunTimesUpdater.isAlarmSet() == false)
                 {
-                    if (sunTimesUpdater.isAlarmSet() == false)
-                    {
-                        sunTimesUpdater.setAlarm(AlarmManager.INTERVAL_DAY, getApplicationContext());
-                    }
+                    sunTimesUpdater.setAlarm(AlarmManager.INTERVAL_DAY, getApplicationContext());
                 }
-            });
-        */
+            }
+        });
 
         sunTimesUpdater = new SunTimesUpdater();
-    }
-
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-
-        if (locationUpdaterBound == true)
-        {
-            unbindService(locationUpdaterConnection);
-        }
     }
 
     @Override

@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import net.byloth.engine.DayTime;
 import net.byloth.sky.R;
-import net.byloth.sky.updaters.LocationUpdater;
 import net.byloth.sky.updaters.SunTimesUpdater;
 
 public class SummaryFragment extends Fragment

@@ -39,7 +39,7 @@ public class SunTimesUpdater extends BroadcastReceiver
     static private int nauticalSunsetTime = 68111000;
     static private int astronomicalSunsetTime = 69551000;
 
-    private boolean isSet;
+    private boolean isAlarmSet;
 
     private OnSunTimesUpdate onSunTimesUpdate;
     
@@ -234,7 +234,7 @@ public class SunTimesUpdater extends BroadcastReceiver
 
     public SunTimesUpdater()
     {
-        isSet = false;
+        isAlarmSet = false;
     }
 
     public SunTimesUpdater forceUpdate()
@@ -254,7 +254,7 @@ public class SunTimesUpdater extends BroadcastReceiver
 
         alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), repeatingInterval, pendingIntent);
 
-        isSet = true;
+        isAlarmSet = true;
 
         Log.i(LiveWallpaper.APPLICATION_NAME, "SunTimesUpdater's alarm has been set correctly!");
 
@@ -263,7 +263,7 @@ public class SunTimesUpdater extends BroadcastReceiver
 
     public boolean isAlarmSet()
     {
-        return isSet;
+        return isAlarmSet;
     }
 
     public SunTimesUpdater setOnSunTimesUpdate(OnSunTimesUpdate onSunTimesUpdateInstance)
