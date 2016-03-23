@@ -1,10 +1,8 @@
 package net.byloth.engine.ui;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.NumberPicker;
 

@@ -10,6 +10,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import net.byloth.sky.components.DailyUpdater;
+
 import java.util.List;
 
 /**
@@ -19,8 +21,17 @@ public class LiveWallpaper extends Application implements LocationListener
 {
     static final public String APPLICATION_NAME = "SkyLiveWallpaper";
 
+    static private LiveWallpaper currentInstance;
+
     private Location currentLocation;
-    private OnLocationUpdate onLocationUpdate;
+    private OnLocationUpdateListener onLocationUpdateListener;
+
+    private DailyUpdater dailyUpdater;
+
+    static public LiveWallpaper getInstance()
+    {
+        return currentInstance;
+    }
 
     private void getLastKnownLocation(LocationManager locationManager) throws SecurityException
     {
@@ -43,6 +54,11 @@ public class LiveWallpaper extends Application implements LocationListener
         if (bestRetrievedLocation != null)
         {
             currentLocation = bestRetrievedLocation;
+
+            if (dailyUpdater.isSet() == false)
+            {
+                dailyUpdater.setAlarm(this);
+            }
             
             Log.i(APPLICATION_NAME, "Last known user's location has been retrieved: " + bestRetrievedLocation.getLongitude() + ", " + bestRetrievedLocation.getLatitude());
         }
@@ -52,14 +68,21 @@ public class LiveWallpaper extends Application implements LocationListener
         locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);
     }
 
+    public LiveWallpaper()
+    {
+        currentInstance = this;
+
+        dailyUpdater = new DailyUpdater();
+    }
+
     public Location getCurrentLocation()
     {
         return currentLocation;
     }
 
-    public void setOnLocationUpdate(OnLocationUpdate onLocationUpdateInstance)
+    public void setOnLocationUpdateListener(OnLocationUpdateListener onLocationUpdateListenerInstance)
     {
-        onLocationUpdate = onLocationUpdateInstance;
+        onLocationUpdateListener = onLocationUpdateListenerInstance;
     }
 
     @Override
@@ -104,11 +127,16 @@ public class LiveWallpaper extends Application implements LocationListener
             {
                 currentLocation = location;
 
+                if (dailyUpdater.isSet() == false)
+                {
+                    dailyUpdater.setAlarm(this);
+                }
+
                 Log.i(APPLICATION_NAME, "User location has been updated: " + latitude + ", " + longitude);
 
-                if (onLocationUpdate != null)
+                if (onLocationUpdateListener != null)
                 {
-                    onLocationUpdate.onUpdate(location);
+                    onLocationUpdateListener.onUpdate(location);
                 }
             }
         }
@@ -123,7 +151,7 @@ public class LiveWallpaper extends Application implements LocationListener
     @Override
     public void onProviderDisabled(String provider) { }
 
-    public interface OnLocationUpdate
+    public interface OnLocationUpdateListener
     {
         void onUpdate(Location location);
     }

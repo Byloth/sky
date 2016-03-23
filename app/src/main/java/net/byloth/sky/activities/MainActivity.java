@@ -1,4 +1,4 @@
-package net.byloth.sky;
+package net.byloth.sky.activities;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -21,6 +21,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import net.byloth.sky.LiveWallpaper;
+import net.byloth.sky.R;
 import net.byloth.sky.fragments.SettingsFragment;
 import net.byloth.sky.fragments.SummaryFragment;
 

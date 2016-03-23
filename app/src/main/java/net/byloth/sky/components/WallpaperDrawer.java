@@ -1,4 +1,4 @@
-package net.byloth.sky;
+package net.byloth.sky.components;
 
 import android.app.AlarmManager;
 import android.graphics.Canvas;
@@ -13,6 +13,7 @@ import android.view.SurfaceHolder;
 
 import net.byloth.engine.DayTime;
 import net.byloth.environment.Sky;
+import net.byloth.sky.LiveWallpaper;
 import net.byloth.sky.updaters.SunTimesUpdater;
 
 /**
@@ -20,28 +21,6 @@ import net.byloth.sky.updaters.SunTimesUpdater;
  */
 public class WallpaperDrawer extends WallpaperService
 {
-    private SunTimesUpdater sunTimesUpdater;
-
-    @Override
-    public void onCreate()
-    {
-        LiveWallpaper liveWallpaper = (LiveWallpaper) getApplication();
-
-        liveWallpaper.setOnLocationUpdate(new LiveWallpaper.OnLocationUpdate()
-        {
-            @Override
-            public void onUpdate(Location location)
-            {
-                if (sunTimesUpdater.isAlarmSet() == false)
-                {
-                    sunTimesUpdater.setAlarm(AlarmManager.INTERVAL_DAY, getApplicationContext());
-                }
-            }
-        });
-
-        sunTimesUpdater = new SunTimesUpdater();
-    }
-
     @Override
     public Engine onCreateEngine()
     {
@@ -75,16 +54,18 @@ public class WallpaperDrawer extends WallpaperService
 
             drawingHandler.post(drawRunner);
 
-            sunTimesUpdater.setOnSunTimesUpdate(new SunTimesUpdater.OnSunTimesUpdate()
-            {
-                @Override
-                public void onUpdate(Bundle sunTimesUpdatedValues)
+            /*
+                sunTimesUpdater.setOnSunTimesUpdate(new SunTimesUpdater.OnSunTimesUpdate()
                 {
-                    sky.reinitializeColors();
+                    @Override
+                    public void onUpdate(Bundle sunTimesUpdatedValues)
+                    {
+                        sky.reinitializeColors();
 
-                    Log.i(LiveWallpaper.APPLICATION_NAME, "Wallpaper's colors have just been updated!");
-                }
-            });
+                        Log.i(LiveWallpaper.APPLICATION_NAME, "Wallpaper's colors have just been updated!");
+                    }
+                });
+            */
 
             Log.i(LiveWallpaper.APPLICATION_NAME, "Wallpaper is now live!");
         }
