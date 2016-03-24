@@ -1,7 +1,11 @@
 package net.byloth.sky;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -10,7 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
-import net.byloth.sky.components.DailyUpdater;
+import net.byloth.sky.components.DailyAlarmReceiver;
 
 import java.util.List;
 
@@ -23,10 +27,10 @@ public class LiveWallpaper extends Application implements LocationListener
 
     static private LiveWallpaper currentInstance;
 
+    private boolean isDailyAlarmSet;
+
     private Location currentLocation;
     private OnLocationUpdateListener onLocationUpdateListener;
-
-    private DailyUpdater dailyUpdater;
 
     static public LiveWallpaper getInstance()
     {
@@ -68,17 +72,30 @@ public class LiveWallpaper extends Application implements LocationListener
     {
         currentLocation = location;
 
-        if (dailyUpdater.isSet() == false)
+        if (isDailyAlarmSet == false)
         {
-            dailyUpdater.setAlarm(this);
+            setDailyAlarm();
         }
+    }
+
+    private void setDailyAlarm()
+    {
+        Intent intent = new Intent(this, DailyAlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+
+        isDailyAlarmSet = true;
+
+        Log.i(LiveWallpaper.APPLICATION_NAME, "Daily alarm has been set correctly!");
     }
 
     public LiveWallpaper()
     {
         currentInstance = this;
 
-        dailyUpdater = new DailyUpdater();
+        isDailyAlarmSet = false;
     }
 
     public LiveWallpaper initializeLocationListening()

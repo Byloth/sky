@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <manifest
-    package="net.byloth.sky"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="net.byloth.sky">
 
     <uses-feature android:name="android.software.live_wallpaper" />
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -33,7 +34,7 @@
 
         </service>
 
-        <receiver android:name="net.byloth.engine.components.InexactAlarm$Receiver" />
+        <receiver android:name=".components.DailyAlarmReceiver" />
 
         <activity
             android:name=".activities.MainActivity"
