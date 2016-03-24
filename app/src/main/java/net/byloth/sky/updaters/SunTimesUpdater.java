@@ -32,6 +32,8 @@ final public class SunTimesUpdater
     static private int civilSunsetTime = 66671000;
     static private int nauticalSunsetTime = 68111000;
     static private int astronomicalSunsetTime = 69551000;
+
+    static private OnSunTimesUpdateListener onSunTimesUpdateListener;
     
     static public int getOfficialSunriseTime()
     {
@@ -134,7 +136,7 @@ final public class SunTimesUpdater
         return (int) ((utcMeanTime * 3600000) + timeZoneOffset);
     }
 
-    static private void updateRisingTimes(Bundle inputBundle)
+    static private Bundle updateRisingTimes(Bundle inputBundle)
     {
         int dayOfYear = inputBundle.getInt("day_of_year");
         double longitude = inputBundle.getDouble("longitude");
@@ -152,8 +154,17 @@ final public class SunTimesUpdater
         civilSunriseTime = calculateZenithTime(RISING_TIME, CIVIL_ZENITH, parametersBundle);
         nauticalSunriseTime = calculateZenithTime(RISING_TIME, NAUTICAL_ZENITH, parametersBundle);
         astronomicalSunriseTime = calculateZenithTime(RISING_TIME, ASTRONOMICAL_ZENITH, parametersBundle);
+
+        Bundle risingTimeValues = new Bundle();
+
+        risingTimeValues.putInt("official_sunrise_time", officialSunriseTime);
+        risingTimeValues.putInt("civil_sunrise_time", civilSunriseTime);
+        risingTimeValues.putInt("nautical_sunrise_time", nauticalSunriseTime);
+        risingTimeValues.putInt("astronomical_sunrise_time", astronomicalSunriseTime);
+
+        return risingTimeValues;
     }
-    static private void updateSettingTimes(Bundle inputBundle)
+    static private Bundle updateSettingTimes(Bundle inputBundle)
     {
         int dayOfYear = inputBundle.getInt("day_of_year");
         double longitude = inputBundle.getDouble("longitude");
@@ -171,6 +182,20 @@ final public class SunTimesUpdater
         civilSunsetTime = calculateZenithTime(SETTING_TIME, CIVIL_ZENITH, parametersBundle);
         nauticalSunsetTime = calculateZenithTime(SETTING_TIME, NAUTICAL_ZENITH, parametersBundle);
         astronomicalSunsetTime = calculateZenithTime(SETTING_TIME, ASTRONOMICAL_ZENITH, parametersBundle);
+
+        Bundle settingTimeValues = new Bundle();
+
+        settingTimeValues.putInt("official_sunset_time", officialSunsetTime);
+        settingTimeValues.putInt("civil_sunset_time", civilSunsetTime);
+        settingTimeValues.putInt("nautical_sunset_time", nauticalSunsetTime);
+        settingTimeValues.putInt("astronomical_sunset_time", astronomicalSunsetTime);
+
+        return settingTimeValues;
+    }
+
+    static public void setOnSunTimesUpdateListener(OnSunTimesUpdateListener onSunTimesUpdateListenerInstance)
+    {
+        onSunTimesUpdateListener = onSunTimesUpdateListenerInstance;
     }
 
     static public void updateSunTimes()
@@ -188,9 +213,19 @@ final public class SunTimesUpdater
         parametersBundle.putDouble("latitude", currentLocation.getLatitude());
         parametersBundle.putDouble("longitude", currentLocation.getLongitude());
 
-        updateRisingTimes(parametersBundle);
-        updateSettingTimes(parametersBundle);
+        Bundle risingTimeValues = updateRisingTimes(parametersBundle);
+        Bundle settingTimeValues = updateSettingTimes(parametersBundle);
+
+        if (onSunTimesUpdateListener != null)
+        {
+            onSunTimesUpdateListener.onUpdate(risingTimeValues, settingTimeValues);
+        }
     }
 
     private SunTimesUpdater() { }
+
+    public interface OnSunTimesUpdateListener
+    {
+        void onUpdate(Bundle risingTimeValues, Bundle settingTimeValues);
+    }
 }

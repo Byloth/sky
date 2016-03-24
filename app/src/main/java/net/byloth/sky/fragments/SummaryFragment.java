@@ -1,5 +1,6 @@
 package net.byloth.sky.fragments;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import net.byloth.engine.DayTime;
+import net.byloth.sky.LiveWallpaper;
 import net.byloth.sky.R;
 import net.byloth.sky.updaters.SunTimesUpdater;
 
@@ -25,6 +27,11 @@ public class SummaryFragment extends Fragment
     private TextView sunsetCivilView;
     private TextView sunsetNauticalView;
     private TextView sunsetAstronomicalView;
+
+    private LiveWallpaper getLiveWallaper()
+    {
+        return (LiveWallpaper) getActivity().getApplication();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -52,10 +59,12 @@ public class SummaryFragment extends Fragment
     {
         super.onResume();
 
-        if (LocationUpdater.hasLocation() == true)
+        Location currentLocation = getLiveWallaper().getCurrentLocation();
+
+        if (currentLocation != null)
         {
-            latitudeView.setText(String.format("%f°", LocationUpdater.getLatitude()));
-            longitudeView.setText(String.format("%f°", LocationUpdater.getLongitude()));
+            latitudeView.setText(String.format("%f°", currentLocation.getLatitude()));
+            longitudeView.setText(String.format("%f°", currentLocation.getLongitude()));
         }
         else
         {

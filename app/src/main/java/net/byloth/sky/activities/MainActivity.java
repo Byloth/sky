@@ -40,6 +40,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private FloatingActionButton fab;
 
+    private LiveWallpaper getLiveWallpaper()
+    {
+        return (LiveWallpaper) getApplication();
+    }
+
     private void replaceFragment(Fragment fragment)
     {
         currentFragment = fragment;
@@ -213,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case MainActivity.PERMISSION_REQUEST_LOCATION:
                 if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED))
                 {
-                    // TODO: Do something!
+                    getLiveWallpaper().initializeLocationListening();
                 }
 
                 break;

@@ -1,9 +1,7 @@
 package net.byloth.sky.components;
 
-import android.app.AlarmManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
@@ -54,18 +52,16 @@ public class WallpaperDrawer extends WallpaperService
 
             drawingHandler.post(drawRunner);
 
-            /*
-                sunTimesUpdater.setOnSunTimesUpdate(new SunTimesUpdater.OnSunTimesUpdate()
+            SunTimesUpdater.setOnSunTimesUpdateListener(new SunTimesUpdater.OnSunTimesUpdateListener()
+            {
+                @Override
+                public void onUpdate(Bundle risingTimeValues, Bundle settingTimeValues)
                 {
-                    @Override
-                    public void onUpdate(Bundle sunTimesUpdatedValues)
-                    {
-                        sky.reinitializeColors();
+                    sky.reinitializeColors();
 
-                        Log.i(LiveWallpaper.APPLICATION_NAME, "Wallpaper's colors have just been updated!");
-                    }
-                });
-            */
+                    Log.i(LiveWallpaper.APPLICATION_NAME, "Wallpaper's colors have just been updated!");
+                }
+            });
 
             Log.i(LiveWallpaper.APPLICATION_NAME, "Wallpaper is now live!");
         }

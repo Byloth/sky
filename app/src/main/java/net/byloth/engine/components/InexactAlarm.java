@@ -51,8 +51,10 @@ public class InexactAlarm
         void onExpired(Intent intent);
     }
 
-    private class Receiver extends BroadcastReceiver
+    public class Receiver extends BroadcastReceiver
     {
+        public Receiver() { }
+
         @Override
         public void onReceive(Context context, Intent intent)
         {
