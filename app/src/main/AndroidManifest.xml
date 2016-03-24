@@ -34,7 +34,16 @@
 
         </service>
 
-        <receiver android:name=".components.DailyAlarmReceiver" />
+        <receiver
+            android:name=".components.DailyAlarmReceiver"
+            android:enabled="true"
+            android:exported="false">
+
+            <intent-filter>
+                <action android:name="net.byloth.sky.components.ALERT_EXPIRED" />
+                <action android:name="net.byloth.sky.activities.FORCE_UPDATE" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".activities.MainActivity"

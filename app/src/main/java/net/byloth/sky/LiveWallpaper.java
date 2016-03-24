@@ -81,6 +81,8 @@ public class LiveWallpaper extends Application implements LocationListener
     private void setDailyAlarm()
     {
         Intent intent = new Intent(this, DailyAlarmReceiver.class);
+        intent.setAction("net.byloth.sky.components.ALERT_EXPIRED");
+
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
