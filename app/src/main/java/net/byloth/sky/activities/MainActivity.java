@@ -21,6 +21,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import net.byloth.sky.LiveWallpaper;
 import net.byloth.sky.R;
@@ -39,7 +41,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
 
-    private FloatingActionButton fab;
+    private Animation clockwiseRotation;
+    private FloatingActionButton updateFab;
 
     private LiveWallpaper getLiveWallpaper()
     {
@@ -88,18 +91,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Intent forceUpdateIntent = new Intent("net.byloth.sky.activities.FORCE_UPDATE");
-
-                sendBroadcast(forceUpdateIntent);
-            }
-        });
-
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         toggle = new ActionBarDrawerToggle( this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
@@ -110,6 +101,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        clockwiseRotation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_clockwise);
+
+        updateFab = (FloatingActionButton) findViewById(R.id.update_fab);
+        updateFab.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                view.startAnimation(clockwiseRotation);
+
+                Intent forceUpdateIntent = new Intent("net.byloth.sky.activities.FORCE_UPDATE");
+
+                sendBroadcast(forceUpdateIntent);
+            }
+        });
 
         if (savedInstanceState != null)
         {
