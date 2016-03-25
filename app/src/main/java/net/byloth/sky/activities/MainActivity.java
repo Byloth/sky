@@ -42,7 +42,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
 
     private Animation clockwiseRotation;
+
     private FloatingActionButton updateFab;
+    private FloatingActionButton localizationFab;
 
     private LiveWallpaper getLiveWallpaper()
     {
@@ -72,12 +74,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION) == true)
             {
-                // TODO: Show an expanation to the user *asynchronously*.
+                localizationFab.show();
             }
             else
             {
                 ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, MainActivity.PERMISSION_REQUEST_LOCATION);
             }
+        }
+        else
+        {
+            updateFab.show();
         }
     }
 
@@ -118,6 +124,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        localizationFab = (FloatingActionButton) findViewById(R.id.localization_fab);
+        localizationFab.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MainActivity.PERMISSION_REQUEST_LOCATION);
+            }
+        });
+
         if (savedInstanceState != null)
         {
             Fragment restoredFragment = getFragmentManager().getFragment(savedInstanceState, "current_fragment");
@@ -134,6 +150,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
             askForPermissions();
+        }
+        else
+        {
+            updateFab.show();
         }
     }
 
@@ -225,6 +245,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED))
                 {
                     getLiveWallpaper().initializeLocationListening();
+
+                    updateFab.show();
+                    localizationFab.hide();
+                }
+                else
+                {
+                    updateFab.hide();
+                    localizationFab.show();
                 }
 
                 break;
