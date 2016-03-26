@@ -1,4 +1,4 @@
-package net.byloth.engine.graphics;
+package net.byloth.engine.graphics.helpers;
 
 import net.byloth.engine.graphics.Color;
 
@@ -7,10 +7,10 @@ import net.byloth.engine.graphics.Color;
  */
 final public class ColorsShaders
 {
-    private ColorsShaders() { }
-
     static final public int MIN_SHADING_RATIO = 0;
     static final public int MAX_SHADING_RATIO = 1;
+
+    private ColorsShaders() { }
 
     static public Color alphaBlend(Color startingColor, float shadingRatio, Color finalColor)
     {

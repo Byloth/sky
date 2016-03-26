@@ -1,4 +1,4 @@
-package net.byloth.engine.opengl;
+package net.byloth.engine.graphics.opengl;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;

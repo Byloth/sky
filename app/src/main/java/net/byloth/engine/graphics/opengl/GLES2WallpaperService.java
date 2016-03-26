@@ -1,4 +1,4 @@
-package net.byloth.engine.opengl;
+package net.byloth.engine.graphics.opengl;
 
 import android.app.ActivityManager;
 import android.content.Context;
