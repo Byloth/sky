@@ -24,13 +24,15 @@ public class GLiveWallpaper extends GLES2WallpaperService
 
     public class Renderer implements GLSurfaceView.Renderer
     {
+        final private float[] mvpMatrix = new float[16];
+        final private float[] projectionMatrix = new float[16];
         final private float[] viewMatrix = new float[16];
 
         private GLSky sky;
 
         public Renderer()
         {
-            sky = new GLSky(this);
+            sky = new GLSky(GLiveWallpaper.this);
         }
 
         @Override
@@ -55,8 +57,9 @@ public class GLiveWallpaper extends GLES2WallpaperService
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
             Matrix.setLookAtM(viewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+            Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
 
-            sky.draw(viewMatrix);
+            sky.draw(mvpMatrix);
 
             Log.d(LiveWallpaper.APPLICATION_NAME, "Frame drawed!");
         }
