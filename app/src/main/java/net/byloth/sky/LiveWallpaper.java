@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class LiveWallpaper extends Application implements LocationListener
 {
-    static final public String APPLICATION_NAME = "SkyLiveWallpaper";
+    static final private String TAG = "LiveWallpaper";
 
     static private LiveWallpaper currentInstance;
 
@@ -57,7 +57,7 @@ public class LiveWallpaper extends Application implements LocationListener
 
         if (bestRetrievedLocation != null)
         {
-            Log.i(APPLICATION_NAME, "Last known user's location has been retrieved: " + bestRetrievedLocation.getLongitude() + ", " + bestRetrievedLocation.getLatitude());
+            Log.i(TAG, "Last known user's location has been retrieved: " + bestRetrievedLocation.getLongitude() + ", " + bestRetrievedLocation.getLatitude());
 
             setCurrentLocation(bestRetrievedLocation);
         }
@@ -90,7 +90,7 @@ public class LiveWallpaper extends Application implements LocationListener
 
         isDailyAlarmSet = true;
 
-        Log.i(LiveWallpaper.APPLICATION_NAME, "Daily alarm has been set correctly!");
+        Log.i(TAG, "Daily alarm has been set correctly!");
     }
 
     public LiveWallpaper()
@@ -115,7 +115,7 @@ public class LiveWallpaper extends Application implements LocationListener
             }
             else
             {
-                Log.e(APPLICATION_NAME, "Permission denied to access user's location!");
+                Log.e(TAG, "Permission denied to access user's location!");
 
                 // TODO: Require premissions...
             }
@@ -157,7 +157,7 @@ public class LiveWallpaper extends Application implements LocationListener
 
             if ((currentLocation.getLatitude() != latitude) && (currentLocation.getLongitude() != longitude))
             {
-                Log.i(APPLICATION_NAME, "User location has been updated: " + latitude + ", " + longitude);
+                Log.i(TAG, "User location has been updated: " + latitude + ", " + longitude);
 
                 setCurrentLocation(location);
 

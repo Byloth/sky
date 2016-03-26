@@ -19,6 +19,8 @@ final public class SunTimesUpdater
     static final private int RISING_TIME = 6;
     static final private int SETTING_TIME = 18;
 
+    static final private String TAG = "SunTimesUpdater";
+
     static final public float OFFICIAL_ZENITH = 90.5f;
     static final public float CIVIL_ZENITH = 96;
     static final public float NAUTICAL_ZENITH = 102;
@@ -109,11 +111,11 @@ final public class SunTimesUpdater
 
         if (localHourAngle > 1)
         {
-            Log.i(LiveWallpaper.APPLICATION_NAME, "Today, the Sun will never rising...");
+            Log.i(TAG, "Today, the Sun will never rising...");
         }
         else if (localHourAngle < -1)
         {
-            Log.i(LiveWallpaper.APPLICATION_NAME, "Today, the Sun will never setting...");
+            Log.i(TAG, "Today, the Sun will never setting...");
         }
 
         switch (timeType)
@@ -199,30 +201,41 @@ final public class SunTimesUpdater
         onSunTimesUpdateListener = onSunTimesUpdateListenerInstance;
     }
 
-    static public void updateSunTimes()
+    static public boolean updateSunTimes()
     {
-        Calendar now = Calendar.getInstance();
-        TimeZone timeZone = now.getTimeZone();
-
         Location currentLocation = LiveWallpaper.getInstance().getCurrentLocation();
 
-        Bundle parametersBundle = new Bundle();
-
-        parametersBundle.putInt("day_of_year", now.get(Calendar.DAY_OF_YEAR));
-        parametersBundle.putInt("time_zone_offset", timeZone.getRawOffset());
-
-        parametersBundle.putDouble("latitude", currentLocation.getLatitude());
-        parametersBundle.putDouble("longitude", currentLocation.getLongitude());
-
-        Bundle risingTimeValues = updateRisingTimes(parametersBundle);
-        Bundle settingTimeValues = updateSettingTimes(parametersBundle);
-
-        if (onSunTimesUpdateListener != null)
+        if (currentLocation != null)
         {
-            onSunTimesUpdateListener.onUpdate(risingTimeValues, settingTimeValues);
-        }
+            Calendar now = Calendar.getInstance();
+            TimeZone timeZone = now.getTimeZone();
 
-        Log.i(LiveWallpaper.APPLICATION_NAME, "Today's rising / setting times have been updated!");
+            Bundle parametersBundle = new Bundle();
+
+            parametersBundle.putInt("day_of_year", now.get(Calendar.DAY_OF_YEAR));
+            parametersBundle.putInt("time_zone_offset", timeZone.getRawOffset());
+
+            parametersBundle.putDouble("latitude", currentLocation.getLatitude());
+            parametersBundle.putDouble("longitude", currentLocation.getLongitude());
+
+            Bundle risingTimeValues = updateRisingTimes(parametersBundle);
+            Bundle settingTimeValues = updateSettingTimes(parametersBundle);
+
+            if (onSunTimesUpdateListener != null)
+            {
+                onSunTimesUpdateListener.onUpdate(risingTimeValues, settingTimeValues);
+            }
+
+            Log.i(TAG, "Today's rising / setting times have been updated!");
+
+            return true;
+        }
+        else
+        {
+            Log.e(TAG, "Cannot update today's rising / setting times: current user's location is not initialized!");
+
+            return false;
+        }
     }
 
     private SunTimesUpdater() { }

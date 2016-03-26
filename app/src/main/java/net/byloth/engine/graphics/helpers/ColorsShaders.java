@@ -9,7 +9,7 @@ final public class ColorsShaders
 {
     static final public int MIN_SHADING_RATIO = 0;
     static final public int MAX_SHADING_RATIO = 1;
-    
+
     private ColorsShaders() { }
 
     static public Color alphaBlend(Color startingColor, float shadingRatio, Color finalColor)

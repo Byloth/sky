@@ -7,9 +7,11 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +34,7 @@ import net.byloth.sky.fragments.SummaryFragment;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     static final private int PERMISSION_REQUEST_LOCATION = 1;
+    static final private String TAG = "MainActivity";
 
     private Fragment currentFragment;
 
@@ -101,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         toggle = new ActionBarDrawerToggle( this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
 
-        drawerLayout.setDrawerListener(toggle);
+        drawerLayout.addDrawerListener(toggle);
 
         toggle.syncState();
 
@@ -118,9 +121,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             {
                 view.startAnimation(clockwiseRotation);
 
-                Intent forceUpdateIntent = new Intent("net.byloth.sky.activities.FORCE_UPDATE");
-
-                sendBroadcast(forceUpdateIntent);
+                sendBroadcast(new Intent("net.byloth.sky.activities.FORCE_UPDATE"));
             }
         });
 
@@ -258,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             default:
-                Log.w(LiveWallpaper.APPLICATION_NAME, "Oh, oh! Something went fu***n' wrong!");
+                Log.w(TAG, "Oh, oh! Something went fu***n' wrong!");
 
                 break;
         }

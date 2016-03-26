@@ -19,6 +19,8 @@ import net.byloth.sky.updaters.SunTimesUpdater;
  */
 public class WallpaperDrawer extends WallpaperService
 {
+    static final private String TAG = "WallpaperDrawer";
+
     @Override
     public Engine onCreateEngine()
     {
@@ -59,11 +61,11 @@ public class WallpaperDrawer extends WallpaperService
                 {
                     sky.reinitializeColors();
 
-                    Log.i(LiveWallpaper.APPLICATION_NAME, "Wallpaper's colors have just been updated!");
+                    Log.i(TAG, "Wallpaper's colors have just been updated!");
                 }
             });
 
-            Log.i(LiveWallpaper.APPLICATION_NAME, "Wallpaper is now live!");
+            Log.i(TAG, "Wallpaper is now live!");
         }
 
         private void draw(Canvas canvas)
@@ -88,7 +90,7 @@ public class WallpaperDrawer extends WallpaperService
                 }
                 else
                 {
-                    Log.e(LiveWallpaper.APPLICATION_NAME, "Wallpaper was NOT drawn correctly!");
+                    Log.e(TAG, "Wallpaper was NOT drawn correctly!");
                 }
             }
             catch (Exception e)
@@ -103,7 +105,7 @@ public class WallpaperDrawer extends WallpaperService
                 }
                 else
                 {
-                    Log.e(LiveWallpaper.APPLICATION_NAME, "Canvas was NOT unlocked correctly!");
+                    Log.e(TAG, "Canvas was NOT unlocked correctly!");
                 }
             }
 
@@ -120,7 +122,7 @@ public class WallpaperDrawer extends WallpaperService
 
             sky = new Sky(width, height, dayTime, getApplicationContext());
 
-            Log.i(LiveWallpaper.APPLICATION_NAME, "SurfaceHolder has changed: " + width + "x" + height);
+            Log.i(TAG, "SurfaceHolder has changed: " + width + "x" + height);
         }
         @Override
         public void onSurfaceDestroyed(SurfaceHolder surfaceHolder)
@@ -129,7 +131,7 @@ public class WallpaperDrawer extends WallpaperService
 
             drawingHandler.removeCallbacks(drawRunner);
 
-            Log.i(LiveWallpaper.APPLICATION_NAME, "Wallpaper has been destroyed!");
+            Log.i(TAG, "Wallpaper has been destroyed!");
         }
 
         @Override
