@@ -59,36 +59,16 @@ public class GLSky
     public void draw(float[] mvpMatrix)
     {
         GLES20.glUseProgram(program);
-        GLES2Compiler.checkOperationError("glUseProgram");
-
 
         int positionHandle = GLES20.glGetAttribLocation(program, "vPosition");
-        GLES2Compiler.checkOperationError("glGetAttribLocation");
-
         GLES20.glEnableVertexAttribArray(positionHandle);
-        GLES2Compiler.checkOperationError("glEnableVertexAttribArray");
-
         GLES20.glVertexAttribPointer(positionHandle, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, vertexBuffer);
-        GLES2Compiler.checkOperationError("glVertexAttribPointer");
-
 
         int colorHandle = GLES20.glGetUniformLocation(program, "vColor");
-        GLES2Compiler.checkOperationError("glGetUniformLocation");
-
-        GLES20.glUniform4fv(colorHandle, 1, new float[] { 0.2f, 0.709803922f, 0.898039216f, 1.0f }, 0);
-        GLES2Compiler.checkOperationError("glUniform4fv");
-
-
-        int mvpMatrixHandle = GLES20.glGetUniformLocation(program, "uMVPMatrix");
-        GLES2Compiler.checkOperationError("glGetUniformLocation");
-
-        GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
-        GLES2Compiler.checkOperationError("glUniformMatrix4fv");
+        GLES20.glUniform4fv(colorHandle, 1, new float[] { 0.0f, 1.0f, 0.0f, 1.0f }, 0);
 
         GLES20.glDrawElements(GLES10.GL_TRIANGLES, COORDS_DRAW_ORDER.length, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
-        GLES2Compiler.checkOperationError("glDrawElements");
 
         GLES20.glDisableVertexAttribArray(positionHandle);
-        GLES2Compiler.checkOperationError("glDisableVertexAttribArray");
     }
 }

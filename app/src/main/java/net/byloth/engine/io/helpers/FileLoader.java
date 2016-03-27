@@ -12,8 +12,6 @@ import java.io.InputStreamReader;
  */
 final public class FileLoader
 {
-    static final private String TAG = "FileLoader";
-
     private FileLoader() { }
 
     static public String loadTextResource(Context context, int resourceId)

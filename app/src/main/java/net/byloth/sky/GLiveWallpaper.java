@@ -43,7 +43,10 @@ public class GLiveWallpaper extends GLES2WallpaperService
         @Override
         public void onSurfaceChanged(GL10 gl, int width, int height)
         {
+            float ratio = ((float) width) / height;
+
             GLES20.glViewport(0, 0, width, height);
+            Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
 
             Log.d(LiveWallpaper.APPLICATION_NAME, "Surface changed!");
         }
