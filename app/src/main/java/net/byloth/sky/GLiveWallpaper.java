@@ -30,15 +30,12 @@ public class GLiveWallpaper extends GLES2WallpaperService
 
         private GLSky sky;
 
-        public Renderer()
-        {
-            sky = new GLSky(GLiveWallpaper.this);
-        }
-
         @Override
         public void onSurfaceCreated(GL10 gl, EGLConfig config)
         {
             GLES20.glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+
+            sky = new GLSky(GLiveWallpaper.this);
 
             Log.d(LiveWallpaper.APPLICATION_NAME, "Surface created!");
         }

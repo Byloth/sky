@@ -53,15 +53,7 @@ public class GLSky
         drawListBuffer.put(COORDS_DRAW_ORDER);
         drawListBuffer.position(0);
 
-        int vertexShader = GLES2Compiler.compileShader(GLES20.GL_VERTEX_SHADER, context, R.raw.sky_vertex_shader);
-        int fragmentShader = GLES2Compiler.compileShader(GLES20.GL_FRAGMENT_SHADER, context, R.raw.sky_fragment_shader);
-
-        program = GLES20.glCreateProgram();
-
-        GLES20.glAttachShader(program, vertexShader);
-        GLES20.glAttachShader(program, fragmentShader);
-
-        GLES20.glLinkProgram(program);
+        program = GLES2Compiler.linkProgram(context, R.raw.sky_vertex_shader, R.raw.sky_fragment_shader);
     }
 
     public void draw(float[] mvpMatrix)

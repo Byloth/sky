@@ -1,4 +1,4 @@
-package net.byloth.engine.graphics.opengl.helpers;
+package net.byloth.engine.io.helpers;
 
 import android.content.Context;
 
@@ -10,11 +10,11 @@ import java.io.InputStreamReader;
 /**
  * Created by Matteo on 26/03/2016.
  */
-final public class GLES2Loader
+final public class FileLoader
 {
-    static final private String TAG = "GLES2Loader";
+    static final private String TAG = "FileLoader";
 
-    private GLES2Loader() { }
+    private FileLoader() { }
 
     static public String loadTextResource(Context context, int resourceId)
     {
