@@ -22,10 +22,10 @@ public class GLSky
 
     final private float COORDS[] = {
 
-         0.5f, -0.5f, 0.0f,
-         0.5f,  0.5f, 0.0f,
-        -0.5f,  0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f
+         1.0f,  1.0f, 0.0f,
+        -1.0f,  1.0f, 0.0f,
+        -1.0f, -1.0f, 0.0f,
+         1.0f, -1.0f, 0.0f
     };
     final private short COORDS_DRAW_ORDER[] = { 0, 1, 2, 0, 2, 3 };
 
@@ -60,14 +60,21 @@ public class GLSky
     {
         GLES20.glUseProgram(program);
 
-        int positionHandle = GLES20.glGetAttribLocation(program, "vPosition");
+        int positionHandle = GLES20.glGetAttribLocation(program, "position");
         GLES20.glEnableVertexAttribArray(positionHandle);
         GLES20.glVertexAttribPointer(positionHandle, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, vertexBuffer);
 
-        int colorHandle = GLES20.glGetUniformLocation(program, "vColor");
-        GLES20.glUniform4fv(colorHandle, 1, new float[] { 0.0f, 1.0f, 0.0f, 1.0f }, 0);
+        int screenResolutionHandle = GLES20.glGetUniformLocation(program, "screenResolution");
+        GLES20.glUniform2fv(screenResolutionHandle, 1, new float[] { 1080f, 1920f }, 0);
 
-        GLES20.glDrawElements(GLES10.GL_TRIANGLES, COORDS_DRAW_ORDER.length, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
+        int topColorHandle = GLES20.glGetUniformLocation(program, "topColor");
+        GLES20.glUniform3fv(topColorHandle, 1, new float[] { 1.0f, 0.0f, 0.0f }, 0);
+        int middleColorHandle = GLES20.glGetUniformLocation(program, "middleColor");
+        GLES20.glUniform3fv(middleColorHandle, 1, new float[] { 0.0f, 1.0f, 0.0f }, 0);
+        int bottomColorHandle = GLES20.glGetUniformLocation(program, "bottomColor");
+        GLES20.glUniform3fv(bottomColorHandle, 1, new float[] { 0.0f, 0.0f, 1.0f }, 0);
+
+        GLES20.glDrawElements(GLES10.GL_TRIANGLE_FAN, COORDS_DRAW_ORDER.length, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
 
         GLES20.glDisableVertexAttribArray(positionHandle);
     }
