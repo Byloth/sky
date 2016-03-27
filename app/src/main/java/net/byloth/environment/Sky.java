@@ -1,7 +1,6 @@
 package net.byloth.environment;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
@@ -13,8 +12,7 @@ import net.byloth.engine.DayTime;
 import net.byloth.engine.graphics.Color;
 import net.byloth.engine.graphics.TimedColor;
 import net.byloth.engine.graphics.TimedShader;
-import net.byloth.sky.LiveWallpaper;
-import net.byloth.sky.updaters.SunUpdater;
+import net.byloth.sky.updaters.SunTimesUpdater;
 
 /**
  * Created by Matteo on 10/10/2015.
@@ -64,11 +62,11 @@ public class Sky extends View
 
     private void initializeColors()
     {
-        int officialSunriseTime = SunUpdater.getOfficialSunriseTime();
-        int astronomicalSunriseTime = SunUpdater.getAstronomicalSunriseTime();
+        int officialSunriseTime = SunTimesUpdater.getOfficialSunriseTime();
+        int astronomicalSunriseTime = SunTimesUpdater.getAstronomicalSunriseTime();
 
-        int officialSunsetTime = SunUpdater.getOfficialSunsetTime();
-        int astronomicalSunsetTime = SunUpdater.getAstronomicalSunsetTime();
+        int officialSunsetTime = SunTimesUpdater.getOfficialSunsetTime();
+        int astronomicalSunsetTime = SunTimesUpdater.getAstronomicalSunsetTime();
 
         int startDayTime = officialSunriseTime + (officialSunriseTime - astronomicalSunriseTime);
         int endDayTime = officialSunsetTime + (officialSunsetTime - astronomicalSunsetTime);

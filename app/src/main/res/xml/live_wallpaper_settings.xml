@@ -9,13 +9,14 @@
         android:title="@string/performance_settings_title">
 
         <net.byloth.engine.ui.NumberPickerPreference
-            android:defaultValue="1000"
+            android:defaultValue="60"
             android:key="frameInterval"
             android:negativeButtonText=""
             android:positiveButtonText=""
-            android:title="@string/frame_interval_pref_title"
-            byloth:maxValue="10000"
-            byloth:minValue="0" />
+            android:title="@string/frame_per_second_pref_title"
+            byloth:minValue="5"
+            byloth:maxValue="120"
+            byloth:step="5" />
 
         <net.byloth.engine.ui.NumberPickerPreference
             android:defaultValue="250"
@@ -23,8 +24,9 @@
             android:negativeButtonText=""
             android:positiveButtonText=""
             android:title="@string/stars_number_pref_title"
+            byloth:minValue="0"
             byloth:maxValue="1000"
-            byloth:minValue="0" />
+            byloth:step="25" />
 
     </PreferenceCategory>
 

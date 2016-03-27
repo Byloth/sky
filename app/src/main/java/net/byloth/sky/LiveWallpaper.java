@@ -1,183 +1,185 @@
 package net.byloth.sky;
 
+import android.Manifest;
 import android.app.AlarmManager;
+import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.service.wallpaper.WallpaperService;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
 
-import net.byloth.engine.DayTime;
-import net.byloth.environment.Sky;
-import net.byloth.sky.updaters.LocationUpdater;
-import net.byloth.sky.updaters.SunUpdater;
+import net.byloth.sky.components.DailyAlarmReceiver;
+
+import java.util.List;
 
 /**
- * Created by Matteo on 10/10/2015.
+ * Created by Matteo on 02/03/16.
  */
-public class LiveWallpaper extends WallpaperService
+public class LiveWallpaper extends Application implements LocationListener
 {
-    static final public String APPLICATION_NAME = "SkyLiveWallpaper";
+    static final private String TAG = "LiveWallpaper";
 
-    private LocationUpdater locationUpdater;
-    private SunUpdater sunUpdater;
+    static private LiveWallpaper currentInstance;
+
+    private boolean isDailyAlarmSet;
+
+    private Location currentLocation;
+    private OnLocationUpdateListener onLocationUpdateListener;
+
+    static public LiveWallpaper getInstance()
+    {
+        return currentInstance;
+    }
+
+    private void getLastKnownLocation(LocationManager locationManager) throws SecurityException
+    {
+        Location bestRetrievedLocation = null;
+        List<String> providers = locationManager.getProviders(true);
+
+        for (String provider : providers)
+        {
+            Location location = locationManager.getLastKnownLocation(provider);
+
+            if (location != null)
+            {
+                if ((bestRetrievedLocation == null) || (location.getAccuracy() < bestRetrievedLocation.getAccuracy()))
+                {
+                    bestRetrievedLocation = location;
+                }
+            }
+        }
+
+        if (bestRetrievedLocation != null)
+        {
+            Log.i(TAG, "Last known user's location has been retrieved: " + bestRetrievedLocation.getLongitude() + ", " + bestRetrievedLocation.getLatitude());
+
+            setCurrentLocation(bestRetrievedLocation);
+        }
+    }
+
+    private void requestLocationUpdates(LocationManager locationManager) throws SecurityException
+    {
+        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);
+    }
+
+    private void setCurrentLocation(Location location)
+    {
+        currentLocation = location;
+
+        if (isDailyAlarmSet == false)
+        {
+            setDailyAlarm();
+        }
+    }
+
+    private void setDailyAlarm()
+    {
+        Intent intent = new Intent(this, DailyAlarmReceiver.class);
+        intent.setAction("net.byloth.sky.components.ALERT_EXPIRED");
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+
+        isDailyAlarmSet = true;
+
+        Log.i(TAG, "Daily alarm has been set correctly!");
+    }
+
+    public LiveWallpaper()
+    {
+        currentInstance = this;
+
+        isDailyAlarmSet = false;
+    }
+
+    public LiveWallpaper initializeLocationListening()
+    {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            int accessFineLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+
+            if (accessFineLocationPermission == PackageManager.PERMISSION_GRANTED)
+            {
+                getLastKnownLocation(locationManager);
+                requestLocationUpdates(locationManager);
+            }
+            else
+            {
+                Log.e(TAG, "Permission denied to access user's location!");
+
+                // TODO: Require premissions...
+            }
+        }
+        else
+        {
+            getLastKnownLocation(locationManager);
+            requestLocationUpdates(locationManager);
+        }
+
+        return this;
+    }
+
+    public Location getCurrentLocation()
+    {
+        return currentLocation;
+    }
+
+    public void setOnLocationUpdateListener(OnLocationUpdateListener onLocationUpdateListenerInstance)
+    {
+        onLocationUpdateListener = onLocationUpdateListenerInstance;
+    }
 
     @Override
     public void onCreate()
     {
-        locationUpdater = new LocationUpdater((LocationManager) getSystemService(Context.LOCATION_SERVICE), this);
-        locationUpdater.setOnLocationUpdate(new LocationUpdater.OnLocationUpdate()
-        {
-            @Override
-            public void onUpdate(double locationLatitude, double locationLongitude)
-            {
-                if (sunUpdater.isAlarmSet() == false)
-                {
-                    sunUpdater.setAlarm(AlarmManager.INTERVAL_DAY, getApplicationContext());
-                }
-            }
-        });
+        super.onCreate();
 
-        sunUpdater = new SunUpdater();
+        initializeLocationListening();
     }
 
     @Override
-    public Engine onCreateEngine()
+    public void onLocationChanged(Location location)
     {
-        return new RenderingEngine();
+        if (currentLocation.getAccuracy() < location.getAccuracy())
+        {
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+
+            if ((currentLocation.getLatitude() != latitude) && (currentLocation.getLongitude() != longitude))
+            {
+                Log.i(TAG, "User location has been updated: " + latitude + ", " + longitude);
+
+                setCurrentLocation(location);
+
+                if (onLocationUpdateListener != null)
+                {
+                    onLocationUpdateListener.onUpdate(location);
+                }
+            }
+        }
     }
 
-    private class RenderingEngine extends Engine
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) { }
+
+    @Override
+    public void onProviderEnabled(String provider) { }
+
+    @Override
+    public void onProviderDisabled(String provider) { }
+
+    public interface OnLocationUpdateListener
     {
-        private Handler drawingHandler;
-        private Runnable drawRunner;
-
-        private DayTime dayTime;
-
-        private Sky sky;
-
-        static final public int FRAME_INTERVAL = 1000;
-
-        public RenderingEngine()
-        {
-            drawingHandler = new Handler();
-            drawRunner = new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    updateWallpaper();
-                }
-            };
-
-            dayTime = new DayTime();
-
-            drawingHandler.post(drawRunner);
-
-            sunUpdater.setOnSunUpdate(new SunUpdater.OnSunUpdate()
-            {
-                @Override
-                public void onUpdate(Bundle sunUpdatedTimes)
-                {
-                    sky.reinitializeColors();
-                }
-            });
-
-            Log.i(APPLICATION_NAME, "Wallpaper is now live!");
-        }
-
-        private void draw(Canvas canvas)
-        {
-            canvas.drawColor(Color.MAGENTA);
-
-            sky.draw(canvas);
-        }
-
-        private void updateWallpaper()
-        {
-            SurfaceHolder surfaceHolder = getSurfaceHolder();
-            Canvas canvas = null;
-
-            try
-            {
-                canvas = surfaceHolder.lockCanvas();
-
-                if (canvas != null)
-                {
-                    draw(canvas);
-                }
-                else
-                {
-                    Log.e(APPLICATION_NAME, "Wallpaper was NOT drawn correctly!");
-                }
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            finally
-            {
-                if (canvas != null)
-                {
-                    surfaceHolder.unlockCanvasAndPost(canvas);
-                }
-                else
-                {
-                    Log.e(APPLICATION_NAME, "Canvas was NOT unlocked correctly!");
-                }
-            }
-
-         // Log.i(APPLICATION_NAME, "Wallpaper was updated & drawn correctly!");
-
-            drawingHandler.removeCallbacks(drawRunner);
-            drawingHandler.postDelayed(drawRunner, FRAME_INTERVAL);
-        }
-
-        @Override
-        public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height)
-        {
-            super.onSurfaceChanged(holder, format, width, height);
-
-            sky = new Sky(width, height, dayTime, getApplicationContext());
-
-            Log.i(APPLICATION_NAME, "SurfaceHolder has changed: " + width + "x" + height);
-        }
-        @Override
-        public void onSurfaceDestroyed(SurfaceHolder surfaceHolder)
-        {
-            super.onSurfaceDestroyed(surfaceHolder);
-
-            drawingHandler.removeCallbacks(drawRunner);
-
-            Log.i(APPLICATION_NAME, "Wallpaper has been destroyed!");
-        }
-
-        @Override
-        public void onTouchEvent(MotionEvent motionEvent)
-        {
-            super.onTouchEvent(motionEvent);
-        }
-
-        @Override
-        public void onVisibilityChanged(boolean isVisible)
-        {
-            super.onVisibilityChanged(isVisible);
-
-            if (isVisible == true)
-            {
-                drawingHandler.post(drawRunner);
-            }
-            else
-            {
-                drawingHandler.removeCallbacks(drawRunner);
-            }
-
-         // Log.i(APPLICATION_NAME, "Visibility has changed: " + isVisible);
-        }
+        void onUpdate(Location location);
     }
 }

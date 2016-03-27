@@ -1,11 +1,6 @@
 package net.byloth.sky.updaters;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -19,10 +14,12 @@ import net.byloth.sky.LiveWallpaper;
 /**
  * Created by Matteo on 23/10/2015.
  */
-public class SunUpdater extends BroadcastReceiver
+final public class SunTimesUpdater
 {
     static final private int RISING_TIME = 6;
     static final private int SETTING_TIME = 18;
+
+    static final private String TAG = "SunTimesUpdater";
 
     static final public float OFFICIAL_ZENITH = 90.5f;
     static final public float CIVIL_ZENITH = 96;
@@ -38,10 +35,8 @@ public class SunUpdater extends BroadcastReceiver
     static private int civilSunsetTime = 66671000;
     static private int nauticalSunsetTime = 68111000;
     static private int astronomicalSunsetTime = 69551000;
-    
-    private boolean isSet;
-    
-    private OnSunUpdate onSunUpdate;
+
+    static private OnSunTimesUpdateListener onSunTimesUpdateListener;
     
     static public int getOfficialSunriseTime()
     {
@@ -77,7 +72,7 @@ public class SunUpdater extends BroadcastReceiver
         return astronomicalSunsetTime;
     }
 
-    private void calculateDeclination(Bundle parametersBundle)
+    static private void calculateDeclination(Bundle parametersBundle)
     {
         float approximateTime = parametersBundle.getFloat("approximate_time");
 
@@ -98,7 +93,7 @@ public class SunUpdater extends BroadcastReceiver
         parametersBundle.putFloat("cosine_declination", cosineDeclination);
     }
 
-    private int calculateZenithTime(int timeType, float zenithType, Bundle inputBundle)
+    static private int calculateZenithTime(int timeType, float zenithType, Bundle inputBundle)
     {
         float timeZoneOffset = inputBundle.getInt("time_zone_offset");
 
@@ -116,11 +111,11 @@ public class SunUpdater extends BroadcastReceiver
 
         if (localHourAngle > 1)
         {
-            Log.i(LiveWallpaper.APPLICATION_NAME, "Today, the Sun will never rising...");
+            Log.i(TAG, "Today, the Sun will never rising...");
         }
         else if (localHourAngle < -1)
         {
-            Log.i(LiveWallpaper.APPLICATION_NAME, "Today, the Sun will never setting...");
+            Log.i(TAG, "Today, the Sun will never setting...");
         }
 
         switch (timeType)
@@ -141,12 +136,10 @@ public class SunUpdater extends BroadcastReceiver
 
         float utcMeanTime = Maths.adjustInRange(localMeanTime - (longitude / 15), 24);
 
-        int localTime = (int) ((utcMeanTime * 3600000) + timeZoneOffset);
-
-        return localTime;
+        return (int) ((utcMeanTime * 3600000) + timeZoneOffset);
     }
 
-    private void updateRisingTimes(Bundle inputBundle)
+    static private Bundle updateRisingTimes(Bundle inputBundle)
     {
         int dayOfYear = inputBundle.getInt("day_of_year");
         double longitude = inputBundle.getDouble("longitude");
@@ -164,8 +157,17 @@ public class SunUpdater extends BroadcastReceiver
         civilSunriseTime = calculateZenithTime(RISING_TIME, CIVIL_ZENITH, parametersBundle);
         nauticalSunriseTime = calculateZenithTime(RISING_TIME, NAUTICAL_ZENITH, parametersBundle);
         astronomicalSunriseTime = calculateZenithTime(RISING_TIME, ASTRONOMICAL_ZENITH, parametersBundle);
+
+        Bundle risingTimeValues = new Bundle();
+
+        risingTimeValues.putInt("official_sunrise_time", officialSunriseTime);
+        risingTimeValues.putInt("civil_sunrise_time", civilSunriseTime);
+        risingTimeValues.putInt("nautical_sunrise_time", nauticalSunriseTime);
+        risingTimeValues.putInt("astronomical_sunrise_time", astronomicalSunriseTime);
+
+        return risingTimeValues;
     }
-    private void updateSettingTimes(Bundle inputBundle)
+    static private Bundle updateSettingTimes(Bundle inputBundle)
     {
         int dayOfYear = inputBundle.getInt("day_of_year");
         double longitude = inputBundle.getDouble("longitude");
@@ -183,79 +185,63 @@ public class SunUpdater extends BroadcastReceiver
         civilSunsetTime = calculateZenithTime(SETTING_TIME, CIVIL_ZENITH, parametersBundle);
         nauticalSunsetTime = calculateZenithTime(SETTING_TIME, NAUTICAL_ZENITH, parametersBundle);
         astronomicalSunsetTime = calculateZenithTime(SETTING_TIME, ASTRONOMICAL_ZENITH, parametersBundle);
+
+        Bundle settingTimeValues = new Bundle();
+
+        settingTimeValues.putInt("official_sunset_time", officialSunsetTime);
+        settingTimeValues.putInt("civil_sunset_time", civilSunsetTime);
+        settingTimeValues.putInt("nautical_sunset_time", nauticalSunsetTime);
+        settingTimeValues.putInt("astronomical_sunset_time", astronomicalSunsetTime);
+
+        return settingTimeValues;
     }
 
-    public SunUpdater()
+    static public void setOnSunTimesUpdateListener(OnSunTimesUpdateListener onSunTimesUpdateListenerInstance)
     {
-        isSet = false;
+        onSunTimesUpdateListener = onSunTimesUpdateListenerInstance;
     }
 
-    public SunUpdater setAlarm(long repeatingInterval, Context context)
+    static public boolean updateSunTimes()
     {
-        Intent intent = new Intent(context, SunUpdater.class);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        Location currentLocation = LiveWallpaper.getInstance().getCurrentLocation();
 
-        alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), repeatingInterval, pendingIntent);
-
-        isSet = true;
-
-        Log.i(LiveWallpaper.APPLICATION_NAME, "SunUpdater's alarm has been set correctly!");
-
-        return this;
-    }
-
-    public boolean isAlarmSet()
-    {
-        return isSet;
-    }
-    
-    public SunUpdater setOnSunUpdate(OnSunUpdate onSunUpdateInstance)
-    {
-        onSunUpdate = onSunUpdateInstance;
-
-        return this;
-    }
-
-    @Override
-    public void onReceive(Context context, Intent intent)
-    {
-        Calendar now = Calendar.getInstance();
-        TimeZone timeZone = now.getTimeZone();
-
-        Bundle parametersBundle = new Bundle();
-
-        parametersBundle.putInt("day_of_year", now.get(Calendar.DAY_OF_YEAR));
-        parametersBundle.putInt("time_zone_offset", timeZone.getRawOffset());
-        parametersBundle.putDouble("latitude", LocationUpdater.getLatitude());
-        parametersBundle.putDouble("longitude", LocationUpdater.getLongitude());
-
-        updateRisingTimes(parametersBundle);
-        updateSettingTimes(parametersBundle);
-        
-        if (onSunUpdate != null)
+        if (currentLocation != null)
         {
-            Bundle sunUpdatedTimes = new Bundle();
+            Calendar now = Calendar.getInstance();
+            TimeZone timeZone = now.getTimeZone();
 
-            sunUpdatedTimes.putInt("official_sunrise_time", officialSunriseTime);
-            sunUpdatedTimes.putInt("civil_sunrise_time", civilSunriseTime);
-            sunUpdatedTimes.putInt("nautical_sunrise_time", nauticalSunriseTime);
-            sunUpdatedTimes.putInt("astronomical_sunrise_time", astronomicalSunriseTime);
+            Bundle parametersBundle = new Bundle();
 
-            sunUpdatedTimes.putInt("official_sunset_time", officialSunsetTime);
-            sunUpdatedTimes.putInt("civil_sunset_time", civilSunsetTime);
-            sunUpdatedTimes.putInt("nautical_sunset_time", nauticalSunsetTime);
-            sunUpdatedTimes.putInt("astronomical_sunset_time", astronomicalSunsetTime);
+            parametersBundle.putInt("day_of_year", now.get(Calendar.DAY_OF_YEAR));
+            parametersBundle.putInt("time_zone_offset", timeZone.getRawOffset());
 
-            onSunUpdate.onUpdate(sunUpdatedTimes);
+            parametersBundle.putDouble("latitude", currentLocation.getLatitude());
+            parametersBundle.putDouble("longitude", currentLocation.getLongitude());
+
+            Bundle risingTimeValues = updateRisingTimes(parametersBundle);
+            Bundle settingTimeValues = updateSettingTimes(parametersBundle);
+
+            if (onSunTimesUpdateListener != null)
+            {
+                onSunTimesUpdateListener.onUpdate(risingTimeValues, settingTimeValues);
+            }
+
+            Log.i(TAG, "Today's rising / setting times have been updated!");
+
+            return true;
         }
+        else
+        {
+            Log.e(TAG, "Cannot update today's rising / setting times: current user's location is not initialized!");
 
-        Log.i(LiveWallpaper.APPLICATION_NAME, "Today's rising / setting time have been updated!");
-        Toast.makeText(context, "\t\tLe ore di alba e tramonto\nodierne sono state aggiornate!", Toast.LENGTH_LONG).show();
+            return false;
+        }
     }
-    
-    public interface OnSunUpdate
+
+    private SunTimesUpdater() { }
+
+    public interface OnSunTimesUpdateListener
     {
-        void onUpdate(Bundle sunUpdatedTimes);
+        void onUpdate(Bundle risingTimeValues, Bundle settingTimeValues);
     }
 }

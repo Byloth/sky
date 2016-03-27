@@ -9,7 +9,7 @@
     tools:context="net.byloth.sky.fragments.SummaryFragment">
 
     <LinearLayout android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
@@ -41,7 +41,7 @@
                 android:id="@+id/lat_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0.0"
+                android:text="@string/default_lat_lng_value"
                 android:textAppearance="@style/MyAppTheme.TextAppearance" />
 
         </LinearLayout>
@@ -65,7 +65,7 @@
                 android:id="@+id/lng_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0.0"
+                android:text="@string/default_lat_lng_value"
                 android:textAppearance="@style/MyAppTheme.TextAppearance" />
 
         </LinearLayout>
@@ -104,7 +104,7 @@
                     android:id="@+id/official_rising_time_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="00:00"
+                    android:text="@string/default_time_value"
                     android:textAppearance="@style/MyAppTheme.TextAppearance" />
 
             </LinearLayout>
@@ -129,7 +129,7 @@
                     android:id="@+id/civil_rising_time_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="00:00"
+                    android:text="@string/default_time_value"
                     android:textAppearance="@style/MyAppTheme.TextAppearance" />
 
             </LinearLayout>
@@ -162,7 +162,7 @@
                     android:id="@+id/nautical_rising_time_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="00:00"
+                    android:text="@string/default_time_value"
                     android:textAppearance="@style/MyAppTheme.TextAppearance" />
 
             </LinearLayout>
@@ -187,7 +187,7 @@
                     android:id="@+id/astronomical_rising_time_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="00:00"
+                    android:text="@string/default_time_value"
                     android:textAppearance="@style/MyAppTheme.TextAppearance" />
 
             </LinearLayout>
@@ -227,7 +227,7 @@
                     android:id="@+id/official_setting_time_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="00:00"
+                    android:text="@string/default_time_value"
                     android:textAppearance="@style/MyAppTheme.TextAppearance" />
 
             </LinearLayout>
@@ -252,7 +252,7 @@
                     android:id="@+id/civil_setting_time_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="00:00"
+                    android:text="@string/default_time_value"
                     android:textAppearance="@style/MyAppTheme.TextAppearance" />
 
             </LinearLayout>
@@ -285,7 +285,7 @@
                     android:id="@+id/nautical_setting_time_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="00:00"
+                    android:text="@string/default_time_value"
                     android:textAppearance="@style/MyAppTheme.TextAppearance" />
 
             </LinearLayout>
@@ -310,7 +310,7 @@
                     android:id="@+id/astronomical_setting_time_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="00:00"
+                    android:text="@string/default_time_value"
                     android:textAppearance="@style/MyAppTheme.TextAppearance" />
 
             </LinearLayout>

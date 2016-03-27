@@ -1,7 +1,10 @@
-.gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
+# File e cartelle create dall'editor.
+/.gradle
+/.idea
 /build
 /captures
+/local.properties
+
+# File e cartelle create dal sistema operativo.
+.DS_Store
+Thumbs.db

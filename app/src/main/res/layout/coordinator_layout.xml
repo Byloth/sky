@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="net.byloth.sky.MainActivity">
+    tools:context=".activities.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -25,11 +25,22 @@
     <include layout="@layout/main_content_layout" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/update_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email" />
+        android:visibility="gone"
+        android:src="@drawable/ic_autorenew_white_24dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/localization_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_my_location_white_24dp"
+        android:visibility="gone"
+        app:backgroundTint="@color/red_dark" />
 
 </android.support.design.widget.CoordinatorLayout>
