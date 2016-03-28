@@ -19,6 +19,34 @@ import net.byloth.sky.updaters.SunTimesUpdater;
  */
 public class Sky extends View
 {
+    static final public Color[] SUNRISE_COLORS = new Color[] {
+
+        new Color(91, 130, 194),
+        new Color(214, 193, 255),
+        new Color(255, 183, 185)
+    };
+
+    static final public Color[] DAY_COLORS = new Color[] {
+
+        new Color(83, 153, 255),
+        new Color(157, 197, 252),
+        new Color(195, 219, 255)
+    };
+
+    static final public Color[] SUNSET_COLORS = new Color[] {
+
+        new Color(58, 125, 206),
+        new Color(217, 150, 148),
+        new Color(255, 102, 0)
+    };
+
+    static final public Color[] NIGHT_COLORS = new Color[] {
+
+        new Color(0, 0, 0),
+        new Color(0, 9, 17),
+        new Color(0, 13, 25)
+    };
+
     private int canvasWidth;
     private int canvasHeight;
 
@@ -31,34 +59,6 @@ public class Sky extends View
     private TimedShader[] timedShaders;
 
     private RectF position;
-
-    static final public Color[] sunriseColors = new Color[]
-    {
-        new Color(91, 130, 194),
-        new Color(214, 193, 255),
-        new Color(255, 183, 185)
-    };
-
-    static final public Color[] dayColors = new Color[]
-    {
-        new Color(83, 153, 255),
-        new Color(157, 197, 252),
-        new Color(195, 219, 255)
-    };
-
-    static final public Color[] sunsetColors = new Color[]
-    {
-        new Color(58, 125, 206),
-        new Color(217, 150, 148),
-        new Color(255, 102, 0)
-    };
-
-    static final public Color[] nightColors = new Color[]
-    {
-        new Color(0, 0, 0),
-        new Color(0, 9, 17),
-        new Color(0, 13, 25)
-    };
 
     private void initializeColors()
     {
@@ -75,30 +75,30 @@ public class Sky extends View
         {
             new TimedShader(new TimedColor[]
             {
-                new TimedColor(astronomicalSunriseTime, nightColors[0]),
-                new TimedColor(officialSunriseTime, sunriseColors[0]),
-                new TimedColor(startDayTime, dayColors[0]),
-                new TimedColor(endDayTime, dayColors[0]),
-                new TimedColor(officialSunsetTime, sunsetColors[0]),
-                new TimedColor(astronomicalSunsetTime, nightColors[0])
+                new TimedColor(astronomicalSunriseTime, NIGHT_COLORS[0]),
+                new TimedColor(officialSunriseTime, SUNRISE_COLORS[0]),
+                new TimedColor(startDayTime, DAY_COLORS[0]),
+                new TimedColor(endDayTime, DAY_COLORS[0]),
+                new TimedColor(officialSunsetTime, SUNSET_COLORS[0]),
+                new TimedColor(astronomicalSunsetTime, NIGHT_COLORS[0])
             }),
             new TimedShader(new TimedColor[]
             {
-                new TimedColor(astronomicalSunriseTime, nightColors[1]),
-                new TimedColor(officialSunriseTime, sunriseColors[1]),
-                new TimedColor(startDayTime, dayColors[1]),
-                new TimedColor(endDayTime, dayColors[1]),
-                new TimedColor(officialSunsetTime, sunsetColors[1]),
-                new TimedColor(astronomicalSunsetTime, nightColors[1])
+                new TimedColor(astronomicalSunriseTime, NIGHT_COLORS[1]),
+                new TimedColor(officialSunriseTime, SUNRISE_COLORS[1]),
+                new TimedColor(startDayTime, DAY_COLORS[1]),
+                new TimedColor(endDayTime, DAY_COLORS[1]),
+                new TimedColor(officialSunsetTime, SUNSET_COLORS[1]),
+                new TimedColor(astronomicalSunsetTime, NIGHT_COLORS[1])
             }),
             new TimedShader(new TimedColor[]
             {
-                new TimedColor(astronomicalSunriseTime, nightColors[2]),
-                new TimedColor(officialSunriseTime, sunriseColors[2]),
-                new TimedColor(startDayTime, dayColors[2]),
-                new TimedColor(endDayTime, dayColors[2]),
-                new TimedColor(officialSunsetTime, sunsetColors[2]),
-                new TimedColor(astronomicalSunsetTime, nightColors[2])
+                new TimedColor(astronomicalSunriseTime, NIGHT_COLORS[2]),
+                new TimedColor(officialSunriseTime, SUNRISE_COLORS[2]),
+                new TimedColor(startDayTime, DAY_COLORS[2]),
+                new TimedColor(endDayTime, DAY_COLORS[2]),
+                new TimedColor(officialSunsetTime, SUNSET_COLORS[2]),
+                new TimedColor(astronomicalSunsetTime, NIGHT_COLORS[2])
             })
         };
     }

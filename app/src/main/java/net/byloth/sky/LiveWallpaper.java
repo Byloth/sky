@@ -6,12 +6,14 @@ import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import net.byloth.sky.components.DailyAlarmReceiver;
@@ -132,6 +134,11 @@ public class LiveWallpaper extends Application implements LocationListener
     public Location getCurrentLocation()
     {
         return currentLocation;
+    }
+
+    public SharedPreferences getSharedPreferences()
+    {
+        return PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     public void setOnLocationUpdateListener(OnLocationUpdateListener onLocationUpdateListenerInstance)

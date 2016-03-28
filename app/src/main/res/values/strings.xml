@@ -23,10 +23,14 @@
 
     <string name="performance_settings_title">Prestazioni ed ottimizzazione</string>
         <string name="frame_per_second_pref_title">Frame di aggiornamento per secondo</string>
+            <string name="frame_per_second_pref_key">frame_per_second_pref</string>
+
         <string name="stars_number_pref_title">Numero di stelle a schermo</string>
+            <string name="stars_number_pref_key">stars_number_pref</string>
 
     <string name="developer_settings_title">Impostazioni da sviluppatore</string>
         <string name="enable_debug_mode_pref_title">Attiva la modalità debug</string>
+            <string name="enable_debug_mode_pref_key">enable_debug_mode_pref</string>
 
     <string name="drawer_open">Apri il menù laterale</string>
     <string name="drawer_close">Chiudi il menù laterale</string>

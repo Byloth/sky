@@ -9,8 +9,8 @@
         android:title="@string/performance_settings_title">
 
         <net.byloth.engine.ui.NumberPickerPreference
-            android:defaultValue="60"
-            android:key="frameInterval"
+            android:defaultValue="30"
+            android:key="@string/frame_per_second_pref_key"
             android:negativeButtonText=""
             android:positiveButtonText=""
             android:title="@string/frame_per_second_pref_title"
@@ -20,7 +20,7 @@
 
         <net.byloth.engine.ui.NumberPickerPreference
             android:defaultValue="250"
-            android:key="numberOfStars"
+            android:key="@string/stars_number_pref_key"
             android:negativeButtonText=""
             android:positiveButtonText=""
             android:title="@string/stars_number_pref_title"
@@ -36,7 +36,7 @@
 
         <SwitchPreference
             android:defaultValue="false"
-            android:key="isDebugging"
+            android:key="@string/enable_debug_mode_pref_key"
             android:title="@string/enable_debug_mode_pref_title" />
 
     </PreferenceCategory>

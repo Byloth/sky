@@ -5,6 +5,7 @@ import android.opengl.GLES10;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
+import net.byloth.engine.graphics.Color;
 import net.byloth.engine.graphics.opengl.helpers.GLES2Compiler;
 import net.byloth.sky.R;
 
@@ -18,6 +19,34 @@ import java.nio.ShortBuffer;
  */
 public class GLSky
 {
+    static final public Color[] SUNRISE_COLORS = new Color[] {
+
+        new Color(91, 130, 194),
+        new Color(214, 193, 255),
+        new Color(255, 183, 185)
+    };
+
+    static final public Color[] DAY_COLORS = new Color[] {
+
+        new Color(83, 153, 255),
+        new Color(157, 197, 252),
+        new Color(195, 219, 255)
+    };
+
+    static final public Color[] SUNSET_COLORS = new Color[] {
+
+        new Color(58, 125, 206),
+        new Color(217, 150, 148),
+        new Color(255, 102, 0)
+    };
+
+    static final public Color[] NIGHT_COLORS = new Color[] {
+
+        new Color(0, 0, 0),
+        new Color(0, 9, 17),
+        new Color(0, 13, 25)
+    };
+
     final private int COORDS_PER_VERTEX = 3;
 
     final private float COORDS[] = {
