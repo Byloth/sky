@@ -9,13 +9,16 @@ import net.byloth.engine.helpers.Maths;
  */
 public class TimedShader
 {
+    private Color currentColor;
     private TimedColor[] timedColors;
 
-    public TimedShader(TimedColor[] timedColors)
+    public TimedShader(TimedColor[] timedColorsValues)
     {
-        if (timedColors.length > 1)
+        if (timedColorsValues.length > 1)
         {
-            this.timedColors = timedColors;
+            currentColor = new Color();
+
+            timedColors = timedColorsValues;
         }
         else
         {
@@ -49,7 +52,12 @@ public class TimedShader
         return index;
     }
 
-    public Color getCurrentColor(int currentTime)
+    public Color getCurrentColor()
+    {
+        return currentColor;
+    }
+
+    public Color updateCurrentColor(int currentTime)
     {
         boolean endToBeginning = false;
 
@@ -70,7 +78,7 @@ public class TimedShader
 
         if ((firstTimedColor.equals(secondTimedColor) == true) || (firstTimedColor.getTime() == currentTime))
         {
-            return firstTimedColor.getColor();
+            currentColor = firstTimedColor.getColor();
         }
         else
         {
@@ -91,7 +99,13 @@ public class TimedShader
 
             shadingRatio = Maths.proportion(totalTimeSpan, ColorsShaders.MAX_SHADING_RATIO, currentTimeSpan);
 
-            return ColorsShaders.alphaBlend(firstTimedColor.getColor(), shadingRatio, secondTimedColor.getColor());
+            currentColor = ColorsShaders.alphaBlend(firstTimedColor.getColor(), shadingRatio, secondTimedColor.getColor());
         }
+
+        return currentColor;
+    }
+    public Color updateCurrentColor(DayTime currentDayTime)
+    {
+        return updateCurrentColor(currentDayTime.getMilliseconds());
     }
 }

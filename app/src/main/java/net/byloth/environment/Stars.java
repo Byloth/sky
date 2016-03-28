@@ -89,7 +89,7 @@ public class Stars extends View
     {
         super.onDraw(canvas);
 
-        int currentAlpha = timedShader.getCurrentColor(dayTime.getMilliseconds()).getAlpha();
+        int currentAlpha = timedShader.updateCurrentColor(dayTime.getMilliseconds()).getAlpha();
 
         paint.setAlpha(currentAlpha);
 

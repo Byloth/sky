@@ -1,4 +1,4 @@
-#version 120
+#version 100
 
 // Precisione di calcolo, da parte della GPU, dei "float".
 //

@@ -7,6 +7,7 @@ import android.opengl.Matrix;
 import android.os.Handler;
 import android.util.Log;
 
+import net.byloth.engine.DayTime;
 import net.byloth.engine.graphics.opengl.GLES2WallpaperService;
 import net.byloth.environment.GLSky;
 import net.byloth.sky.LiveWallpaper;
@@ -23,6 +24,11 @@ public class GLWallpaperDrawer extends GLES2WallpaperService
     static final private String TAG = "GLWallpaperDrawer";
 
     private GLSky sky;
+
+    public GLWallpaperDrawer()
+    {
+        sky = new GLSky();
+    }
 
     @Override
     protected GLSurfaceView.Renderer getNewRenderer()
@@ -43,11 +49,13 @@ public class GLWallpaperDrawer extends GLES2WallpaperService
         private Handler updatingHandler;
         private Runnable updateRunner;
 
+        private DayTime dayTime;
+
         private void updateFrame()
         {
-            // TODO: Terminare questa implementazione.
+            sky.update(dayTime);
 
-            Log.d(TAG, "Frame updated!");
+            // Log.d(TAG, "Frame updated!");
         }
 
         public GLWallpaperUpdateEngine()
@@ -67,11 +75,13 @@ public class GLWallpaperDrawer extends GLES2WallpaperService
                     updateFrame();
 
                     updatingHandler.removeCallbacks(updateRunner);
-                    updatingHandler.postDelayed(updateRunner, frameInterval);
+                    // updatingHandler.postDelayed(updateRunner, frameInterval);
                 }
             };
 
             updatingHandler.post(updateRunner);
+
+            dayTime = new DayTime();
         }
 
         @Override
@@ -101,8 +111,6 @@ public class GLWallpaperDrawer extends GLES2WallpaperService
         {
             GLES20.glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 
-            sky = new GLSky(GLWallpaperDrawer.this);
-
             Log.d(TAG, "Surface created!");
         }
 
@@ -114,6 +122,8 @@ public class GLWallpaperDrawer extends GLES2WallpaperService
             GLES20.glViewport(0, 0, width, height);
 
             Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
+
+            sky.load(GLWallpaperDrawer.this);
 
             Log.d(TAG, "Surface changed!");
         }

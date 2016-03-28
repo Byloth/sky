@@ -125,6 +125,17 @@ public class Color
     {
         return android.graphics.Color.argb(alpha, red, green, blue);
     }
+    
+    public float[] toFloat()
+    {
+        return new float[] {
+
+            ((float) red) / MAX_VALUE,
+            ((float) green) / MAX_VALUE,
+            ((float) blue) / MAX_VALUE,
+            ((float) alpha) / MAX_VALUE    
+        };
+    }
 
     @Override
     public boolean equals(Object otherColor)

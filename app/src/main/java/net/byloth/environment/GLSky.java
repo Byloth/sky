@@ -3,11 +3,14 @@ package net.byloth.environment;
 import android.content.Context;
 import android.opengl.GLES10;
 import android.opengl.GLES20;
-import android.opengl.GLSurfaceView;
 
+import net.byloth.engine.DayTime;
 import net.byloth.engine.graphics.Color;
+import net.byloth.engine.graphics.TimedColor;
+import net.byloth.engine.graphics.TimedShader;
 import net.byloth.engine.graphics.opengl.helpers.GLES2Compiler;
 import net.byloth.sky.R;
+import net.byloth.sky.updaters.SunTimesUpdater;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -66,7 +69,52 @@ public class GLSky
     private FloatBuffer vertexBuffer;
     private ShortBuffer drawListBuffer;
 
-    public GLSky(Context context)
+    private TimedShader[] timedShaders;
+
+    private void initializeColors()
+    {
+        int officialSunriseTime = SunTimesUpdater.getOfficialSunriseTime();
+        int astronomicalSunriseTime = SunTimesUpdater.getAstronomicalSunriseTime();
+
+        int officialSunsetTime = SunTimesUpdater.getOfficialSunsetTime();
+        int astronomicalSunsetTime = SunTimesUpdater.getAstronomicalSunsetTime();
+
+        int startDayTime = officialSunriseTime + (officialSunriseTime - astronomicalSunriseTime);
+        int endDayTime = officialSunsetTime + (officialSunsetTime - astronomicalSunsetTime);
+
+        timedShaders = new TimedShader[] {
+
+            new TimedShader(new TimedColor[] {
+
+                new TimedColor(astronomicalSunriseTime, NIGHT_COLORS[0]),
+                new TimedColor(officialSunriseTime, SUNRISE_COLORS[0]),
+                new TimedColor(startDayTime, DAY_COLORS[0]),
+                new TimedColor(endDayTime, DAY_COLORS[0]),
+                new TimedColor(officialSunsetTime, SUNSET_COLORS[0]),
+                new TimedColor(astronomicalSunsetTime, NIGHT_COLORS[0])
+            }),
+            new TimedShader(new TimedColor[] {
+
+                new TimedColor(astronomicalSunriseTime, NIGHT_COLORS[1]),
+                new TimedColor(officialSunriseTime, SUNRISE_COLORS[1]),
+                new TimedColor(startDayTime, DAY_COLORS[1]),
+                new TimedColor(endDayTime, DAY_COLORS[1]),
+                new TimedColor(officialSunsetTime, SUNSET_COLORS[1]),
+                new TimedColor(astronomicalSunsetTime, NIGHT_COLORS[1])
+            }),
+            new TimedShader(new TimedColor[] {
+
+                new TimedColor(astronomicalSunriseTime, NIGHT_COLORS[2]),
+                new TimedColor(officialSunriseTime, SUNRISE_COLORS[2]),
+                new TimedColor(startDayTime, DAY_COLORS[2]),
+                new TimedColor(endDayTime, DAY_COLORS[2]),
+                new TimedColor(officialSunsetTime, SUNSET_COLORS[2]),
+                new TimedColor(astronomicalSunsetTime, NIGHT_COLORS[2])
+            })
+        };
+    }
+
+    public GLSky()
     {
         ByteBuffer coordsByteBuffer = ByteBuffer.allocateDirect(COORDS.length * 4);
         coordsByteBuffer.order(ByteOrder.nativeOrder());
@@ -82,7 +130,7 @@ public class GLSky
         drawListBuffer.put(COORDS_DRAW_ORDER);
         drawListBuffer.position(0);
 
-        program = GLES2Compiler.linkProgram(context, R.raw.sky_vertex_shader, R.raw.sky_fragment_shader);
+        initializeColors();
     }
 
     public void draw(float[] mvpMatrix)
@@ -97,14 +145,32 @@ public class GLSky
         GLES20.glUniform2fv(screenResolutionHandle, 1, new float[] { 1080f, 1920f }, 0);
 
         int topColorHandle = GLES20.glGetUniformLocation(program, "topColor");
-        GLES20.glUniform3fv(topColorHandle, 1, new float[] { 1.0f, 0.0f, 0.0f }, 0);
+        GLES20.glUniform3fv(topColorHandle, 1, timedShaders[0].getCurrentColor().toFloat(), 0);
         int middleColorHandle = GLES20.glGetUniformLocation(program, "middleColor");
-        GLES20.glUniform3fv(middleColorHandle, 1, new float[] { 0.0f, 1.0f, 0.0f }, 0);
+        GLES20.glUniform3fv(middleColorHandle, 1, timedShaders[1].getCurrentColor().toFloat(), 0);
         int bottomColorHandle = GLES20.glGetUniformLocation(program, "bottomColor");
-        GLES20.glUniform3fv(bottomColorHandle, 1, new float[] { 0.0f, 0.0f, 1.0f }, 0);
+        GLES20.glUniform3fv(bottomColorHandle, 1, timedShaders[2].getCurrentColor().toFloat(), 0);
 
         GLES20.glDrawElements(GLES10.GL_TRIANGLE_FAN, COORDS_DRAW_ORDER.length, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
 
         GLES20.glDisableVertexAttribArray(positionHandle);
+    }
+
+    public void load(Context context)
+    {
+        program = GLES2Compiler.linkProgram(context, R.raw.sky_vertex_shader, R.raw.sky_fragment_shader);
+    }
+
+    public void reinitializeColors()
+    {
+        initializeColors();
+    }
+
+    public void update(DayTime currentTime)
+    {
+        for (TimedShader timedShader : timedShaders)
+        {
+            timedShader.updateCurrentColor(currentTime);
+        }
     }
 }

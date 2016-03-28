@@ -71,10 +71,10 @@ public class Sky extends View
         int startDayTime = officialSunriseTime + (officialSunriseTime - astronomicalSunriseTime);
         int endDayTime = officialSunsetTime + (officialSunsetTime - astronomicalSunsetTime);
 
-        timedShaders = new TimedShader[]
-        {
-            new TimedShader(new TimedColor[]
-            {
+        timedShaders = new TimedShader[] {
+
+            new TimedShader(new TimedColor[] {
+
                 new TimedColor(astronomicalSunriseTime, NIGHT_COLORS[0]),
                 new TimedColor(officialSunriseTime, SUNRISE_COLORS[0]),
                 new TimedColor(startDayTime, DAY_COLORS[0]),
@@ -82,8 +82,8 @@ public class Sky extends View
                 new TimedColor(officialSunsetTime, SUNSET_COLORS[0]),
                 new TimedColor(astronomicalSunsetTime, NIGHT_COLORS[0])
             }),
-            new TimedShader(new TimedColor[]
-            {
+            new TimedShader(new TimedColor[] {
+
                 new TimedColor(astronomicalSunriseTime, NIGHT_COLORS[1]),
                 new TimedColor(officialSunriseTime, SUNRISE_COLORS[1]),
                 new TimedColor(startDayTime, DAY_COLORS[1]),
@@ -91,8 +91,8 @@ public class Sky extends View
                 new TimedColor(officialSunsetTime, SUNSET_COLORS[1]),
                 new TimedColor(astronomicalSunsetTime, NIGHT_COLORS[1])
             }),
-            new TimedShader(new TimedColor[]
-            {
+            new TimedShader(new TimedColor[] {
+
                 new TimedColor(astronomicalSunriseTime, NIGHT_COLORS[2]),
                 new TimedColor(officialSunriseTime, SUNRISE_COLORS[2]),
                 new TimedColor(startDayTime, DAY_COLORS[2]),
@@ -140,9 +140,9 @@ public class Sky extends View
 
         int currentColors[] = new int[]
         {
-            timedShaders[0].getCurrentColor(currentMilliseconds).toInt(),
-            timedShaders[1].getCurrentColor(currentMilliseconds).toInt(),
-            timedShaders[2].getCurrentColor(currentMilliseconds).toInt()
+            timedShaders[0].updateCurrentColor(currentMilliseconds).toInt(),
+            timedShaders[1].updateCurrentColor(currentMilliseconds).toInt(),
+            timedShaders[2].updateCurrentColor(currentMilliseconds).toInt()
         };
 
         LinearGradient linearGradient = new LinearGradient(0, 0, 0, canvasHeight, currentColors, new float[] { 0, 0.666f, 1 }, Shader.TileMode.CLAMP);
