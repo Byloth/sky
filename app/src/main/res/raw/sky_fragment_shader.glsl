@@ -41,10 +41,10 @@ void main() // Tipo di ritorno: "vec4"
         firstColor = middleColor;
         secondColor = topColor;
 
-        colorWeight = (y - middleValue) / (1 - middleValue);
+        colorWeight = (y - middleValue) / (1.0 - middleValue);
     }
 
-    finalColor = firstColor * (1 - colorWeight) + secondColor * colorWeight;
+    finalColor = firstColor * (1.0 - colorWeight) + secondColor * colorWeight;
 
     gl_FragColor = vec4(finalColor, 1.0);
 
