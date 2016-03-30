@@ -157,7 +157,11 @@ public class LiveWallpaper extends Application implements LocationListener
     @Override
     public void onLocationChanged(Location location)
     {
-        if (currentLocation.getAccuracy() < location.getAccuracy())
+        if (currentLocation == null)
+        {
+            currentLocation = location;
+        }
+        else if (currentLocation.getAccuracy() < location.getAccuracy())
         {
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
