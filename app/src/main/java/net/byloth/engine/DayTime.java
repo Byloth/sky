@@ -53,7 +53,7 @@ public class DayTime
     }
 
     /*
-     * TODO: Remove this funckin' method!
+     * TODO: Remove this fuckin' method!
      */
     public void addMilliseconds(int incrementValue)
     {

@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
@@ -12,6 +13,7 @@ import net.byloth.engine.graphics.opengl.GLES2WallpaperService;
 import net.byloth.environment.GLSky;
 import net.byloth.sky.LiveWallpaper;
 import net.byloth.sky.R;
+import net.byloth.sky.updaters.SunTimesUpdater;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -28,6 +30,17 @@ public class GLWallpaperDrawer extends GLES2WallpaperService
     public GLWallpaperDrawer()
     {
         sky = new GLSky();
+
+        SunTimesUpdater.setOnSunTimesUpdateListener(new SunTimesUpdater.OnSunTimesUpdateListener()
+        {
+            @Override
+            public void onUpdate(Bundle risingTimeValues, Bundle settingTimeValues)
+            {
+                sky.reinitializeColors();
+
+                Log.i(TAG, "Wallpaper's colors have just been updated!");
+            }
+        });
     }
 
     @Override
@@ -67,8 +80,8 @@ public class GLWallpaperDrawer extends GLES2WallpaperService
             frameInterval = 1000 / framePerSecond;
 
             updatingHandler = new Handler();
-            updateRunner = new Runnable()
-            {
+            updateRunner = new Runnable() {
+
                 @Override
                 public void run()
                 {

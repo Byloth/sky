@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 import net.byloth.engine.helpers.Maths;
@@ -207,13 +208,16 @@ final public class SunTimesUpdater
 
         if (currentLocation != null)
         {
-            Calendar now = Calendar.getInstance();
-            TimeZone timeZone = now.getTimeZone();
+            Date date = new Date();
+            Calendar calendar = Calendar.getInstance();
+            TimeZone timeZone = TimeZone.getDefault();
+
+            int offsetFromUtc = timeZone.getOffset(date.getTime());
 
             Bundle parametersBundle = new Bundle();
 
-            parametersBundle.putInt("day_of_year", now.get(Calendar.DAY_OF_YEAR));
-            parametersBundle.putInt("time_zone_offset", timeZone.getRawOffset());
+            parametersBundle.putInt("day_of_year", calendar.get(Calendar.DAY_OF_YEAR));
+            parametersBundle.putInt("time_zone_offset", offsetFromUtc);
 
             parametersBundle.putDouble("latitude", currentLocation.getLatitude());
             parametersBundle.putDouble("longitude", currentLocation.getLongitude());
