@@ -80,8 +80,8 @@ public class GLWallpaperDrawer extends GLES2WallpaperService
             frameInterval = 1000 / framePerSecond;
 
             updatingHandler = new Handler();
-            updateRunner = new Runnable() {
-
+            updateRunner = new Runnable()
+            {
                 @Override
                 public void run()
                 {

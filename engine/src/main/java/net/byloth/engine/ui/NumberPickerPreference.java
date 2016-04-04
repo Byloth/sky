@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.NumberPicker;
 
-import net.byloth.sky.R;
+import net.byloth.engine.R;
 
 /**
  * Created by Matteo on 19/11/2015.
