@@ -14,6 +14,16 @@ public class JulianDate
 
     double julianDay;
 
+    private double getJulianEphemerisDay(double timeDelta)
+    {
+        return (julianDay + timeDelta) / 86400.0d;
+    }
+
+    private double getJulianEphemerisCentury(double timeDelta)
+    {
+        return (getJulianEphemerisDay(timeDelta) - 2451545.0d) / 36525.0d;
+    }
+
     public JulianDate()
     {
         this(Calendar.getInstance());
@@ -48,5 +58,22 @@ public class JulianDate
 
             julianDay += (2 - a) + Maths.roundDown(a / 4);
         }
+
+        // julianEphemerisMillennium = getJulianEphemerisCentury(timeDelta) / 10.0d; // TODO: Time Delta = 0?
+    }
+
+    public float getJulianDay()
+    {
+        return ((float) julianDay);
+    }
+
+    public float getJulianCentury()
+    {
+        return ((float) ((julianDay - 2451545.0d) / 36525.0d));
+    }
+
+    public float getJulianEphemerisMillennium(double timeDelta)
+    {
+        return ((float) (getJulianEphemerisCentury(timeDelta) / 10.0d));
     }
 }
