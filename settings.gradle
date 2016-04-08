@@ -1,1 +1,1 @@
-include ':sky', ':engine'
+include ':sky', ':engine', ':spa'
