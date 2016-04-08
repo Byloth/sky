@@ -104,6 +104,11 @@ final public class Maths
         }
     }
 
+    static public float squareRoot(double value)
+    {
+        return (float) Math.sqrt(value);
+    }
+
     static public float toDegrees(double radiansAngle)
     {
         return (float) Math.toDegrees(radiansAngle);
