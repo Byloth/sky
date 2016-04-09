@@ -2,7 +2,7 @@ package net.byloth.engine.utils;
 
 import android.location.Location;
 
-import net.byloth.engine.helpers.HighPrecisionMaths;
+import net.byloth.engine.helpers.Maths;
 
 import java.util.Calendar;
 
@@ -48,7 +48,7 @@ public class SunTime
 
     static private double computeGeometricSunMeanLongitude(double julianDayTime)
     {
-        return HighPrecisionMaths.adjustInRange(280.46646d + (julianDayTime * (36000.76983d + (julianDayTime * 0.0003032d))), 360);
+        return Maths.adjustInRange(280.46646d + (julianDayTime * (36000.76983d + (julianDayTime * 0.0003032d))), 360, double.class);
     }
 
     static private double computeObliquityCorrection(double julianDayTime)
