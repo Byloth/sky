@@ -9,9 +9,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
-import net.byloth.engine.DayTime;
+import net.byloth.engine.utils.DayTime;
 import net.byloth.environment.Sky;
-import net.byloth.sky.LiveWallpaper;
 import net.byloth.sky.updaters.SunTimesUpdater;
 
 /**

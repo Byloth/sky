@@ -1,6 +1,6 @@
 package net.byloth.engine.graphics;
 
-import net.byloth.engine.DayTime;
+import net.byloth.engine.utils.DayTime;
 import net.byloth.engine.graphics.helpers.ColorsShaders;
 import net.byloth.engine.helpers.Maths;
 

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.opengl.GLES10;
 import android.opengl.GLES20;
 
-import net.byloth.engine.DayTime;
+import net.byloth.engine.utils.DayTime;
 import net.byloth.engine.graphics.Color;
 import net.byloth.engine.graphics.TimedColor;
 import net.byloth.engine.graphics.TimedShader;

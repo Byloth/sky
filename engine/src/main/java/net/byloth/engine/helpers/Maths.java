@@ -6,7 +6,7 @@ package net.byloth.engine.helpers;
 final public class Maths
 {
     static final public float MAX_DEGREES = 360;
-    static final public float MAX_RADIANS = (float) (2 * Math.PI);
+    static final public float MAX_RADIANS = (float) (HighPrecisionMaths.MAX_RADIANS);
 
     static final public float PI = (float) Math.PI;
 
@@ -14,33 +14,11 @@ final public class Maths
 
     static public float adjustInRange(double value, double maximumValue)
     {
-        return adjustInRange(value, 0, maximumValue);
+        return (float) HighPrecisionMaths.adjustInRange(value, 0, maximumValue);
     }
     static public float adjustInRange(double value, double minimumValue, double maximumValue)
     {
-        if (minimumValue <= maximumValue)
-        {
-            if (value < minimumValue)
-            {
-                value += maximumValue;
-
-                return adjustInRange(value, minimumValue, maximumValue);
-            }
-            else if (value >= maximumValue)
-            {
-                value -= maximumValue;
-
-                return adjustInRange(value, minimumValue, maximumValue);
-            }
-            else
-            {
-                return (float) value;
-            }
-        }
-        else
-        {
-            throw new IllegalArgumentException();
-        }
+        return (float) HighPrecisionMaths.adjustInRange(value, minimumValue, maximumValue);
     }
 
     static public float arcSine(double value)
@@ -89,19 +67,12 @@ final public class Maths
 
     static public float hypotenuse(double cathetus1, double cathetus2)
     {
-        return (float) Math.sqrt(Math.pow(cathetus1, 2) + Math.pow(cathetus2, 2));
+        return (float) HighPrecisionMaths.hypotenuse(cathetus1, cathetus2);
     }
 
     static public float proportion(double absoluteMaximum, double relativeMaximum, double absolutePartial)
     {
-        if (absoluteMaximum != 0)
-        {
-            return (float) ((absolutePartial * relativeMaximum) / absoluteMaximum);
-        }
-        else
-        {
-            throw new IllegalArgumentException();
-        }
+        return (float) HighPrecisionMaths.proportion(absoluteMaximum, relativeMaximum, absolutePartial);
     }
 
     static public float squareRoot(double value)

@@ -9,7 +9,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.View;
 
-import net.byloth.engine.DayTime;
+import net.byloth.engine.utils.DayTime;
 import net.byloth.engine.helpers.Randomize;
 import net.byloth.engine.graphics.Color;
 import net.byloth.engine.graphics.TimedColor;

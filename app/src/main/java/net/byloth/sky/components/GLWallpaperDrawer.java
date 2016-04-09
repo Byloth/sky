@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
-import net.byloth.engine.DayTime;
+import net.byloth.engine.utils.DayTime;
 import net.byloth.engine.graphics.opengl.GLES2WallpaperService;
 import net.byloth.environment.GLSky;
 import net.byloth.sky.LiveWallpaper;

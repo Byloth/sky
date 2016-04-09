@@ -1,4 +1,4 @@
-package net.byloth.engine;
+package net.byloth.engine.utils;
 
 import java.util.Calendar;
 
@@ -31,9 +31,11 @@ public class DayTime
 
     public DayTime()
     {
-        Calendar now = Calendar.getInstance();
-
-        timeOffset = now.get(Calendar.ZONE_OFFSET) + now.get(Calendar.DST_OFFSET);
+        this(Calendar.getInstance());
+    }
+    public DayTime(Calendar calendar)
+    {
+        timeOffset = calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET);
     }
 
     public int getMilliseconds()
@@ -50,13 +52,5 @@ public class DayTime
     public float toRadians()
     {
         return getMilliseconds() * RADIANS_UNIT;
-    }
-
-    /*
-     * TODO: Remove this fuckin' method!
-     */
-    public void addMilliseconds(int incrementValue)
-    {
-        timeOffset = (timeOffset + incrementValue) % (MAX_VALUE + 1);
     }
 }

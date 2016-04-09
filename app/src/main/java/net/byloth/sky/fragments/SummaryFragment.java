@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import net.byloth.engine.DayTime;
+import net.byloth.engine.utils.DayTime;
 import net.byloth.sky.LiveWallpaper;
 import net.byloth.sky.R;
 import net.byloth.sky.updaters.SunTimesUpdater;

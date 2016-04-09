@@ -12,7 +12,7 @@ import android.view.SurfaceHolder;
  */
 abstract public class GLES2WallpaperService extends GLWallpaperService
 {
-    private static final String TAG = "GLES2WallpaperService";
+    static final private String TAG = "GLES2WallpaperService";
 
     abstract protected GLSurfaceView.Renderer getNewRenderer();
 

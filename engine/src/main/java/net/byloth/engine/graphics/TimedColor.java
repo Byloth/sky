@@ -1,6 +1,6 @@
 package net.byloth.engine.graphics;
 
-import net.byloth.engine.DayTime;
+import net.byloth.engine.utils.DayTime;
 
 /**
  * Created by Matteo on 10/10/2015.
