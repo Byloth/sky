@@ -5,6 +5,9 @@ package net.byloth.engine.helpers;
  */
 final public class Maths
 {
+    static final public int DEGREES = 1;
+    static final public int RADIANS = 2;
+
     static final public float MAX_DEGREES = 360;
     static final public float MAX_RADIANS = (float) (Math.PI * 2);
 
@@ -12,19 +15,35 @@ final public class Maths
 
     private Maths() { }
 
-    static public float adjustInRange(double value, double maximumValue)
+    static private double checkInputType(double value, int returnType)
     {
-        return Maths.adjustInRange(value, 0, maximumValue, float.class);
+        if (returnType == DEGREES)
+        {
+            return Math.toRadians(value);
+        }
+        else
+        {
+            return value;
+        }
     }
-    static public float adjustInRange(double value, double minimumValue, double maximumValue)
+
+    static private double checkReturnType(double value, int returnType)
     {
-        return Maths.adjustInRange(value, minimumValue, maximumValue, float.class);
+        if (returnType == DEGREES)
+        {
+            return Math.toDegrees(value);
+        }
+        else
+        {
+            return value;
+        }
     }
-    static public <NumericType extends Number> NumericType adjustInRange(double value, double maximumValue, Class<NumericType> returnType)
+
+    static public double adjustInRange(double value, double maximumValue)
     {
-        return Maths.adjustInRange(value, 0, maximumValue, returnType);
+        return Maths.adjustInRange(value, 0, maximumValue);
     }
-    static public <NumericType extends Number> NumericType adjustInRange(double value, double minimumValue, double maximumValue, Class<NumericType> returnType)
+    static public double adjustInRange(double value, double minimumValue, double maximumValue)
     {
         if (minimumValue <= maximumValue)
         {
@@ -32,17 +51,17 @@ final public class Maths
             {
                 value += maximumValue;
 
-                return returnType.cast(adjustInRange(value, minimumValue, maximumValue));
+                return adjustInRange(value, minimumValue, maximumValue);
             }
             else if (value >= maximumValue)
             {
                 value -= maximumValue;
 
-                return returnType.cast(adjustInRange(value, minimumValue, maximumValue));
+                return adjustInRange(value, minimumValue, maximumValue);
             }
             else
             {
-                return returnType.cast(value);
+                return value;
             }
         }
         else
@@ -51,21 +70,48 @@ final public class Maths
         }
     }
 
-    static public float arcSine(double value)
+    static public double arcSine(double value)
     {
-        return (float) Math.asin(value);
+        return Maths.arcSine(value, RADIANS);
     }
-    static public float arcCosine(double value)
+    static public double arcSine(double value, int returnType)
     {
-        return (float) Math.acos(value);
+        double arcSine = Math.asin(value);
+
+        return checkReturnType(arcSine, returnType);
     }
-    static public float arcTangent(double value)
+
+    static public double arcCosine(double value)
     {
-        return (float) Math.atan(value);
+        return arcCosine(value, RADIANS);
     }
-    static public float arcTangent(double coordinateX, double coordinateY)
+    static public double arcCosine(double value, int returnType)
     {
-        return (float) Math.atan2(coordinateY, coordinateX);
+        double arcCosine = Math.acos(value);
+
+        return checkReturnType(arcCosine, returnType);
+    }
+
+    static public double arcTangent(double value)
+    {
+        return arcTangent(value, RADIANS);
+    }
+    static public double arcTangent(double value, int returnType)
+    {
+        double arcTangent = Math.atan(value);
+
+        return checkReturnType(arcTangent, returnType);
+    }
+
+    static public double arcTangent(double coordinateX, double coordinateY)
+    {
+        return arcTangent(coordinateX, coordinateY, RADIANS);
+    }
+    static public double arcTangent(double coordinateX, double coordinateY, int returnType)
+    {
+        double arcTangent = Math.atan2(coordinateY, coordinateX);
+
+        return checkReturnType(arcTangent, returnType);
     }
 
     static public int roundUp(double value)
@@ -82,37 +128,49 @@ final public class Maths
         return ((dividend % divisor) == 0);
     }
 
-    static public float sine(double radiansAngle)
+    static public double sine(double radiansAngle)
     {
-        return (float) Math.sin(radiansAngle);
+        return sine(radiansAngle, RADIANS);
     }
-    static public float cosine(double radiansAngle)
+    static public double sine(double value, int inputType)
     {
-        return (float) Math.cos(radiansAngle);
-    }
-    static public float tangent(double radiansAngle)
-    {
-        return (float) Math.tan(radiansAngle);
+        double angle = checkInputType(value, inputType);
+
+        return Math.sin(angle);
     }
 
-    static public float hypotenuse(double cathetus1, double cathetus2)
+    static public double cosine(double radiansAngle)
     {
-        return Maths.hypotenuse(cathetus1, cathetus2, float.class);
+        return cosine(radiansAngle, RADIANS);
     }
-    static public <NumericType extends Number> NumericType hypotenuse(double cathetus1, double cathetus2, Class<NumericType> returnType)
+    static public double cosine(double value, int inputType)
     {
-        return returnType.cast(Math.sqrt(Math.pow(cathetus1, 2) + Math.pow(cathetus2, 2)));
+        double angle = checkInputType(value, inputType);
+
+        return Math.cos(angle);
     }
 
-    static public float proportion(double absoluteMaximum, double relativeMaximum, double absolutePartial)
+    static public double tangent(double radiansAngle)
     {
-        return Maths.proportion(absoluteMaximum, relativeMaximum, absolutePartial, float.class);
+        return tangent(radiansAngle, RADIANS);
     }
-    static public <NumericType extends Number> NumericType proportion(double absoluteMaximum, double relativeMaximum, double absolutePartial, Class<NumericType> returnType)
+    static public double tangent(double value, int inputType)
+    {
+        double angle = checkInputType(value, inputType);
+
+        return Math.tan(angle);
+    }
+
+    static public double hypotenuse(double cathetus1, double cathetus2)
+    {
+        return Math.sqrt(Math.pow(cathetus1, 2) + Math.pow(cathetus2, 2));
+    }
+
+    static public double proportion(double absoluteMaximum, double relativeMaximum, double absolutePartial)
     {
         if (absoluteMaximum != 0)
         {
-            return returnType.cast((absolutePartial * relativeMaximum) / absoluteMaximum);
+            return (absolutePartial * relativeMaximum) / absoluteMaximum;
         }
         else
         {
@@ -120,17 +178,18 @@ final public class Maths
         }
     }
 
-    static public float squareRoot(double value)
-    {
-        return (float) Math.sqrt(value);
-    }
+//    static public float squareRoot(double value)
+//    {
+//        return (float) Math.sqrt(value);
+//    }
 
-    static public float toDegrees(double radiansAngle)
-    {
-        return (float) Math.toDegrees(radiansAngle);
-    }
-    static public float toRadians(double degreesAngle)
-    {
-        return (float) Math.toRadians(degreesAngle);
-    }
+//    static public float toDegrees(double radiansAngle)
+//    {
+//        return (float) Math.toDegrees(radiansAngle);
+//    }
+
+//    static public float toRadians(double degreesAngle)
+//    {
+//        return (float) Math.toRadians(degreesAngle);
+//    }
 }

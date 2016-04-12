@@ -12,7 +12,7 @@ final public class ColorsShaders
 
     private ColorsShaders() { }
 
-    static public Color alphaBlend(Color startingColor, float shadingRatio, Color finalColor)
+    static public Color alphaBlend(Color startingColor, double shadingRatio, Color finalColor)
     {
         if ((shadingRatio >= MIN_SHADING_RATIO) && (shadingRatio <= MAX_SHADING_RATIO))
         {

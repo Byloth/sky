@@ -82,10 +82,10 @@ public class TimedShader
         }
         else
         {
-            float totalTimeSpan = secondTimedColor.getTime() - firstTimedColor.getTime();
-            float currentTimeSpan = currentTime - firstTimedColor.getTime();
+            int totalTimeSpan = secondTimedColor.getTime() - firstTimedColor.getTime();
+            int currentTimeSpan = currentTime - firstTimedColor.getTime();
 
-            float shadingRatio;
+            double shadingRatio;
 
             if (endToBeginning == true)
             {

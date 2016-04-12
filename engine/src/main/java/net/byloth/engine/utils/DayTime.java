@@ -9,7 +9,7 @@ import net.byloth.engine.helpers.Maths;
  */
 public class DayTime
 {
-    private long timeOffset;
+    private long timeZoneOffset;
 
     static final public int MIN_VALUE = 0;
     static final public int MAX_VALUE = 86400000;
@@ -35,14 +35,14 @@ public class DayTime
     }
     public DayTime(Calendar calendar)
     {
-        timeOffset = calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET);
+        timeZoneOffset = calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET);
     }
 
     public int getMilliseconds()
     {
         Calendar now = Calendar.getInstance();
 
-        return (int) ((now.getTimeInMillis() + timeOffset) % MAX_VALUE);
+        return (int) ((now.getTimeInMillis() + timeZoneOffset) % MAX_VALUE);
     }
 
     public float toDegrees()

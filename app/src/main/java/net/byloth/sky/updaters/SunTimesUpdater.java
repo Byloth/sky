@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import net.byloth.engine.helpers.Maths;
+import net.byloth.engine.utils.DayTime;
 import net.byloth.sky.LiveWallpaper;
 
 /**
@@ -22,10 +23,10 @@ final public class SunTimesUpdater
 
     static final private String TAG = "SunTimesUpdater";
 
-    static final public float OFFICIAL_ZENITH = 90.5f;
-    static final public float CIVIL_ZENITH = 96;
-    static final public float NAUTICAL_ZENITH = 102;
-    static final public float ASTRONOMICAL_ZENITH = 108;
+    static final public double OFFICIAL_ZENITH = 90.5f;
+    static final public double CIVIL_ZENITH = 96;
+    static final public double NAUTICAL_ZENITH = 102;
+    static final public double ASTRONOMICAL_ZENITH = 108;
     
     static private int officialSunriseTime = 21827000;
     static private int civilSunriseTime = 20591000;
@@ -75,40 +76,40 @@ final public class SunTimesUpdater
 
     static private void calculateDeclination(Bundle parametersBundle)
     {
-        float approximateTime = parametersBundle.getFloat("approximate_time");
+        double approximateTime = parametersBundle.getDouble("approximate_time");
 
-        float meanAnomaly = (0.9856f * approximateTime) - 3.289f;
-        float trueLongitude = Maths.adjustInRange(meanAnomaly + (1.916f * Maths.sine(Maths.toRadians(meanAnomaly))) + (0.02f * Maths.sine(Maths.toRadians(2 * meanAnomaly))) + 282.634f, 360);
-        float rightAscension = Maths.adjustInRange(Maths.toDegrees(Maths.arcTangent(0.91764f * Maths.tangent(Maths.toRadians(trueLongitude)))), 360);
-        float trueLongitudeQuadrant = Maths.roundDown(trueLongitude / 90) * 90;
-        float rightAscensionQuadrant = Maths.roundDown(rightAscension / 90) * 90;
+        double meanAnomaly = (0.9856f * approximateTime) - 3.289f;
+        double trueLongitude = Maths.adjustInRange(meanAnomaly + (1.916f * Maths.sine(meanAnomaly, Maths.DEGREES)) + (0.02f * Maths.sine(2 * meanAnomaly, Maths.DEGREES)) + 282.634f, 360);
+        double rightAscension = Maths.adjustInRange(Maths.arcTangent(0.91764f * Maths.tangent(trueLongitude, Maths.DEGREES), Maths.DEGREES), 360);
+        double trueLongitudeQuadrant = Maths.roundDown(trueLongitude / 90) * 90;
+        double rightAscensionQuadrant = Maths.roundDown(rightAscension / 90) * 90;
 
         rightAscension = (rightAscension + (trueLongitudeQuadrant - rightAscensionQuadrant)) / 15;
 
-        float sineDeclination = 0.39782f * Maths.sine(Maths.toRadians(trueLongitude));
-        float cosineDeclination = Maths.cosine(Maths.arcSine(sineDeclination));
+        double sineDeclination = 0.39782f * Maths.sine(trueLongitude, Maths.DEGREES);
+        double cosineDeclination = Maths.cosine(Maths.arcSine(sineDeclination));
 
-        parametersBundle.putFloat("right_ascension", rightAscension);
+        parametersBundle.putDouble("right_ascension", rightAscension);
 
-        parametersBundle.putFloat("sine_declination", sineDeclination);
-        parametersBundle.putFloat("cosine_declination", cosineDeclination);
+        parametersBundle.putDouble("sine_declination", sineDeclination);
+        parametersBundle.putDouble("cosine_declination", cosineDeclination);
     }
 
-    static private int calculateZenithTime(int timeType, float zenithType, Bundle inputBundle)
+    static private int calculateZenithTime(int timeType, double zenithType, Bundle inputBundle)
     {
-        float timeZoneOffset = inputBundle.getInt("time_zone_offset");
+        int timeZoneOffset = inputBundle.getInt("time_zone_offset");
 
         double latitude = inputBundle.getDouble("latitude");
         double longitude = inputBundle.getDouble("longitude");
 
-        float approximateTime = inputBundle.getFloat("approximate_time");
+        double approximateTime = inputBundle.getDouble("approximate_time");
 
-        float rightAscension = inputBundle.getFloat("right_ascension");
+        double rightAscension = inputBundle.getDouble("right_ascension");
 
-        float sineDeclination = inputBundle.getFloat("sine_declination");
-        float cosineDeclination = inputBundle.getFloat("cosine_declination");
+        double sineDeclination = inputBundle.getDouble("sine_declination");
+        double cosineDeclination = inputBundle.getDouble("cosine_declination");
 
-        float localHourAngle = (Maths.cosine(Maths.toRadians(zenithType)) - (sineDeclination * Maths.sine(Maths.toRadians(latitude)))) / (cosineDeclination * Maths.cosine(Maths.toRadians(latitude)));
+        double localHourAngle = (Maths.cosine(zenithType, Maths.DEGREES) - (sineDeclination * Maths.sine(latitude, Maths.DEGREES))) / (cosineDeclination * Maths.cosine(latitude, Maths.DEGREES));
 
         if (localHourAngle > 1)
         {
@@ -122,20 +123,20 @@ final public class SunTimesUpdater
         switch (timeType)
         {
             case RISING_TIME:
-                localHourAngle = (Maths.MAX_DEGREES - Maths.toDegrees(Maths.arcCosine(localHourAngle))) / 15;
+                localHourAngle = (Maths.MAX_DEGREES - Maths.arcCosine(localHourAngle, Maths.DEGREES)) / 15;
                 break;
 
             case SETTING_TIME:
-                localHourAngle = Maths.toDegrees(Maths.arcCosine(localHourAngle)) / 15;
+                localHourAngle = Maths.arcCosine(localHourAngle, Maths.DEGREES) / 15;
                 break;
 
             default:
                 throw new IllegalArgumentException();
         }
 
-        float localMeanTime = localHourAngle + rightAscension - (0.06571f * approximateTime) - 6.622f;
+        double localMeanTime = localHourAngle + rightAscension - (0.06571f * approximateTime) - 6.622f;
 
-        float utcMeanTime = Maths.adjustInRange(localMeanTime - (longitude / 15), 24);
+        double utcMeanTime = Maths.adjustInRange(localMeanTime - (longitude / 15), 24);
 
         return (int) ((utcMeanTime * 3600000) + timeZoneOffset);
     }
@@ -145,12 +146,12 @@ final public class SunTimesUpdater
         int dayOfYear = inputBundle.getInt("day_of_year");
         double longitude = inputBundle.getDouble("longitude");
 
-        float approximateTime = (float) (dayOfYear + (RISING_TIME - (longitude / 15) / 24));
+        double approximateTime = dayOfYear + (RISING_TIME - (longitude / 15) / 24);
 
         Bundle parametersBundle = new Bundle();
 
         parametersBundle.putAll(inputBundle);
-        parametersBundle.putFloat("approximate_time", approximateTime);
+        parametersBundle.putDouble("approximate_time", approximateTime);
 
         calculateDeclination(parametersBundle);
 
@@ -173,12 +174,12 @@ final public class SunTimesUpdater
         int dayOfYear = inputBundle.getInt("day_of_year");
         double longitude = inputBundle.getDouble("longitude");
 
-        float approximateTime = (float) (dayOfYear + (SETTING_TIME - (longitude / 15) / 24));
+        double approximateTime = dayOfYear + (SETTING_TIME - (longitude / 15) / 24);
 
         Bundle parametersBundle = new Bundle();
 
         parametersBundle.putAll(inputBundle);
-        parametersBundle.putFloat("approximate_time", approximateTime);
+        parametersBundle.putDouble("approximate_time", approximateTime);
 
         calculateDeclination(parametersBundle);
 
@@ -208,16 +209,14 @@ final public class SunTimesUpdater
 
         if (currentLocation != null)
         {
-            Date date = new Date();
             Calendar calendar = Calendar.getInstance();
-            TimeZone timeZone = TimeZone.getDefault();
 
-            int offsetFromUtc = timeZone.getOffset(date.getTime());
+            int timeZoneOffset = calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET);
 
             Bundle parametersBundle = new Bundle();
 
             parametersBundle.putInt("day_of_year", calendar.get(Calendar.DAY_OF_YEAR));
-            parametersBundle.putInt("time_zone_offset", offsetFromUtc);
+            parametersBundle.putInt("time_zone_offset", timeZoneOffset);
 
             parametersBundle.putDouble("latitude", currentLocation.getLatitude());
             parametersBundle.putDouble("longitude", currentLocation.getLongitude());
