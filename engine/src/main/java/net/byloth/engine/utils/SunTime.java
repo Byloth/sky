@@ -61,22 +61,37 @@ public class SunTime
         return meanObliquity + (0.00256d * Math.toRadians(omega));
     }
 
+    private double noonTime;
+
+    private JulianDate julianDate;
+
+    private void initializeNoonTime(double longitude)
+    {
+        // TODO: Capire quale metodo, tra 'julianDate.getJulianDay();' e 'julianDate.getJulianDayTime();' è più adatto.
+        double noonJulianTime = JulianDate.computeJulianCentury(julianDate.getJulianDay() + (longitude / 360));
+        double equationOfTime = computeEquationOfTime(noonJulianTime);
+
+        noonTime = (720 + (longitude * 4)) - equationOfTime;
+
+        // TODO: Capire quale metodo, tra 'julianDate.getJulianDay();' e 'julianDate.getJulianDayTime();' è più adatto.
+        noonJulianTime = JulianDate.computeJulianCentury((julianDate.getJulianDay() - 0.5d) + (noonTime / 1440));
+        equationOfTime = computeEquationOfTime(noonJulianTime);
+
+        noonTime = (720 + (longitude * 4)) - equationOfTime;
+    }
+
     public SunTime(Calendar calendar, Location location)
     {
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
 
-        JulianDate julianDate = new JulianDate(calendar);
+        julianDate = new JulianDate(calendar);
 
-        // TODO: Capire quale metodo, tra 'julianDate.getJulianDay();' e 'julianDate.getJulianDayTime();' è più adatto.
-        double noonJulianTime = JulianDate.computeJulianCentury(julianDate.getJulianDay() + (longitude / 360));
-        double equationOfTime = computeEquationOfTime(noonJulianTime);
+        initializeNoonTime(longitude);
     }
 
-/*
-    public float getNoonTime()
+    public double getNoonTime()
     {
-        // TODO: Implementare!
+        return noonTime;
     }
-*/
 }
