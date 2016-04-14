@@ -111,12 +111,23 @@ public class SunTime
         double sunriseHourAngle = ((Maths.cosine(OFFICIAL_ZENITH, Maths.DEGREES) / (Math.cos(latitude) * Math.cos(declination))) -
                                    (Math.tan(latitude) * Math.tan(declination)));
 
-        return Maths.arcCosine(sunriseHourAngle, Maths.DEGREES); // IN DEGREES!!!
+        return Maths.arcCosine(sunriseHourAngle, Maths.DEGREES);
     }
 
+    static private double sunsetHourAngle(double latitude, double declination)
+    {
+        latitude = Math.toRadians(latitude);
+        declination = Math.toRadians(declination);
+
+        double sunriseHourAngle = ((Maths.cosine(OFFICIAL_ZENITH, Maths.DEGREES) / (Math.cos(latitude) * Math.cos(declination))) -
+                                   (Math.tan(latitude) * Math.tan(declination)));
+
+        return -Maths.arcCosine(sunriseHourAngle, Maths.DEGREES);
+    }
 
     private double noonTime;
     private double sunriseTime;
+    private double sunsetTime;
 
     private JulianDate julianDate;
 
@@ -137,16 +148,19 @@ public class SunTime
 
     private void initializeSunriseTime(double latitude, double longitude)
     {
+        // TODO: Capire quale metodo, tra 'julianDate.getJulianDay();' e 'julianDate.getJulianDayTime();' è più adatto.
         double julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (noonTime / 1440));
 
         double equationOfTime = equationOfTime(julianCenturies);
         double declination = declination(julianCenturies);
 
-        double hourAngle = sunriseHourAngle(latitude, declination); // IN DEGREES!!!
+        double hourAngle = sunriseHourAngle(latitude, declination);
 
         double delta = longitude - hourAngle;
 
         julianCenturies = (720 + (delta * 4)) - equationOfTime;
+
+        // TODO: Capire quale metodo, tra 'julianDate.getJulianDay();' e 'julianDate.getJulianDayTime();' è più adatto.
         julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (julianCenturies / 1440));
 
         equationOfTime = equationOfTime(julianCenturies);
@@ -159,6 +173,37 @@ public class SunTime
         sunriseTime = (720 + (delta * 4)) - equationOfTime;
     }
 
+    private void initializeSunsetTime(double latitude, double longitude)
+    {
+        // TODO: Capire quale metodo, tra 'julianDate.getJulianDay();' e 'julianDate.getJulianDayTime();' è più adatto.
+        double julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (noonTime / 1440));
+
+        double equationOfTime = equationOfTime(julianCenturies);
+        double declination = declination(julianCenturies);
+
+        double hourAngle = sunsetHourAngle(latitude, declination);
+
+        double delta = longitude - hourAngle;
+
+        julianCenturies = (720 + (delta * 4)) - equationOfTime;
+
+        // TODO: Capire quale metodo, tra 'julianDate.getJulianDay();' e 'julianDate.getJulianDayTime();' è più adatto.
+        julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (julianCenturies / 1440));
+
+        equationOfTime = equationOfTime(julianCenturies);
+        declination = declination(julianCenturies);
+
+        hourAngle = sunsetHourAngle(latitude, declination);
+
+        delta = longitude - hourAngle;
+
+        sunsetTime = (720 + (delta * 4)) - equationOfTime;
+    }
+
+    public SunTime(Location location)
+    {
+        this(Calendar.getInstance(), location);
+    }
     public SunTime(Calendar calendar, Location location)
     {
         double latitude = location.getLatitude();
@@ -167,10 +212,22 @@ public class SunTime
         julianDate = new JulianDate(calendar);
 
         initializeNoonTime(longitude);
+        initializeSunriseTime(latitude, longitude);
+        initializeSunsetTime(latitude, longitude);
     }
 
     public double getNoonTime()
     {
         return noonTime;
+    }
+
+    public double getSunriseTime()
+    {
+        return sunriseTime;
+    }
+
+    public double getSunsetTime()
+    {
+        return sunsetTime;
     }
 }

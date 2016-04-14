@@ -16,8 +16,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import net.byloth.engine.utils.SunTime;
 import net.byloth.sky.components.DailyAlarmReceiver;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -59,7 +61,7 @@ public class LiveWallpaper extends Application implements LocationListener
 
         if (bestRetrievedLocation != null)
         {
-            Log.i(TAG, "Last known user's location has been retrieved: " + bestRetrievedLocation.getLongitude() + ", " + bestRetrievedLocation.getLatitude());
+            Log.i(TAG, "Last known user's location has been retrieved: " + bestRetrievedLocation.getLatitude() + ", " + bestRetrievedLocation.getLongitude());
 
             setCurrentLocation(bestRetrievedLocation);
         }
@@ -78,6 +80,12 @@ public class LiveWallpaper extends Application implements LocationListener
         {
             setDailyAlarm();
         }
+
+        SunTime sunTime = new SunTime(location);
+
+        Log.d(TAG, "Sunrise time: " + String.valueOf(sunTime.getSunriseTime()));
+        Log.d(TAG, "Noon time: " + String.valueOf(sunTime.getNoonTime()));
+        Log.d(TAG, "Sunset time: " + String.valueOf(sunTime.getSunsetTime()));
     }
 
     private void setDailyAlarm()
