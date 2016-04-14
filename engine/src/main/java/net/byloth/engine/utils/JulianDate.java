@@ -12,13 +12,17 @@ public class JulianDate
 {
     static final private String TAG = "JulianDate";
 
-    static public float computeJulianCentury(double julianDayTime)
+    static public double toJulianCenturies(double julianDayTime)
     {
-        return (((float) (julianDayTime)) - 2451545) / 36525;
+        return (julianDayTime - 2451545) / 36525;
+    }
+    static public double toJulianDay(double julianCenturies)
+    {
+        return (julianCenturies * 36525) + 2451545;
     }
 
-    float julianDay;
-    float julianTime;
+    private double julianDay;
+    private double julianTime;
 
     public JulianDate()
     {
@@ -26,14 +30,14 @@ public class JulianDate
     }
     public JulianDate(Calendar calendar)
     {
-        float currentTimeZoneOffset = (calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET)) / 3600000;
+        double currentTimeZoneOffset = (calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET)) / 3600000;
 
-        float year = calendar.get(Calendar.YEAR);
-        float month = calendar.get(Calendar.MONTH) + 1;
-        float day = calendar.get(Calendar.DAY_OF_MONTH);
-        float hour = calendar.get(Calendar.HOUR_OF_DAY) - currentTimeZoneOffset;
-        float minute = calendar.get(Calendar.MINUTE);
-        float second = calendar.get(Calendar.SECOND);
+        double year = calendar.get(Calendar.YEAR);
+        double month = calendar.get(Calendar.MONTH) + 1;
+        double day = calendar.get(Calendar.DAY_OF_MONTH);
+        double hour = calendar.get(Calendar.HOUR_OF_DAY) - currentTimeZoneOffset;
+        double minute = calendar.get(Calendar.MINUTE);
+        double second = calendar.get(Calendar.SECOND);
 
         if (month > 2)
         {
@@ -46,17 +50,17 @@ public class JulianDate
 
         if (julianDay > 2299160)
         {
-            float leap = Maths.roundDown(year / 100);
+            double leap = Maths.roundDown(year / 100);
 
             julianDay += (2 - leap) + Maths.roundDown(leap / 4);
         }
     }
 
-    public float getJulianDay()
+    public double getJulianDay()
     {
         return julianDay;
     }
-    public float getJulianDayTime()
+    public double getJulianDayTime()
     {
         return (julianDay + julianTime);
     }
