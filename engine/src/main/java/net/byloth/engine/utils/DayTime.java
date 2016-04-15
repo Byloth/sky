@@ -17,14 +17,14 @@ public class DayTime
     static final public float DEGREES_UNIT = Maths.MAX_DEGREES / MAX_VALUE;
     static final public float RADIANS_UNIT = Maths.MAX_RADIANS / MAX_VALUE;
 
-    public static String toString(int dayTimeValue)
+    public static String toString(double dayTimeValue)
     {
         dayTimeValue = dayTimeValue / 60000;
 
-        int minutes = dayTimeValue % 60;
+        int minutes = (int) (dayTimeValue % 60);
         dayTimeValue = dayTimeValue / 60;
 
-        int hours = dayTimeValue; // % 24
+        int hours = (int) (dayTimeValue); // % 24
 
         return String.format("%02d", hours) + ":" + String.format("%02d", minutes);
     }

@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import net.byloth.engine.utils.DayTime;
 import net.byloth.engine.utils.SunTime;
 import net.byloth.sky.components.DailyAlarmReceiver;
 
@@ -83,9 +84,9 @@ public class LiveWallpaper extends Application implements LocationListener
 
         SunTime sunTime = new SunTime(location);
 
-        Log.d(TAG, "Sunrise time: " + String.valueOf(sunTime.getSunriseTime()));
-        Log.d(TAG, "Noon time: " + String.valueOf(sunTime.getNoonTime()));
-        Log.d(TAG, "Sunset time: " + String.valueOf(sunTime.getSunsetTime()));
+        Log.d(TAG, "Sunrise time: " + DayTime.toString(sunTime.getSunriseTime() * 60000));
+        Log.d(TAG, "Noon time: " + DayTime.toString(sunTime.getNoonTime() * 60000));
+        Log.d(TAG, "Sunset time: " + DayTime.toString(sunTime.getSunsetTime() * 60000));
     }
 
     private void setDailyAlarm()
