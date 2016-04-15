@@ -14,8 +14,8 @@ public class DayTime
     static final public int MIN_VALUE = 0;
     static final public int MAX_VALUE = 86400000;
 
-    static final public float DEGREES_UNIT = Maths.MAX_DEGREES / MAX_VALUE;
-    static final public float RADIANS_UNIT = Maths.MAX_RADIANS / MAX_VALUE;
+    static final public double DEGREES_UNIT = Maths.MAX_DEGREES / MAX_VALUE;
+    static final public double RADIANS_UNIT = Maths.MAX_RADIANS / MAX_VALUE;
 
     public static String toString(double dayTimeValue)
     {
@@ -45,11 +45,11 @@ public class DayTime
         return (int) ((now.getTimeInMillis() + timeZoneOffset) % MAX_VALUE);
     }
 
-    public float toDegrees()
+    public double toDegrees()
     {
         return getMilliseconds() * DEGREES_UNIT;
     }
-    public float toRadians()
+    public double toRadians()
     {
         return getMilliseconds() * RADIANS_UNIT;
     }

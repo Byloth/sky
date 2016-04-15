@@ -122,17 +122,17 @@ public class Stars extends View
             float x;
             float y;
 
-            float scale = Randomize.Float(MIN_SCALE, MAX_SCALE);
+            float scale = (float) Randomize.Decimal(MIN_SCALE, MAX_SCALE);
 
-            width = textureWidth * scale;
-            height = textureHeight * scale;
+            width = ((float) textureWidth) * scale;
+            height = ((float) textureHeight) * scale;
 
-            x = Randomize.Float(-width, canvasWidthValue);
-            y = Randomize.Float(-height, canvasHeightValue);
+            x = (float) Randomize.Decimal(-width, canvasWidthValue);
+            y = (float) Randomize.Decimal(-height, canvasHeightValue);
 
             position = new RectF(x, y, width + x, height + y);
 
-            rotation = Randomize.DegreesAngle();
+            rotation = (float) (Randomize.DegreesAngle());
 
             if (Randomize.Boolean() == true)
             {

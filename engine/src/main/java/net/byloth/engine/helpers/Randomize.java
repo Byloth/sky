@@ -7,31 +7,32 @@ import java.util.Random;
  */
 final public class Randomize
 {
-    static final private Random random = new Random();
+    static final private int DECIMAL_PRECISION = 1000000000;
 
-    static final public int FLOAT_PRECISION = 10000;
+    static final private String TAG = "Randomize";
+    static final private Random RANDOM = new Random();
 
     private Randomize() { }
 
     static public boolean Boolean()
     {
-        return random.nextBoolean();
+        return RANDOM.nextBoolean();
     }
-    static public boolean Boolean(float truePercentage)
+    static public boolean Boolean(double truePercentage)
     {
-        float maxValue = 100 / truePercentage;
-
-        if (Integer(maxValue) == 0)
-        {
-            return true;
-        }
-        else
+        if (truePercentage == 0)
         {
             return false;
         }
+        else // if (truePercentage > 0) // TODO: What if (truePercentage < 0)?
+        {
+            double maxValue = 100 / truePercentage;
+
+            return (Integer(maxValue) == 0);
+        }
     }
 
-    public static int Integer(float maxValue)
+    public static int Integer(double maxValue)
     {
         int intMaxValue = (int) maxValue;
 
@@ -41,14 +42,14 @@ final public class Randomize
         }
         else if (intMaxValue > 0)
         {
-            return random.nextInt(intMaxValue);
+            return RANDOM.nextInt(intMaxValue);
         }
         else
         {
-            return -random.nextInt(-intMaxValue);
+            return -RANDOM.nextInt(-intMaxValue);
         }
     }
-    public static int Integer(float minValue, float maxValue)
+    public static int Integer(double minValue, double maxValue)
     {
         if (minValue == maxValue)
         {
@@ -66,13 +67,39 @@ final public class Randomize
         }
     }
 
-    public static float Float(float maxValue)
+    public static double Decimal(double maxValue)
     {
-        maxValue *= FLOAT_PRECISION;
+        if (maxValue == 0)
+        {
+            return 0;
+        }
+        else if (maxValue > 0)
+        {
+            double decimalPart = maxValue;
 
-        return ((float) Integer(maxValue)) / FLOAT_PRECISION;
+            int integerPart = Maths.roundDown(maxValue) - 1;
+
+            if (integerPart > 0)
+            {
+                decimalPart -= integerPart;
+
+                integerPart = Integer(integerPart + 1);
+            }
+            else
+            {
+                integerPart = 0;
+            }
+
+            decimalPart = ((double) Integer(decimalPart * DECIMAL_PRECISION)) / DECIMAL_PRECISION;
+
+            return (decimalPart + integerPart);
+        }
+        else
+        {
+            return -Decimal(-maxValue);
+        }
     }
-    public static float Float(float minValue, float maxValue)
+    public static double Decimal(double minValue, double maxValue)
     {
         if (minValue == maxValue)
         {
@@ -82,7 +109,7 @@ final public class Randomize
         {
             maxValue -= minValue;
 
-            return Float(maxValue) + minValue;
+            return Decimal(maxValue) + minValue;
         }
         else
         {
@@ -90,12 +117,12 @@ final public class Randomize
         }
     }
 
-    public static float DegreesAngle()
+    public static double DegreesAngle()
     {
-        return Float(Maths.MAX_DEGREES);
+        return Decimal(Maths.MAX_DEGREES);
     }
-    public static float RadiansAngle()
+    public static double RadiansAngle()
     {
-        return Float(Maths.MAX_RADIANS);
+        return Decimal(Maths.MAX_RADIANS);
     }
 }

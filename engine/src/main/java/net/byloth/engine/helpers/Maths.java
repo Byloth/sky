@@ -1,5 +1,7 @@
 package net.byloth.engine.helpers;
 
+import java.security.InvalidParameterException;
+
 /**
  * Created by Matteo on 10/10/2015.
  */
@@ -8,22 +10,24 @@ final public class Maths
     static final public int DEGREES = 1;
     static final public int RADIANS = 2;
 
-    static final public float MAX_DEGREES = 360;
-    static final public float MAX_RADIANS = (float) (Math.PI * 2);
-
-    static final public float PI = (float) Math.PI;
+    static final public double MAX_DEGREES = 360;
+    static final public double MAX_RADIANS = (Math.PI * 2);
 
     private Maths() { }
 
-    static private double checkInputType(double value, int returnType)
+    static private double checkInputType(double value, int inputType)
     {
-        if (returnType == DEGREES)
+        if (inputType == DEGREES)
         {
             return Math.toRadians(value);
         }
-        else
+        else if (inputType == RADIANS)
         {
             return value;
+        }
+        else
+        {
+            throw new InvalidParameterException();
         }
     }
 
@@ -33,9 +37,13 @@ final public class Maths
         {
             return Math.toDegrees(value);
         }
-        else
+        else if (returnType == RADIANS)
         {
             return value;
+        }
+        else
+        {
+            throw new InvalidParameterException();
         }
     }
 
@@ -177,19 +185,4 @@ final public class Maths
             throw new IllegalArgumentException();
         }
     }
-
-//    static public float squareRoot(double value)
-//    {
-//        return (float) Math.sqrt(value);
-//    }
-
-//    static public float toDegrees(double radiansAngle)
-//    {
-//        return (float) Math.toDegrees(radiansAngle);
-//    }
-
-//    static public float toRadians(double degreesAngle)
-//    {
-//        return (float) Math.toRadians(degreesAngle);
-//    }
 }
