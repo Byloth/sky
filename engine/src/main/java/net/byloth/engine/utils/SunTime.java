@@ -20,7 +20,7 @@ public class SunTime
 
         double omega = 125.04d - (1934.136d * julianCenturies);
 
-        return meanObliquity + (0.00256d * Math.toRadians(omega));
+        return (meanObliquity + (0.00256d * Maths.cosine(omega, Maths.DEGREES)));
     }
 
     static private double geometricMeanLongitude(double julianCenturies)
@@ -60,16 +60,18 @@ public class SunTime
                                  (Math.pow(y, 2) * meanLongSine4 * 0.5d) -
                                  (Math.pow(eccentricity, 2) * meanAnomalySine2 * 1.25d));
 
-        return Math.toDegrees(equationOfTime);
+        return (Math.toDegrees(equationOfTime) * 4);
     }
 
     static private double equationOfCenter(double julianCenturies)
     {
         double meanAnomaly = geometricMeanAnomaly(julianCenturies);
 
-        double meanAnomalySine = Maths.sine(meanAnomaly);
-        double meanAnomalySine2 = Maths.sine(meanAnomaly * 2, Maths.DEGREES);
-        double meanAnomalySine3 = Maths.sine(meanAnomaly * 3, Maths.DEGREES);
+        meanAnomaly = Math.toRadians(meanAnomaly);
+
+        double meanAnomalySine = Math.sin(meanAnomaly);
+        double meanAnomalySine2 = Math.sin(meanAnomaly * 2);
+        double meanAnomalySine3 = Math.sin(meanAnomaly * 3);
 
         return ((meanAnomalySine * (1.914602d - (julianCenturies * (0.004817d + (julianCenturies * 0.000014d))))) +
                 (meanAnomalySine2 * (0.019993d - (julianCenturies * 0.000101d))) +
@@ -137,28 +139,34 @@ public class SunTime
         double julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (longitude / 360));
         double equationOfTime = equationOfTime(julianCenturies);
 
-        julianCenturies = (720 + (longitude * 4)) - equationOfTime;
+        // julianCenturies = (720 + (longitude * 4)) - equationOfTime; // The old one!
+        julianCenturies = (720 - (longitude * 4)) - equationOfTime; // The new one!
 
         // TODO: Capire quale metodo, tra 'julianDate.getJulianDay();' e 'julianDate.getJulianDayTime();' è più adatto.
-        julianCenturies = JulianDate.toJulianCenturies((julianDate.getJulianDay() - 0.5d) + (julianCenturies / 1440));
+        // julianCenturies = JulianDate.toJulianCenturies((julianDate.getJulianDay() - 0.5d) + (julianCenturies / 1440)); // The old one!
+        julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (julianCenturies / 1440)); // The new one!
         equationOfTime = equationOfTime(julianCenturies);
 
-        noonTime = (720 + (longitude * 4)) - equationOfTime;
+        // noonTime = (720 + (longitude * 4)) - equationOfTime; // The old one!
+        noonTime = Maths.adjustInRange((720 - (longitude * 4)) - equationOfTime, 1440); // The new one!
     }
 
     private void initializeSunriseTime(double latitude, double longitude)
     {
         // TODO: Capire quale metodo, tra 'julianDate.getJulianDay();' e 'julianDate.getJulianDayTime();' è più adatto.
-        double julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (noonTime / 1440));
+        // double julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (noonTime / 1440)); // The old one!
+        double julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay()); // The new one!
 
         double equationOfTime = equationOfTime(julianCenturies);
         double declination = declination(julianCenturies);
 
         double hourAngle = sunriseHourAngle(latitude, declination);
 
-        double delta = longitude - hourAngle;
+        // double delta = longitude - hourAngle; // The old one!
+        double delta = longitude + hourAngle; // The new one!
 
-        julianCenturies = (720 + (delta * 4)) - equationOfTime;
+        // julianCenturies = (720 + (delta * 4)) - equationOfTime; // The old one!
+        julianCenturies = (720 - (delta * 4)) - equationOfTime; // The new one!
 
         // TODO: Capire quale metodo, tra 'julianDate.getJulianDay();' e 'julianDate.getJulianDayTime();' è più adatto.
         julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (julianCenturies / 1440));
@@ -168,24 +176,29 @@ public class SunTime
 
         hourAngle = sunriseHourAngle(latitude, declination);
 
-        delta = longitude - hourAngle;
+        // delta = longitude - hourAngle; // The old one!
+        delta = longitude + hourAngle; // The new one!
 
-        sunriseTime = (720 + (delta * 4)) - equationOfTime;
+        // sunriseTime = (720 + (delta * 4)) - equationOfTime; // The old one!
+        sunriseTime = Maths.adjustInRange((720 - (delta * 4)) - equationOfTime, 1440); // The new one!
     }
 
     private void initializeSunsetTime(double latitude, double longitude)
     {
         // TODO: Capire quale metodo, tra 'julianDate.getJulianDay();' e 'julianDate.getJulianDayTime();' è più adatto.
-        double julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (noonTime / 1440));
+        // double julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (noonTime / 1440)); // The old one!
+        double julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay()); // The new one!
 
         double equationOfTime = equationOfTime(julianCenturies);
         double declination = declination(julianCenturies);
 
         double hourAngle = sunsetHourAngle(latitude, declination);
 
-        double delta = longitude - hourAngle;
+        // double delta = longitude - hourAngle; // The old one!
+        double delta = longitude + hourAngle; // The new one!
 
-        julianCenturies = (720 + (delta * 4)) - equationOfTime;
+        // julianCenturies = (720 + (delta * 4)) - equationOfTime; // The old one!
+        julianCenturies = (720 - (delta * 4)) - equationOfTime; // The new one!
 
         // TODO: Capire quale metodo, tra 'julianDate.getJulianDay();' e 'julianDate.getJulianDayTime();' è più adatto.
         julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (julianCenturies / 1440));
@@ -195,9 +208,11 @@ public class SunTime
 
         hourAngle = sunsetHourAngle(latitude, declination);
 
-        delta = longitude - hourAngle;
+        // delta = longitude - hourAngle; // The old one!
+        delta = longitude + hourAngle; // The new one!
 
-        sunsetTime = (720 + (delta * 4)) - equationOfTime;
+        // sunsetTime = (720 + (delta * 4)) - equationOfTime; // The old one!
+        sunsetTime = Maths.adjustInRange((720 - (delta * 4)) - equationOfTime, 1440); // The new one!
     }
 
     public SunTime(Location location)
