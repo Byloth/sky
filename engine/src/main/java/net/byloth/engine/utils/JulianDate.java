@@ -39,7 +39,7 @@ public class JulianDate
         double minute = calendar.get(Calendar.MINUTE);
         double second = calendar.get(Calendar.SECOND);
 
-        if (month <= 2)
+        if (month < 3)
         {
             year -= 1;
             month += 12;

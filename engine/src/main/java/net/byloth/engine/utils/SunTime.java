@@ -19,7 +19,7 @@ public class SunTime
 
     static private double meanObliquity(double julianCenturies)
     {
-        double seconds = 21.448d - (julianCenturies * (46.8150d + (julianCenturies * (0.00059d - (julianCenturies * 0.001813d)))));
+        double seconds = Maths.polynomialFunction(new double[] { -0.001813, 0.00059, -46.815, 21.448 }, julianCenturies);
 
         return (23 + ((26 + (seconds / 60)) / 60));
     }
@@ -32,27 +32,29 @@ public class SunTime
         return (meanObliquity + (0.00256d * Maths.cosine(omega, Maths.DEGREES)));
     }
 
-    static private double geometricMeanLongitude(double julianCenturies)
+    static private double meanLongitude(double julianCenturies)
     {
-        return Maths.adjustInRange(280.46646d + (julianCenturies * (36000.76983d + (julianCenturies * 0.0003032d))), 360);
+        double meanLongitude = Maths.polynomialFunction(new double[] { 0.0003032d, 36000.76983d , 280.46646d }, julianCenturies);
+
+        return Maths.adjustInRange(meanLongitude, Maths.MAX_DEGREES);
     }
 
     static private double eccentricityEarthOrbit(double julianCenturies)
     {
-        return 0.016708634d - (julianCenturies * (0.000042037d + (julianCenturies * 0.0000001267d)));
+        return Maths.polynomialFunction(new double[] { 0.0000001267d, -0.000042037d, 0.016708634d }, julianCenturies);
     }
 
-    static private double geometricMeanAnomaly(double julianCenturies)
+    static private double meanAnomaly(double julianCenturies)
     {
-        return 357.52911d + (julianCenturies * (35999.05029d - (julianCenturies * 0.0001537d)));
+        return Maths.polynomialFunction(new double[] { -(1.0d / 300000), -0.0001603d, 35999.05034d, 357.52772d }, julianCenturies);
     }
 
     static private double equationOfTime(double julianCenturies)
     {
         double epsilon = obliquityCorrection(julianCenturies);
-        double meanLong = geometricMeanLongitude(julianCenturies);
+        double meanLong = meanLongitude(julianCenturies);
         double eccentricity = eccentricityEarthOrbit(julianCenturies);
-        double meanAnomaly = geometricMeanAnomaly(julianCenturies);
+        double meanAnomaly = meanAnomaly(julianCenturies);
 
         double y = Math.pow(Maths.tangent(epsilon / 2, Maths.DEGREES), 2);
 
@@ -74,7 +76,7 @@ public class SunTime
 
     static private double equationOfCenter(double julianCenturies)
     {
-        double meanAnomaly = geometricMeanAnomaly(julianCenturies);
+        double meanAnomaly = meanAnomaly(julianCenturies);
 
         meanAnomaly = Math.toRadians(meanAnomaly);
 
@@ -89,7 +91,7 @@ public class SunTime
 
     static private double trueLongitude(double julianCenturies)
     {
-        double meanLong = geometricMeanLongitude(julianCenturies);
+        double meanLong = meanLongitude(julianCenturies);
         double equationOfCenter = equationOfCenter(julianCenturies);
 
         return (meanLong + equationOfCenter);
@@ -102,6 +104,16 @@ public class SunTime
         double omega = 125.04d - (julianCenturies * 1934.136d);
 
         return ((trueLong - 0.00569d) - (Maths.sine(omega, Maths.DEGREES) * 0.00478d));
+    }
+
+    static private double rightAscension(double epsilon, double lambda)
+    {
+        epsilon = Math.toRadians(epsilon);
+        lambda = Math.toRadians(lambda);
+
+        double rightAscension = Maths.arcTangent(Math.cos(lambda), Math.cos(epsilon) * Math.sin(lambda), Maths.DEGREES);
+
+        return Maths.adjustInRange(rightAscension, Maths.MAX_DEGREES);
     }
 
     static private double declination(double julianCenturies)
@@ -141,7 +153,7 @@ public class SunTime
 
     private void initializeNoonTime(double longitude)
     {
-        double julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (longitude / 360));
+        double julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (longitude / Maths.MAX_DEGREES));
         double equationOfTime = equationOfTime(julianCenturies);
 
         julianCenturies = (720 - (longitude * 4)) - equationOfTime;

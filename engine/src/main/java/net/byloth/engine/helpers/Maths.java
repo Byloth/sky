@@ -122,6 +122,16 @@ final public class Maths
         return checkReturnType(arcTangent, returnType);
     }
 
+    static public double hypotenuse(double cathetus1, double cathetus2)
+    {
+        return Math.sqrt(Math.pow(cathetus1, 2) + Math.pow(cathetus2, 2));
+    }
+
+    static public boolean isDivisible(double dividend, double divisor)
+    {
+        return ((dividend % divisor) == 0);
+    }
+
     static public int roundUp(double value)
     {
         return (int) Math.ceil(value);
@@ -129,11 +139,6 @@ final public class Maths
     static public int roundDown(double value)
     {
         return (int) Math.floor(value);
-    }
-
-    static public boolean isDivisible(double dividend, double divisor)
-    {
-        return ((dividend % divisor) == 0);
     }
 
     static public double sine(double radiansAngle)
@@ -168,10 +173,16 @@ final public class Maths
 
         return Math.tan(angle);
     }
-
-    static public double hypotenuse(double cathetus1, double cathetus2)
+    static public double polynomialFunction(double[] values, double x)
     {
-        return Math.sqrt(Math.pow(cathetus1, 2) + Math.pow(cathetus2, 2));
+        double value = values[0];
+
+        for (int index = 1; index < values.length; index += 1)
+        {
+            value = (value * x) + values[index];
+        }
+
+        return value;
     }
 
     static public double proportion(double absoluteMaximum, double relativeMaximum, double absolutePartial)
