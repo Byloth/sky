@@ -2,20 +2,22 @@ package net.byloth.engine.utils;
 
 import android.location.Location;
 
-import net.byloth.engine.helpers.Maths;
-
-import java.security.InvalidParameterException;
 import java.util.Calendar;
+
+import net.byloth.engine.helpers.Maths;
 
 /**
  * Created by Matteo on 08/04/2016.
  */
-public class SunTime
+public class SunTimes
 {
-    static final private int SUNRISE = 1;
+    static final private int DAWN = 1;
     static final private int SUNSET = -1;
 
-    static final public double OFFICIAL_ZENITH = 90.833d;
+    static final private double OFFICIAL = 90.8333d;
+    static final private double CIVIL = 96.8333d;
+    static final private double NAUTICAL = 102.8333d;
+    static final private double ASTRONOMICAL = 108.8333d;
 
     static private double meanObliquity(double julianCenturies)
     {
@@ -126,32 +128,50 @@ public class SunTime
         return Math.asin(julianCenturiesSine);
     }
 
-    static private double hourAngle(double julianCenturies, double latitude, int hourAngleType)
+    static private double hourAngle(double julianCenturies, double latitude, int hourAngleType, double twilightType)
     {
-        if ((hourAngleType == SUNRISE) || (hourAngleType == SUNSET))
-        {
-            double declination = declination(julianCenturies);
+        double declination = declination(julianCenturies);
 
-            latitude = Math.toRadians(latitude);
+        latitude = Math.toRadians(latitude);
 
-            double sunriseHourAngle = ((Maths.cosine(OFFICIAL_ZENITH, Maths.DEGREES) / (Math.cos(latitude) * Math.cos(declination))) -
-                    (Math.tan(latitude) * Math.tan(declination)));
+        double sunriseHourAngle = ((Maths.cosine(twilightType, Maths.DEGREES) / (Math.cos(latitude) * Math.cos(declination))) -
+                                   (Math.tan(latitude) * Math.tan(declination)));
 
-            return (Maths.arcCosine(sunriseHourAngle, Maths.DEGREES) * hourAngleType);
-        }
-        else
-        {
-            throw new InvalidParameterException();
-        }
+        return (Maths.arcCosine(sunriseHourAngle, Maths.DEGREES) * hourAngleType);
+    }
+
+    static private double time(double julianDay, double julianCenturies, double equationOfTime, double latitude, double longitude, double timeZoneOffset, int hourAngleType, double twilightType)
+    {
+        double hourAngle = hourAngle(julianCenturies, latitude, hourAngleType, twilightType);
+
+        double delta = longitude + hourAngle;
+
+        julianCenturies = (720 - (delta * 4)) - equationOfTime;
+        julianCenturies = JulianDate.toJulianCenturies(julianDay + (julianCenturies / 1440));
+
+        equationOfTime = equationOfTime(julianCenturies);
+        hourAngle = hourAngle(julianCenturies, latitude, hourAngleType, twilightType);
+
+        delta = longitude + hourAngle;
+
+        return Maths.adjustInRange(((720 - (delta * 4)) - equationOfTime) + timeZoneOffset, 1440);
     }
 
     private double noonTime;
-    private double sunriseTime;
-    private double sunsetTime;
+
+    private double officialDawnTime;
+    private double civilDawnTime;
+    private double nauticalDawnTime;
+    private double astronomicalDawnTime;
+
+    private double officialSunsetTime;
+    private double civilSunsetTime;
+    private double nauticalSunsetTime;
+    private double astronomicalSunsetTime;
 
     private JulianDate julianDate;
 
-    private void initializeNoonTime(double longitude)
+    private void initializeNoonTime(double longitude, double timeZoneOffset)
     {
         double julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (longitude / Maths.MAX_DEGREES));
         double equationOfTime = equationOfTime(julianCenturies);
@@ -161,62 +181,45 @@ public class SunTime
         julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (julianCenturies / 1440));
         equationOfTime = equationOfTime(julianCenturies);
 
-        noonTime = Maths.adjustInRange((720 - (longitude * 4)) - equationOfTime, 1440);
+        noonTime = Maths.adjustInRange(((720 - (longitude * 4)) - equationOfTime) + timeZoneOffset, 1440);
     }
 
-    private void initializeSunriseTime(double julianCenturies, double equationOfTime, double latitude, double longitude)
+    private void initializeSunriseTimes(double julianCenturies, double equationOfTime, double latitude, double longitude, double timeZoneOffset)
     {
-        double hourAngle = hourAngle(julianCenturies, latitude, SUNRISE);
-
-        double delta = longitude + hourAngle;
-
-        julianCenturies = (720 - (delta * 4)) - equationOfTime;
-        julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (julianCenturies / 1440));
-
-        equationOfTime = equationOfTime(julianCenturies);
-        hourAngle = hourAngle(julianCenturies, latitude, SUNRISE);
-
-        delta = longitude + hourAngle;
-
-        sunriseTime = Maths.adjustInRange((720 - (delta * 4)) - equationOfTime, 1440);
+        officialDawnTime = time(julianDate.getJulianDay(), julianCenturies, equationOfTime, latitude, longitude, timeZoneOffset, DAWN, OFFICIAL);
+        civilDawnTime = time(julianDate.getJulianDay(), julianCenturies, equationOfTime, latitude, longitude, timeZoneOffset, DAWN, CIVIL);
+        nauticalDawnTime = time(julianDate.getJulianDay(), julianCenturies, equationOfTime, latitude, longitude, timeZoneOffset, DAWN, NAUTICAL);
+        astronomicalDawnTime = time(julianDate.getJulianDay(), julianCenturies, equationOfTime, latitude, longitude, timeZoneOffset, DAWN, ASTRONOMICAL);
     }
 
-    private void initializeSunsetTime(double julianCenturies, double equationOfTime, double latitude, double longitude)
+    private void initializeSunsetTimes(double julianCenturies, double equationOfTime, double latitude, double longitude, double timeZoneOffset)
     {
-        double hourAngle = hourAngle(julianCenturies, latitude, SUNSET);
-
-        double delta = longitude + hourAngle;
-
-        julianCenturies = (720 - (delta * 4)) - equationOfTime;
-        julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay() + (julianCenturies / 1440));
-
-        equationOfTime = equationOfTime(julianCenturies);
-        hourAngle = hourAngle(julianCenturies, latitude, SUNSET);
-
-        delta = longitude + hourAngle;
-
-        sunsetTime = Maths.adjustInRange((720 - (delta * 4)) - equationOfTime, 1440);
+        officialSunsetTime = time(julianDate.getJulianDay(), julianCenturies, equationOfTime, latitude, longitude, timeZoneOffset, SUNSET, OFFICIAL);
+        civilSunsetTime = time(julianDate.getJulianDay(), julianCenturies, equationOfTime, latitude, longitude, timeZoneOffset, SUNSET, CIVIL);
+        nauticalSunsetTime = time(julianDate.getJulianDay(), julianCenturies, equationOfTime, latitude, longitude, timeZoneOffset, SUNSET, NAUTICAL);
+        astronomicalSunsetTime = time(julianDate.getJulianDay(), julianCenturies, equationOfTime, latitude, longitude, timeZoneOffset, SUNSET, ASTRONOMICAL);
     }
 
-    public SunTime(Location location)
+    public SunTimes(Location location)
     {
         this(Calendar.getInstance(), location);
     }
-    public SunTime(Calendar calendar, Location location)
+    public SunTimes(Calendar calendar, Location location)
     {
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
 
+        double timeZoneOffset = ((double) calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET)) / 60000;
+
         julianDate = new JulianDate(calendar);
 
-        initializeNoonTime(longitude);
+        initializeNoonTime(longitude, timeZoneOffset);
 
         double julianCenturies = JulianDate.toJulianCenturies(julianDate.getJulianDay());
-
         double equationOfTime = equationOfTime(julianCenturies);
 
-        initializeSunriseTime(julianCenturies, equationOfTime, latitude, longitude);
-        initializeSunsetTime(julianCenturies, equationOfTime, latitude, longitude);
+        initializeSunriseTimes(julianCenturies, equationOfTime, latitude, longitude, timeZoneOffset);
+        initializeSunsetTimes(julianCenturies, equationOfTime, latitude, longitude, timeZoneOffset);
     }
 
     public double getNoonTime()
@@ -224,13 +227,37 @@ public class SunTime
         return noonTime;
     }
 
-    public double getSunriseTime()
+    public double getOfficialDawnTime()
     {
-        return sunriseTime;
+        return officialDawnTime;
+    }
+    public double getCivilDawnTime()
+    {
+        return civilDawnTime;
+    }
+    public double getNauticalDawnTime()
+    {
+        return nauticalDawnTime;
+    }
+    public double getAstronomicalDawnTime()
+    {
+        return astronomicalDawnTime;
     }
 
-    public double getSunsetTime()
+    public double getOfficialSunsetTime()
     {
-        return sunsetTime;
+        return officialSunsetTime;
+    }
+    public double getCivilSunsetTime()
+    {
+        return civilSunsetTime;
+    }
+    public double getNauticalSunsetTime()
+    {
+        return nauticalSunsetTime;
+    }
+    public double getAstronomicalSunsetTime()
+    {
+        return astronomicalSunsetTime;
     }
 }

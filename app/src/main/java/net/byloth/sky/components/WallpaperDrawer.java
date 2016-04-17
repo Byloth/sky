@@ -11,6 +11,7 @@ import android.view.SurfaceHolder;
 
 import net.byloth.engine.utils.DayTime;
 import net.byloth.environment.Sky;
+import net.byloth.sky.LiveWallpaper;
 import net.byloth.sky.updaters.SunTimesUpdater;
 
 /**
@@ -53,12 +54,12 @@ public class WallpaperDrawer extends WallpaperService
 
             drawingHandler.post(drawRunner);
 
-            SunTimesUpdater.setOnSunTimesUpdateListener(new SunTimesUpdater.OnSunTimesUpdateListener()
+            LiveWallpaper.getInstance().getSunTimesUpdater().setOnSunTimesUpdateListener(new SunTimesUpdater.OnSunTimesUpdateListener()
             {
                 @Override
-                public void onUpdate(Bundle risingTimeValues, Bundle settingTimeValues)
+                public void onUpdate(SunTimesUpdater sunTimesUpdaterSender)
                 {
-                    sky.reinitializeColors();
+                    sky.reinitializeColors(sunTimesUpdaterSender);
 
                     Log.i(TAG, "Wallpaper's colors have just been updated!");
                 }

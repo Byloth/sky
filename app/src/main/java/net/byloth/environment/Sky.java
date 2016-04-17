@@ -12,6 +12,7 @@ import net.byloth.engine.utils.DayTime;
 import net.byloth.engine.graphics.Color;
 import net.byloth.engine.graphics.TimedColor;
 import net.byloth.engine.graphics.TimedShader;
+import net.byloth.sky.LiveWallpaper;
 import net.byloth.sky.updaters.SunTimesUpdater;
 
 /**
@@ -60,13 +61,13 @@ public class Sky extends View
 
     private RectF position;
 
-    private void initializeColors()
+    private void initializeColors(SunTimesUpdater sunTimesUpdater)
     {
-        int officialSunriseTime = SunTimesUpdater.getOfficialSunriseTime();
-        int astronomicalSunriseTime = SunTimesUpdater.getAstronomicalSunriseTime();
+        int officialSunriseTime = sunTimesUpdater.getOfficialDawnTime();
+        int astronomicalSunriseTime = sunTimesUpdater.getAstronomicalDawnTime();
 
-        int officialSunsetTime = SunTimesUpdater.getOfficialSunsetTime();
-        int astronomicalSunsetTime = SunTimesUpdater.getAstronomicalSunsetTime();
+        int officialSunsetTime = sunTimesUpdater.getOfficialSunsetTime();
+        int astronomicalSunsetTime = sunTimesUpdater.getAstronomicalSunsetTime();
 
         int startDayTime = officialSunriseTime + (officialSunriseTime - astronomicalSunriseTime);
         int endDayTime = officialSunsetTime + (officialSunsetTime - astronomicalSunsetTime);
@@ -119,14 +120,14 @@ public class Sky extends View
 
         position = new RectF(0, 0, canvasWidthValue, canvasHeightValue);
 
-        initializeColors();
+        initializeColors(LiveWallpaper.getInstance().getSunTimesUpdater());
     }
 
-    public Sky reinitializeColors()
+    public Sky reinitializeColors(SunTimesUpdater sunTimesUpdater)
     {
-        initializeColors();
+        initializeColors(sunTimesUpdater);
 
-        stars.reinitializeColors();
+        stars.reinitializeColors(sunTimesUpdater);
 
         return this;
     }

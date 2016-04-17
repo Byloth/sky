@@ -59,7 +59,7 @@ public class SummaryFragment extends Fragment
     {
         super.onResume();
 
-        Location currentLocation = getLiveWallaper().getCurrentLocation();
+        Location currentLocation = getLiveWallaper().getLocationUpdater().getCurrentLocation();
 
         if (currentLocation != null)
         {
@@ -72,14 +72,16 @@ public class SummaryFragment extends Fragment
             longitudeView.setText("N.A.");
         }
 
-        sunriseOfficialView.setText(DayTime.toString(SunTimesUpdater.getOfficialSunriseTime()));
-        sunriseCivilView.setText(DayTime.toString(SunTimesUpdater.getCivilSunriseTime()));
-        sunriseNauticalView.setText(DayTime.toString(SunTimesUpdater.getNauticalSunriseTime()));
-        sunriseAstronomicalView.setText(DayTime.toString(SunTimesUpdater.getAstronomicalSunriseTime()));
+        SunTimesUpdater sunTimesUpdater = getLiveWallaper().getSunTimesUpdater();
 
-        sunsetOfficialView.setText(DayTime.toString(SunTimesUpdater.getOfficialSunsetTime()));
-        sunsetCivilView.setText(DayTime.toString(SunTimesUpdater.getCivilSunsetTime()));
-        sunsetNauticalView.setText(DayTime.toString(SunTimesUpdater.getNauticalSunsetTime()));
-        sunsetAstronomicalView.setText(DayTime.toString(SunTimesUpdater.getAstronomicalSunsetTime()));
+        sunriseOfficialView.setText(DayTime.toString(sunTimesUpdater.getOfficialDawnTime()));
+        sunriseCivilView.setText(DayTime.toString(sunTimesUpdater.getCivilDawnTime()));
+        sunriseNauticalView.setText(DayTime.toString(sunTimesUpdater.getNauticalDawnTime()));
+        sunriseAstronomicalView.setText(DayTime.toString(sunTimesUpdater.getAstronomicalDawnTime()));
+
+        sunsetOfficialView.setText(DayTime.toString(sunTimesUpdater.getOfficialSunsetTime()));
+        sunsetCivilView.setText(DayTime.toString(sunTimesUpdater.getCivilSunsetTime()));
+        sunsetNauticalView.setText(DayTime.toString(sunTimesUpdater.getNauticalSunsetTime()));
+        sunsetAstronomicalView.setText(DayTime.toString(sunTimesUpdater.getAstronomicalSunsetTime()));
     }
 }

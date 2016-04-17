@@ -11,225 +11,97 @@ import java.util.TimeZone;
 
 import net.byloth.engine.helpers.Maths;
 import net.byloth.engine.utils.DayTime;
+import net.byloth.engine.utils.SunTimes;
 import net.byloth.sky.LiveWallpaper;
 
 /**
  * Created by Matteo on 23/10/2015.
  */
-final public class SunTimesUpdater
+public class SunTimesUpdater
 {
-    static final private int RISING_TIME = 6;
-    static final private int SETTING_TIME = 18;
-
     static final private String TAG = "SunTimesUpdater";
 
-    static final public double OFFICIAL_ZENITH = 90.5f;
-    static final public double CIVIL_ZENITH = 96;
-    static final public double NAUTICAL_ZENITH = 102;
-    static final public double ASTRONOMICAL_ZENITH = 108;
-    
-    static private int officialSunriseTime = 21827000;
-    static private int civilSunriseTime = 20591000;
-    static private int nauticalSunriseTime = 19151000;
-    static private int astronomicalSunriseTime = 17711000;
-
-    static private int officialSunsetTime = 65435000;
-    static private int civilSunsetTime = 66671000;
-    static private int nauticalSunsetTime = 68111000;
-    static private int astronomicalSunsetTime = 69551000;
-
-    static private OnSunTimesUpdateListener onSunTimesUpdateListener;
-    
-    static public int getOfficialSunriseTime()
+    static private int toMilliseconds(double decimalTimeInMinutes)
     {
-        return officialSunriseTime;
-    }
-    static public int getCivilSunriseTime()
-    {
-        return civilSunriseTime;
-    }
-    static public int getNauticalSunriseTime()
-    {
-        return nauticalSunriseTime;
-    }
-    static public int getAstronomicalSunriseTime()
-    {
-        return astronomicalSunriseTime;
+        return ((int) (decimalTimeInMinutes * 60000));
     }
 
-    static public int getOfficialSunsetTime()
+    private SunTimes sunTimes;
+    private OnSunTimesUpdateListener onSunTimesUpdateListener;
+
+    public SunTimesUpdater()
     {
-        return officialSunsetTime;
-    }
-    static public int getCivilSunsetTime()
-    {
-        return civilSunsetTime;
-    }
-    static public int getNauticalSunsetTime()
-    {
-        return nauticalSunsetTime;
-    }
-    static public int getAstronomicalSunsetTime()
-    {
-        return astronomicalSunsetTime;
+        sunTimes = new SunTimes(new Location(TAG));
     }
 
-    static private void calculateDeclination(Bundle parametersBundle)
+    public int getNoonTime()
     {
-        double approximateTime = parametersBundle.getDouble("approximate_time");
-
-        double meanAnomaly = (0.9856f * approximateTime) - 3.289f;
-        double trueLongitude = Maths.adjustInRange(meanAnomaly + (1.916f * Maths.sine(meanAnomaly, Maths.DEGREES)) + (0.02f * Maths.sine(2 * meanAnomaly, Maths.DEGREES)) + 282.634f, 360);
-        double rightAscension = Maths.adjustInRange(Maths.arcTangent(0.91764f * Maths.tangent(trueLongitude, Maths.DEGREES), Maths.DEGREES), 360);
-        double trueLongitudeQuadrant = Maths.roundDown(trueLongitude / 90) * 90;
-        double rightAscensionQuadrant = Maths.roundDown(rightAscension / 90) * 90;
-
-        rightAscension = (rightAscension + (trueLongitudeQuadrant - rightAscensionQuadrant)) / 15;
-
-        double sineDeclination = 0.39782f * Maths.sine(trueLongitude, Maths.DEGREES);
-        double cosineDeclination = Maths.cosine(Maths.arcSine(sineDeclination));
-
-        parametersBundle.putDouble("right_ascension", rightAscension);
-
-        parametersBundle.putDouble("sine_declination", sineDeclination);
-        parametersBundle.putDouble("cosine_declination", cosineDeclination);
+        return toMilliseconds(sunTimes.getNoonTime());
     }
 
-    static private int calculateZenithTime(int timeType, double zenithType, Bundle inputBundle)
+    public int getOfficialDawnTime()
     {
-        int timeZoneOffset = inputBundle.getInt("time_zone_offset");
-
-        double latitude = inputBundle.getDouble("latitude");
-        double longitude = inputBundle.getDouble("longitude");
-
-        double approximateTime = inputBundle.getDouble("approximate_time");
-
-        double rightAscension = inputBundle.getDouble("right_ascension");
-
-        double sineDeclination = inputBundle.getDouble("sine_declination");
-        double cosineDeclination = inputBundle.getDouble("cosine_declination");
-
-        double localHourAngle = (Maths.cosine(zenithType, Maths.DEGREES) - (sineDeclination * Maths.sine(latitude, Maths.DEGREES))) / (cosineDeclination * Maths.cosine(latitude, Maths.DEGREES));
-
-        if (localHourAngle > 1)
-        {
-            Log.i(TAG, "Today, the Sun will never rising...");
-        }
-        else if (localHourAngle < -1)
-        {
-            Log.i(TAG, "Today, the Sun will never setting...");
-        }
-
-        switch (timeType)
-        {
-            case RISING_TIME:
-                localHourAngle = (Maths.MAX_DEGREES - Maths.arcCosine(localHourAngle, Maths.DEGREES)) / 15;
-                break;
-
-            case SETTING_TIME:
-                localHourAngle = Maths.arcCosine(localHourAngle, Maths.DEGREES) / 15;
-                break;
-
-            default:
-                throw new IllegalArgumentException();
-        }
-
-        double localMeanTime = localHourAngle + rightAscension - (0.06571f * approximateTime) - 6.622f;
-
-        double utcMeanTime = Maths.adjustInRange(localMeanTime - (longitude / 15), 24);
-
-        return (int) ((utcMeanTime * 3600000) + timeZoneOffset);
+        return toMilliseconds(sunTimes.getOfficialDawnTime());
+    }
+    public int getCivilDawnTime()
+    {
+        return toMilliseconds(sunTimes.getCivilDawnTime());
+    }
+    public int getNauticalDawnTime()
+    {
+        return toMilliseconds(sunTimes.getNauticalDawnTime());
+    }
+    public int getAstronomicalDawnTime()
+    {
+        return toMilliseconds(sunTimes.getAstronomicalDawnTime());
     }
 
-    static private Bundle updateRisingTimes(Bundle inputBundle)
+    public int getOfficialSunsetTime()
     {
-        int dayOfYear = inputBundle.getInt("day_of_year");
-        double longitude = inputBundle.getDouble("longitude");
-
-        double approximateTime = dayOfYear + (RISING_TIME - (longitude / 15) / 24);
-
-        Bundle parametersBundle = new Bundle();
-
-        parametersBundle.putAll(inputBundle);
-        parametersBundle.putDouble("approximate_time", approximateTime);
-
-        calculateDeclination(parametersBundle);
-
-        officialSunriseTime = calculateZenithTime(RISING_TIME, OFFICIAL_ZENITH, parametersBundle);
-        civilSunriseTime = calculateZenithTime(RISING_TIME, CIVIL_ZENITH, parametersBundle);
-        nauticalSunriseTime = calculateZenithTime(RISING_TIME, NAUTICAL_ZENITH, parametersBundle);
-        astronomicalSunriseTime = calculateZenithTime(RISING_TIME, ASTRONOMICAL_ZENITH, parametersBundle);
-
-        Bundle risingTimeValues = new Bundle();
-
-        risingTimeValues.putInt("official_sunrise_time", officialSunriseTime);
-        risingTimeValues.putInt("civil_sunrise_time", civilSunriseTime);
-        risingTimeValues.putInt("nautical_sunrise_time", nauticalSunriseTime);
-        risingTimeValues.putInt("astronomical_sunrise_time", astronomicalSunriseTime);
-
-        return risingTimeValues;
+        return toMilliseconds(sunTimes.getOfficialSunsetTime());
     }
-    static private Bundle updateSettingTimes(Bundle inputBundle)
+    public int getCivilSunsetTime()
     {
-        int dayOfYear = inputBundle.getInt("day_of_year");
-        double longitude = inputBundle.getDouble("longitude");
-
-        double approximateTime = dayOfYear + (SETTING_TIME - (longitude / 15) / 24);
-
-        Bundle parametersBundle = new Bundle();
-
-        parametersBundle.putAll(inputBundle);
-        parametersBundle.putDouble("approximate_time", approximateTime);
-
-        calculateDeclination(parametersBundle);
-
-        officialSunsetTime = calculateZenithTime(SETTING_TIME, OFFICIAL_ZENITH, parametersBundle);
-        civilSunsetTime = calculateZenithTime(SETTING_TIME, CIVIL_ZENITH, parametersBundle);
-        nauticalSunsetTime = calculateZenithTime(SETTING_TIME, NAUTICAL_ZENITH, parametersBundle);
-        astronomicalSunsetTime = calculateZenithTime(SETTING_TIME, ASTRONOMICAL_ZENITH, parametersBundle);
-
-        Bundle settingTimeValues = new Bundle();
-
-        settingTimeValues.putInt("official_sunset_time", officialSunsetTime);
-        settingTimeValues.putInt("civil_sunset_time", civilSunsetTime);
-        settingTimeValues.putInt("nautical_sunset_time", nauticalSunsetTime);
-        settingTimeValues.putInt("astronomical_sunset_time", astronomicalSunsetTime);
-
-        return settingTimeValues;
+        return toMilliseconds(sunTimes.getCivilSunsetTime());
+    }
+    public int getNauticalSunsetTime()
+    {
+        return toMilliseconds(sunTimes.getNauticalSunsetTime());
+    }
+    public int getAstronomicalSunsetTime()
+    {
+        return toMilliseconds(sunTimes.getAstronomicalSunsetTime());
     }
 
-    static public void setOnSunTimesUpdateListener(OnSunTimesUpdateListener onSunTimesUpdateListenerInstance)
+    public void setOnSunTimesUpdateListener(OnSunTimesUpdateListener onSunTimesUpdateListenerInstance)
     {
         onSunTimesUpdateListener = onSunTimesUpdateListenerInstance;
     }
 
-    static public boolean updateSunTimes()
+    public boolean updateSunTimes(Location currentLocation)
     {
-        Location currentLocation = LiveWallpaper.getInstance().getCurrentLocation();
-
         if (currentLocation != null)
         {
-            Calendar calendar = Calendar.getInstance();
-
-            int timeZoneOffset = calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET);
-
-            Bundle parametersBundle = new Bundle();
-
-            parametersBundle.putInt("day_of_year", calendar.get(Calendar.DAY_OF_YEAR));
-            parametersBundle.putInt("time_zone_offset", timeZoneOffset);
-
-            parametersBundle.putDouble("latitude", currentLocation.getLatitude());
-            parametersBundle.putDouble("longitude", currentLocation.getLongitude());
-
-            Bundle risingTimeValues = updateRisingTimes(parametersBundle);
-            Bundle settingTimeValues = updateSettingTimes(parametersBundle);
+            sunTimes = new SunTimes(currentLocation);
 
             if (onSunTimesUpdateListener != null)
             {
-                onSunTimesUpdateListener.onUpdate(risingTimeValues, settingTimeValues);
+                onSunTimesUpdateListener.onUpdate(this);
             }
 
             Log.i(TAG, "Today's rising / setting times have been updated!");
+
+            Log.d(TAG, "Official dawn time: " + DayTime.toString(getOfficialDawnTime()));
+            Log.d(TAG, "Civil dawn time: " + DayTime.toString(getCivilDawnTime()));
+            Log.d(TAG, "Nautical dawn time: " + DayTime.toString(getNauticalDawnTime()));
+            Log.d(TAG, "Astronomical dawn time: " + DayTime.toString(getAstronomicalDawnTime()));
+
+            Log.d(TAG, "Noon time: " + DayTime.toString(getNoonTime()));
+
+            Log.d(TAG, "Official sunset time: " + DayTime.toString(getOfficialSunsetTime()));
+            Log.d(TAG, "Civil sunset time: " + DayTime.toString(getCivilSunsetTime()));
+            Log.d(TAG, "Nautical sunset time: " + DayTime.toString(getNauticalSunsetTime()));
+            Log.d(TAG, "Astronomical sunset time: " + DayTime.toString(getAstronomicalSunsetTime()));
 
             return true;
         }
@@ -241,10 +113,8 @@ final public class SunTimesUpdater
         }
     }
 
-    private SunTimesUpdater() { }
-
     public interface OnSunTimesUpdateListener
     {
-        void onUpdate(Bundle risingTimeValues, Bundle settingTimeValues);
+        void onUpdate(SunTimesUpdater sunTimesUpdaterSender);
     }
 }

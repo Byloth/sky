@@ -29,14 +29,16 @@ public class GLWallpaperDrawer extends GLES2WallpaperService
 
     public GLWallpaperDrawer()
     {
-        sky = new GLSky();
+        SunTimesUpdater sunTimesUpdater = LiveWallpaper.getInstance().getSunTimesUpdater();
 
-        SunTimesUpdater.setOnSunTimesUpdateListener(new SunTimesUpdater.OnSunTimesUpdateListener()
+        sky = new GLSky(sunTimesUpdater);
+
+        sunTimesUpdater.setOnSunTimesUpdateListener(new SunTimesUpdater.OnSunTimesUpdateListener()
         {
             @Override
-            public void onUpdate(Bundle risingTimeValues, Bundle settingTimeValues)
+            public void onUpdate(SunTimesUpdater sunTimesUpdaterSender)
             {
-                sky.reinitializeColors();
+                sky.reinitializeColors(sunTimesUpdaterSender);
 
                 Log.i(TAG, "Wallpaper's colors have just been updated!");
             }

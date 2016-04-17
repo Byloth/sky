@@ -14,6 +14,7 @@ import net.byloth.engine.helpers.Randomize;
 import net.byloth.engine.graphics.Color;
 import net.byloth.engine.graphics.TimedColor;
 import net.byloth.engine.graphics.TimedShader;
+import net.byloth.sky.LiveWallpaper;
 import net.byloth.sky.R;
 import net.byloth.sky.updaters.SunTimesUpdater;
 
@@ -36,13 +37,13 @@ public class Stars extends View
 
     private Star[] stars;
 
-    private void initializeColors()
+    private void initializeColors(SunTimesUpdater sunTimesUpdater)
     {
-        int nauticalSunriseTime = SunTimesUpdater.getNauticalSunriseTime();
-        int astronomicalSunriseTime = SunTimesUpdater.getAstronomicalSunriseTime();
+        int nauticalSunriseTime = sunTimesUpdater.getNauticalDawnTime();
+        int astronomicalSunriseTime = sunTimesUpdater.getAstronomicalDawnTime();
 
-        int nauticalSunsetTime = SunTimesUpdater.getNauticalSunsetTime();
-        int astronomicalSunsetTime = SunTimesUpdater.getAstronomicalSunsetTime();
+        int nauticalSunsetTime = sunTimesUpdater.getNauticalSunsetTime();
+        int astronomicalSunsetTime = sunTimesUpdater.getAstronomicalSunsetTime();
 
         timedShader = new TimedShader(new TimedColor[]
         {
@@ -74,12 +75,12 @@ public class Stars extends View
             stars[index] = new Star(canvasWidthValue, canvasHeightValue);
         }
 
-        initializeColors();
+        initializeColors(LiveWallpaper.getInstance().getSunTimesUpdater());
     }
 
-    public Stars reinitializeColors()
+    public Stars reinitializeColors(SunTimesUpdater sunTimesUpdater)
     {
-        initializeColors();
+        initializeColors(sunTimesUpdater);
 
         return this;
     }

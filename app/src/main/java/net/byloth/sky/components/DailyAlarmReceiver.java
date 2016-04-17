@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
+import net.byloth.sky.LiveWallpaper;
+import net.byloth.sky.updaters.LocationUpdater;
 import net.byloth.sky.updaters.SunTimesUpdater;
 
 /**
@@ -19,7 +21,10 @@ public class DailyAlarmReceiver extends BroadcastReceiver
 
         if (intentAction != null)
         {
-            boolean sunTimesUpdated = SunTimesUpdater.updateSunTimes();
+            LocationUpdater locationUpdater = LiveWallpaper.getInstance().getLocationUpdater();
+            SunTimesUpdater sunTimesUpdater = LiveWallpaper.getInstance().getSunTimesUpdater();
+
+            boolean sunTimesUpdated = sunTimesUpdater.updateSunTimes(locationUpdater.getCurrentLocation());
 
             if (sunTimesUpdated == true)
             {

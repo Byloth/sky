@@ -71,13 +71,13 @@ public class GLSky
 
     private TimedShader[] timedShaders;
 
-    private void initializeColors()
+    private void initializeColors(SunTimesUpdater sunTimesUpdater)
     {
-        int officialSunriseTime = SunTimesUpdater.getOfficialSunriseTime();
-        int astronomicalSunriseTime = SunTimesUpdater.getAstronomicalSunriseTime();
+        int officialSunriseTime = sunTimesUpdater.getOfficialDawnTime();
+        int astronomicalSunriseTime = sunTimesUpdater.getAstronomicalDawnTime();
 
-        int officialSunsetTime = SunTimesUpdater.getOfficialSunsetTime();
-        int astronomicalSunsetTime = SunTimesUpdater.getAstronomicalSunsetTime();
+        int officialSunsetTime = sunTimesUpdater.getOfficialSunsetTime();
+        int astronomicalSunsetTime = sunTimesUpdater.getAstronomicalSunsetTime();
 
         int startDayTime = officialSunriseTime + (officialSunriseTime - astronomicalSunriseTime);
         int endDayTime = officialSunsetTime + (officialSunsetTime - astronomicalSunsetTime);
@@ -114,7 +114,7 @@ public class GLSky
         };
     }
 
-    public GLSky()
+    public GLSky(SunTimesUpdater sunTimesUpdater)
     {
         ByteBuffer coordsByteBuffer = ByteBuffer.allocateDirect(COORDS.length * 4);
         coordsByteBuffer.order(ByteOrder.nativeOrder());
@@ -130,7 +130,7 @@ public class GLSky
         drawListBuffer.put(COORDS_DRAW_ORDER);
         drawListBuffer.position(0);
 
-        initializeColors();
+        initializeColors(sunTimesUpdater);
     }
 
     public void draw(float[] mvpMatrix)
@@ -161,9 +161,9 @@ public class GLSky
         program = GLES2Compiler.linkProgram(context, R.raw.sky_vertex_shader, R.raw.sky_fragment_shader);
     }
 
-    public void reinitializeColors()
+    public void reinitializeColors(SunTimesUpdater sunTimesUpdater)
     {
-        initializeColors();
+        initializeColors(sunTimesUpdater);
     }
 
     public void update(DayTime currentTime)

@@ -17,15 +17,17 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import net.byloth.engine.utils.DayTime;
-import net.byloth.engine.utils.SunTime;
+import net.byloth.engine.utils.SunTimes;
 import net.byloth.sky.components.DailyAlarmReceiver;
+import net.byloth.sky.updaters.LocationUpdater;
+import net.byloth.sky.updaters.SunTimesUpdater;
 
 import java.util.List;
 
 /**
  * Created by Matteo on 02/03/16.
  */
-public class LiveWallpaper extends Application implements LocationListener
+public class LiveWallpaper extends Application implements LocationUpdater.OnLocationUpdateListener
 {
     static final private String TAG = "LiveWallpaper";
 
@@ -33,59 +35,12 @@ public class LiveWallpaper extends Application implements LocationListener
 
     private boolean isDailyAlarmSet;
 
-    private Location currentLocation;
-    private OnLocationUpdateListener onLocationUpdateListener;
+    private LocationUpdater locationUpdater;
+    private SunTimesUpdater sunTimesUpdater;
 
     static public LiveWallpaper getInstance()
     {
         return currentInstance;
-    }
-
-    private void getLastKnownLocation(LocationManager locationManager) throws SecurityException
-    {
-        Location bestRetrievedLocation = null;
-        List<String> providers = locationManager.getProviders(true);
-
-        for (String provider : providers)
-        {
-            Location location = locationManager.getLastKnownLocation(provider);
-
-            if (location != null)
-            {
-                if ((bestRetrievedLocation == null) || (location.getAccuracy() < bestRetrievedLocation.getAccuracy()))
-                {
-                    bestRetrievedLocation = location;
-                }
-            }
-        }
-
-        if (bestRetrievedLocation != null)
-        {
-            Log.i(TAG, "Last known user's location has been retrieved: " + bestRetrievedLocation.getLatitude() + ", " + bestRetrievedLocation.getLongitude());
-
-            setCurrentLocation(bestRetrievedLocation);
-        }
-    }
-
-    private void requestLocationUpdates(LocationManager locationManager) throws SecurityException
-    {
-        locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, this);
-    }
-
-    private void setCurrentLocation(Location location)
-    {
-        currentLocation = location;
-
-        if (isDailyAlarmSet == false)
-        {
-            setDailyAlarm();
-        }
-
-        SunTime sunTime = new SunTime(location);
-
-        Log.d(TAG, "Sunrise time: " + DayTime.toString(sunTime.getSunriseTime() * 60000));
-        Log.d(TAG, "Noon time: " + DayTime.toString(sunTime.getNoonTime() * 60000));
-        Log.d(TAG, "Sunset time: " + DayTime.toString(sunTime.getSunsetTime() * 60000));
     }
 
     private void setDailyAlarm()
@@ -108,40 +63,14 @@ public class LiveWallpaper extends Application implements LocationListener
         currentInstance = this;
 
         isDailyAlarmSet = false;
+
+        locationUpdater = new LocationUpdater();
+        sunTimesUpdater = new SunTimesUpdater();
     }
 
-    public LiveWallpaper initializeLocationListening()
+    public LocationUpdater getLocationUpdater()
     {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            int accessFineLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
-
-            if (accessFineLocationPermission == PackageManager.PERMISSION_GRANTED)
-            {
-                getLastKnownLocation(locationManager);
-                requestLocationUpdates(locationManager);
-            }
-            else
-            {
-                Log.e(TAG, "Permission denied to access user's location!");
-
-                // TODO: Require premissions...
-            }
-        }
-        else
-        {
-            getLastKnownLocation(locationManager);
-            requestLocationUpdates(locationManager);
-        }
-
-        return this;
-    }
-
-    public Location getCurrentLocation()
-    {
-        return currentLocation;
+        return locationUpdater;
     }
 
     public SharedPreferences getSharedPreferences()
@@ -149,9 +78,9 @@ public class LiveWallpaper extends Application implements LocationListener
         return PreferenceManager.getDefaultSharedPreferences(this);
     }
 
-    public void setOnLocationUpdateListener(OnLocationUpdateListener onLocationUpdateListenerInstance)
+    public SunTimesUpdater getSunTimesUpdater()
     {
-        onLocationUpdateListener = onLocationUpdateListenerInstance;
+        return sunTimesUpdater;
     }
 
     @Override
@@ -159,46 +88,16 @@ public class LiveWallpaper extends Application implements LocationListener
     {
         super.onCreate();
 
-        initializeLocationListening();
+        locationUpdater.initializeLocationListening(this);
+        locationUpdater.setOnLocationUpdateListener(this);
     }
 
     @Override
-    public void onLocationChanged(Location location)
+    public void onUpdate(Location location)
     {
-        if (currentLocation == null)
+        if (isDailyAlarmSet == false)
         {
-            currentLocation = location;
+            setDailyAlarm();
         }
-        else if (currentLocation.getAccuracy() < location.getAccuracy())
-        {
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-
-            if ((currentLocation.getLatitude() != latitude) && (currentLocation.getLongitude() != longitude))
-            {
-                Log.i(TAG, "User location has been updated: " + latitude + ", " + longitude);
-
-                setCurrentLocation(location);
-
-                if (onLocationUpdateListener != null)
-                {
-                    onLocationUpdateListener.onUpdate(location);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) { }
-
-    @Override
-    public void onProviderEnabled(String provider) { }
-
-    @Override
-    public void onProviderDisabled(String provider) { }
-
-    public interface OnLocationUpdateListener
-    {
-        void onUpdate(Location location);
     }
 }
