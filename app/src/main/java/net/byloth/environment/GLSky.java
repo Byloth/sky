@@ -3,7 +3,9 @@ package net.byloth.environment;
 import android.content.Context;
 import android.opengl.GLES10;
 import android.opengl.GLES20;
+import android.util.Log;
 
+import net.byloth.engine.graphics.opengl.UpdatableGL;
 import net.byloth.engine.utils.DayTime;
 import net.byloth.engine.graphics.Color;
 import net.byloth.engine.graphics.TimedColor;
@@ -20,8 +22,10 @@ import java.nio.ShortBuffer;
 /**
  * Created by Matteo on 26/03/2016.
  */
-public class GLSky
+public class GLSky extends UpdatableGL
 {
+    static final private String TAG = "GLSky";
+
     static final public Color[] SUNRISE_COLORS = new Color[] {
 
         new Color(91, 130, 194),
@@ -65,6 +69,8 @@ public class GLSky
     final private int VERTEX_STRIDE = COORDS_PER_VERTEX * 4;
 
     private int program;
+
+    private DayTime dayTime;
 
     private FloatBuffer vertexBuffer;
     private ShortBuffer drawListBuffer;
@@ -116,6 +122,10 @@ public class GLSky
 
     public GLSky(SunTimesUpdater sunTimesUpdater)
     {
+        super(0);
+
+        dayTime = new DayTime();
+
         ByteBuffer coordsByteBuffer = ByteBuffer.allocateDirect(COORDS.length * 4);
         coordsByteBuffer.order(ByteOrder.nativeOrder());
 
@@ -166,11 +176,14 @@ public class GLSky
         initializeColors(sunTimesUpdater);
     }
 
-    public void update(DayTime currentTime)
+    @Override
+    public void onUpdate()
     {
         for (TimedShader timedShader : timedShaders)
         {
-            timedShader.updateCurrentColor(currentTime);
+            timedShader.updateCurrentColor(dayTime);
         }
+
+        Log.d(TAG, "Frame updated!");
     }
 }

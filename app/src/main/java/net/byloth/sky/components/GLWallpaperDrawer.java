@@ -59,59 +59,12 @@ public class GLWallpaperDrawer extends GLES2WallpaperService
 
     public class GLWallpaperUpdateEngine extends GLES2Engine
     {
-        private int frameInterval;
-
-        private Handler updatingHandler;
-        private Runnable updateRunner;
-
-        private DayTime dayTime;
-
-        private void updateFrame()
-        {
-            sky.update(dayTime);
-
-            // Log.d(TAG, "Frame updated!");
-        }
-
-        public GLWallpaperUpdateEngine()
-        {
-            SharedPreferences sharedPreferences = LiveWallpaper.getInstance().getSharedPreferences();
-
-            int framePerSecond = sharedPreferences.getInt(getString(R.string.frame_per_second_pref_key), 30);
-
-            frameInterval = 1000 / framePerSecond;
-
-            updatingHandler = new Handler();
-            updateRunner = new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    updateFrame();
-
-                    updatingHandler.removeCallbacks(updateRunner);
-                    // updatingHandler.postDelayed(updateRunner, frameInterval);
-                }
-            };
-
-            updatingHandler.post(updateRunner);
-
-            dayTime = new DayTime();
-        }
-
         @Override
         public void onVisibilityChanged(boolean visible)
         {
             super.onVisibilityChanged(visible);
 
-            if (visible == true)
-            {
-                updatingHandler.post(updateRunner);
-            }
-            else
-            {
-                updatingHandler.removeCallbacks(updateRunner);
-            }
+            sky.onVisibilityChanged(visible);
         }
     }
 
