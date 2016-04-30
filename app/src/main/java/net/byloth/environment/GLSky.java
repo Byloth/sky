@@ -5,7 +5,7 @@ import android.opengl.GLES10;
 import android.opengl.GLES20;
 import android.util.Log;
 
-import net.byloth.engine.graphics.opengl.UpdatableGL;
+import net.byloth.engine.graphics.opengl.UpdatableGLView;
 import net.byloth.engine.utils.DayTime;
 import net.byloth.engine.graphics.Color;
 import net.byloth.engine.graphics.TimedColor;
@@ -22,7 +22,7 @@ import java.nio.ShortBuffer;
 /**
  * Created by Matteo on 26/03/2016.
  */
-public class GLSky extends UpdatableGL
+public class GLSky extends UpdatableGLView
 {
     static final private String TAG = "GLSky";
 

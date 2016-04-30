@@ -9,7 +9,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import net.byloth.engine.utils.DayTime;
-import net.byloth.engine.graphics.opengl.GLES2WallpaperService;
+import net.byloth.engine.graphics.opengl.GLWallpaperService;
 import net.byloth.environment.GLSky;
 import net.byloth.sky.LiveWallpaper;
 import net.byloth.sky.R;
@@ -21,7 +21,7 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * Created by Matteo on 06/12/2015.
  */
-public class GLWallpaperDrawer extends GLES2WallpaperService
+public class GLWallpaperDrawer extends GLWallpaperService
 {
     static final private String TAG = "GLWallpaperDrawer";
 
@@ -57,7 +57,7 @@ public class GLWallpaperDrawer extends GLES2WallpaperService
         return new GLWallpaperUpdateEngine();
     }
 
-    public class GLWallpaperUpdateEngine extends GLES2Engine
+    public class GLWallpaperUpdateEngine extends GLEngine
     {
         @Override
         public void onVisibilityChanged(boolean visible)

@@ -5,19 +5,19 @@ import android.os.Handler;
 /**
  * Created by Matteo on 28/04/2016.
  */
-abstract public class UpdatableGL
+abstract public class UpdatableGLView
 {
     private long frameInterval;
 
     private Handler updatingHandler;
     private Runnable updateRunner;
 
-    public UpdatableGL()
+    public UpdatableGLView()
     {
         this(60);
     }
 
-    public UpdatableGL(int framePerSecond)
+    public UpdatableGLView(int framePerSecond)
     {
         updatingHandler = new Handler();
         updateRunner = new Runnable()
