@@ -8,35 +8,39 @@
     <color name="black">#000</color>
 
     <color name="transparent">#00000000</color>
+    <color name="semitransparent_light">#3F000000</color>
     <color name="semitransparent">#7F000000</color>
+    <color name="semitransparent_dark">#BF000000</color>
 
-    <color name="red_light">#EF5350</color>
-    <color name="red">#E53935</color>
-    <color name="red_dark">#C62828</color>
+    <color name="red_light">#E57373</color>
+    <color name="red">#F44336</color>
+    <color name="red_dark">#D32F2F</color>
+    <color name="red_accent">#D50000</color>
 
-    <color name="yellow_light">#FFEE58</color>
-    <color name="yellow">#FDD835</color>
-    <color name="yellow_dark">#F9A825</color>
+    <color name="yellow_light">#FFF176</color>
+    <color name="yellow">#FFEB3B</color>
+    <color name="yellow_dark">#FBC02D</color>
+    <color name="yellow_accent">#FFD600</color>
 
-    <color name="green_light">#66BB6A</color>
-    <color name="green">#43A047</color>
-    <color name="green_dark">#2E7D32</color>
+    <color name="green_light">#81C784</color>
+    <color name="green">#4CAF50</color>
+    <color name="green_dark">#388E3C</color>
+    <color name="green_accent">#00C853</color>
 
-    <color name="cyan_light">#26C6DA</color>
-    <color name="cyan">#00ACC1</color>
-    <color name="cyan_dark">#00838F</color>
+    <color name="cyan_light">#4DD0E1</color>
+    <color name="cyan">#00BCD4</color>
+    <color name="cyan_dark">#0097A7</color>
+    <color name="cyan_accent">#00B8D4</color>
 
-    <color name="blue_light">#5C6BC0</color>
-    <color name="blue">#3949AB</color>
-    <color name="blue_dark">#283593</color>
+    <color name="blue_light">#7986CB</color>
+    <color name="blue">#3F51B5</color>
+    <color name="blue_dark">#303F9F</color>
+    <color name="blue_accent">#304FFE</color>
 
-    <color name="fuchsia_light">#EC407A</color>
-    <color name="fuchsia">#D81B60</color>
-    <color name="fuchsia_dark">#AD1457</color>
-
-    <color name="primary">@color/blue</color>
-    <color name="primary_dark">@color/blue_dark</color>
-    <color name="accent">@color/yellow_dark</color>
+    <color name="fuchsia_light">#F06292</color>
+    <color name="fuchsia">#E91E63</color>
+    <color name="fuchsia_dark">#C2185B</color>
+    <color name="fuchsia_accent">#C51162</color>
 
     <color name="text">#212121</color>
     <color name="text_light">#757575</color>
