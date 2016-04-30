@@ -27,11 +27,11 @@ public class TimedColor
     {
         return time;
     }
-    public TimedColor setTime(int timeValue)
+    public TimedColor setTime(double timeValue)
     {
         if ((timeValue >= DayTime.MIN_VALUE) && (timeValue < DayTime.MAX_VALUE))
         {
-            time = timeValue;
+            time = (int) timeValue;
         }
         else
         {
@@ -56,7 +56,7 @@ public class TimedColor
     @Override
     public boolean equals(Object otherTimedColor)
     {
-        if (otherTimedColor instanceof TimedColor)
+        if ((otherTimedColor instanceof TimedColor) == true)
         {
             TimedColor timedColor = (TimedColor) otherTimedColor;
 

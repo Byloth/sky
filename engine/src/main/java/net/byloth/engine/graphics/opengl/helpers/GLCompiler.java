@@ -2,6 +2,7 @@ package net.byloth.engine.graphics.opengl.helpers;
 
 import android.content.Context;
 import android.opengl.GLES20;
+import android.support.annotation.RawRes;
 import android.util.Log;
 
 import net.byloth.engine.io.helpers.FileLoader;
@@ -9,11 +10,11 @@ import net.byloth.engine.io.helpers.FileLoader;
 /**
  * Created by Matteo on 26/03/2016.
  */
-final public class GLES2Compiler
+final public class GLCompiler
 {
-    static final private String TAG = "GLES2Compiler";
+    static final private String TAG = "GLCompiler";
 
-    private GLES2Compiler() { }
+    private GLCompiler() { }
 
     static public int compileShader(int shaderType, String shaderSource)
     {
@@ -51,8 +52,8 @@ final public class GLES2Compiler
 
     static public int linkProgram(String vertexShaderSource, String fragmentShaderSource)
     {
-        int vertexShader = GLES2Compiler.compileShader(GLES20.GL_VERTEX_SHADER, vertexShaderSource);
-        int fragmentShader = GLES2Compiler.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderSource);
+        int vertexShader = GLCompiler.compileShader(GLES20.GL_VERTEX_SHADER, vertexShaderSource);
+        int fragmentShader = GLCompiler.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderSource);
 
         int program = GLES20.glCreateProgram();
 
@@ -82,7 +83,7 @@ final public class GLES2Compiler
         throw new RuntimeException();
     }
 
-    static public int linkProgram(Context context, int vertexShaderResourceId, int fragmentShaderResourceId)
+    static public int linkProgram(Context context, @RawRes int vertexShaderResourceId, @RawRes int fragmentShaderResourceId)
     {
         String vertexShaderSource = FileLoader.loadTextResource(context, vertexShaderResourceId);
         String fragmentShaderSource = FileLoader.loadTextResource(context, fragmentShaderResourceId);

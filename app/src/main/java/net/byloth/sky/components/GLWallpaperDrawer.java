@@ -1,18 +1,13 @@
 package net.byloth.sky.components;
 
-import android.content.SharedPreferences;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 
-import net.byloth.engine.utils.DayTime;
 import net.byloth.engine.graphics.opengl.GLWallpaperService;
 import net.byloth.environment.GLSky;
 import net.byloth.sky.LiveWallpaper;
-import net.byloth.sky.R;
 import net.byloth.sky.updaters.SunTimesUpdater;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -79,6 +74,8 @@ public class GLWallpaperDrawer extends GLWallpaperService
         {
             GLES20.glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 
+            sky.onSurfaceCreated(GLWallpaperDrawer.this);
+
             Log.d(TAG, "Surface created!");
         }
 
@@ -91,7 +88,7 @@ public class GLWallpaperDrawer extends GLWallpaperService
 
             Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 3, 7);
 
-            sky.load(GLWallpaperDrawer.this);
+            sky.onSurfaceChanged(width, height);
 
             Log.d(TAG, "Surface changed!");
         }
@@ -104,7 +101,7 @@ public class GLWallpaperDrawer extends GLWallpaperService
             Matrix.setLookAtM(viewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
             Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
 
-            sky.draw(mvpMatrix);
+            sky.onDrawFrame();
 
             Log.d(TAG, "Frame drawed!");
         }

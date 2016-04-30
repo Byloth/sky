@@ -5,7 +5,7 @@ import android.os.Handler;
 /**
  * Created by Matteo on 28/04/2016.
  */
-abstract public class UpdatableGLView
+abstract public class UpdatableGLView extends GLView
 {
     private long frameInterval;
 
@@ -14,11 +14,8 @@ abstract public class UpdatableGLView
 
     public UpdatableGLView()
     {
-        this(60);
-    }
+        frameInterval = 0;
 
-    public UpdatableGLView(int framePerSecond)
-    {
         updatingHandler = new Handler();
         updateRunner = new Runnable()
         {
@@ -35,23 +32,25 @@ abstract public class UpdatableGLView
                 }
             }
         };
-
-        setFramePerSecond(framePerSecond);
     }
 
-    public void onPause()
+    public UpdatableGLView onPause()
     {
         updatingHandler.removeCallbacks(updateRunner);
+
+        return this;
     }
 
-    public void onResume()
+    public UpdatableGLView onResume()
     {
         updatingHandler.post(updateRunner);
+
+        return this;
     }
 
-    abstract public void onUpdate();
+    abstract public UpdatableGLView onUpdate();
 
-    public void onVisibilityChanged(boolean visible)
+    public UpdatableGLView onVisibilityChanged(boolean visible)
     {
         if (visible == true)
         {
@@ -61,24 +60,41 @@ abstract public class UpdatableGLView
         {
             onPause();
         }
+
+        return this;
     }
 
-    public void setFramePerSecond(double framePerSecond)
+    public UpdatableGLView setFrameInterval(double frameIntervalValue)
     {
-        if (framePerSecond < 0)
+        if (frameInterval < 0)
         {
             throw new IllegalArgumentException();
         }
         else
         {
-            if (framePerSecond == 0)
+            frameInterval = (int) frameIntervalValue;
+        }
+
+        return this;
+    }
+    public UpdatableGLView setFramePerSecond(double framePerSecondValue)
+    {
+        if (framePerSecondValue < 0)
+        {
+            throw new IllegalArgumentException();
+        }
+        else
+        {
+            if (framePerSecondValue == 0)
             {
                 frameInterval = 0;
             }
             else
             {
-                frameInterval = (int) (1000.0d / framePerSecond);
+                frameInterval = (int) (1000.0d / framePerSecondValue);
             }
         }
+
+        return this;
     }
 }

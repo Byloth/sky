@@ -1,23 +1,22 @@
 package net.byloth.environment;
 
 import android.content.Context;
-import android.opengl.GLES10;
 import android.opengl.GLES20;
 import android.util.Log;
 
+import net.byloth.engine.graphics.Vector2;
+import net.byloth.engine.graphics.opengl.GLView;
 import net.byloth.engine.graphics.opengl.UpdatableGLView;
+import net.byloth.engine.graphics.opengl.helpers.GLCompiler;
 import net.byloth.engine.utils.DayTime;
 import net.byloth.engine.graphics.Color;
 import net.byloth.engine.graphics.TimedColor;
 import net.byloth.engine.graphics.TimedShader;
-import net.byloth.engine.graphics.opengl.helpers.GLES2Compiler;
 import net.byloth.sky.R;
 import net.byloth.sky.updaters.SunTimesUpdater;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 
 /**
  * Created by Matteo on 26/03/2016.
@@ -25,6 +24,16 @@ import java.nio.ShortBuffer;
 public class GLSky extends UpdatableGLView
 {
     static final private String TAG = "GLSky";
+
+    static final private float VERTEX[] = {
+
+            1.0f,  1.0f, 0.0f,
+            -1.0f,  1.0f, 0.0f,
+            -1.0f, -1.0f, 0.0f,
+            1.0f, -1.0f, 0.0f
+    };
+
+    static final private short VERTEX_DRAW_ORDER[] = { 0, 1, 2, 0, 2, 3 };
 
     static final public Color[] SUNRISE_COLORS = new Color[] {
 
@@ -54,26 +63,8 @@ public class GLSky extends UpdatableGLView
         new Color(0, 13, 25)
     };
 
-    final private int COORDS_PER_VERTEX = 3;
-
-    final private float COORDS[] = {
-
-         1.0f,  1.0f, 0.0f,
-        -1.0f,  1.0f, 0.0f,
-        -1.0f, -1.0f, 0.0f,
-         1.0f, -1.0f, 0.0f
-    };
-    final private short COORDS_DRAW_ORDER[] = { 0, 1, 2, 0, 2, 3 };
-
-    final private int VERTEX_COUNT = COORDS.length / COORDS_PER_VERTEX;
-    final private int VERTEX_STRIDE = COORDS_PER_VERTEX * 4;
-
-    private int program;
-
     private DayTime dayTime;
-
-    private FloatBuffer vertexBuffer;
-    private ShortBuffer drawListBuffer;
+    private Vector2 surfaceSize;
 
     private TimedShader[] timedShaders;
 
@@ -122,62 +113,36 @@ public class GLSky extends UpdatableGLView
 
     public GLSky(SunTimesUpdater sunTimesUpdater)
     {
-        super(0);
-
         dayTime = new DayTime();
-
-        ByteBuffer coordsByteBuffer = ByteBuffer.allocateDirect(COORDS.length * 4);
-        coordsByteBuffer.order(ByteOrder.nativeOrder());
-
-        vertexBuffer = coordsByteBuffer.asFloatBuffer();
-        vertexBuffer.put(COORDS);
-        vertexBuffer.position(0);
-
-        ByteBuffer coordsDrawOrderByteBuffer = ByteBuffer.allocateDirect(COORDS_DRAW_ORDER.length * 2);
-        coordsDrawOrderByteBuffer.order(ByteOrder.nativeOrder());
-
-        drawListBuffer = coordsDrawOrderByteBuffer.asShortBuffer();
-        drawListBuffer.put(COORDS_DRAW_ORDER);
-        drawListBuffer.position(0);
+        surfaceSize = new Vector2();
 
         initializeColors(sunTimesUpdater);
     }
 
-    public void draw(float[] mvpMatrix)
+    public GLSky onSurfaceCreated(Context context)
     {
-        GLES20.glUseProgram(program);
+        loadVertex(VERTEX, VERTEX_DRAW_ORDER);
+        loadProgram(context, R.raw.sky_vertex_shader, R.raw.sky_fragment_shader);
 
-        int positionHandle = GLES20.glGetAttribLocation(program, "position");
-        GLES20.glEnableVertexAttribArray(positionHandle);
-        GLES20.glVertexAttribPointer(positionHandle, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, vertexBuffer);
-
-        int screenResolutionHandle = GLES20.glGetUniformLocation(program, "screenResolution");
-        GLES20.glUniform2fv(screenResolutionHandle, 1, new float[] { 1080f, 1920f }, 0);
-
-        int topColorHandle = GLES20.glGetUniformLocation(program, "topColor");
-        GLES20.glUniform3fv(topColorHandle, 1, timedShaders[0].getCurrentColor().toFloat(), 0);
-        int middleColorHandle = GLES20.glGetUniformLocation(program, "middleColor");
-        GLES20.glUniform3fv(middleColorHandle, 1, timedShaders[1].getCurrentColor().toFloat(), 0);
-        int bottomColorHandle = GLES20.glGetUniformLocation(program, "bottomColor");
-        GLES20.glUniform3fv(bottomColorHandle, 1, timedShaders[2].getCurrentColor().toFloat(), 0);
-
-        GLES20.glDrawElements(GLES10.GL_TRIANGLE_FAN, COORDS_DRAW_ORDER.length, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
-
-        GLES20.glDisableVertexAttribArray(positionHandle);
+        return this;
     }
 
-    public void load(Context context)
+    public GLSky onSurfaceChanged(int width, int height)
     {
-        program = GLES2Compiler.linkProgram(context, R.raw.sky_vertex_shader, R.raw.sky_fragment_shader);
+        surfaceSize = new Vector2(width, height);
+
+        return this;
     }
 
-    public void reinitializeColors(SunTimesUpdater sunTimesUpdater)
+    public GLSky reinitializeColors(SunTimesUpdater sunTimesUpdater)
     {
         initializeColors(sunTimesUpdater);
+
+        return this;
     }
 
     @Override
-    public void onUpdate()
+    public UpdatableGLView onUpdate()
     {
         for (TimedShader timedShader : timedShaders)
         {
@@ -185,5 +150,27 @@ public class GLSky extends UpdatableGLView
         }
 
         Log.d(TAG, "Frame updated!");
+
+        return this;
+    }
+
+    @Override
+    public GLView onDrawFrame()
+    {
+        super.onDrawFrame();
+
+        int vertexArrayLocation = enableVertexArray("position");
+
+        setUniform("screenResolution", surfaceSize);
+
+        setUniform("topColor", timedShaders[0].getCurrentColor());
+        setUniform("middleColor", timedShaders[1].getCurrentColor());
+        setUniform("bottomColor", timedShaders[2].getCurrentColor());
+
+        drawFrame(VERTEX_DRAW_ORDER.length);
+
+        disableVertexArray(vertexArrayLocation);
+
+        return this;
     }
 }

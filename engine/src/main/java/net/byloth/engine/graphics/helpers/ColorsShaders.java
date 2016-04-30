@@ -26,10 +26,10 @@ final public class ColorsShaders
 
             Color color = new Color();
 
-            color.setRed((int) (startingColor.getRed() + (colorUnits[0] * shadingRatio)));
-            color.setGreen((int) (startingColor.getGreen() + (colorUnits[1] * shadingRatio)));
-            color.setBlue((int) (startingColor.getBlue() + (colorUnits[2] * shadingRatio)));
-            color.setAlpha((int) (startingColor.getAlpha() + (colorUnits[3] * shadingRatio)));
+            color.setRed(startingColor.getRed() + (colorUnits[0] * shadingRatio));
+            color.setGreen(startingColor.getGreen() + (colorUnits[1] * shadingRatio));
+            color.setBlue(startingColor.getBlue() + (colorUnits[2] * shadingRatio));
+            color.setAlpha(startingColor.getAlpha() + (colorUnits[3] * shadingRatio));
 
             return color;
         }

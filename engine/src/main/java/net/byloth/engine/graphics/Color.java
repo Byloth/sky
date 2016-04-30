@@ -32,7 +32,7 @@ public class Color
 
         this.alpha = MAX_VALUE;
     }
-    public Color(int redValue, int greenValue, int blueValue)
+    public Color(double redValue, double greenValue, double blueValue)
     {
         setRed(redValue);
         setGreen(greenValue);
@@ -40,7 +40,7 @@ public class Color
 
         this.alpha = MAX_VALUE;
     }
-    public Color(int redValue, int greenValue, int blueValue, int alphaValue)
+    public Color(double redValue, double greenValue, double blueValue, double alphaValue)
     {
         setRed(redValue);
         setGreen(greenValue);
@@ -53,11 +53,11 @@ public class Color
     {
         return red;
     }
-    public Color setRed(int redValue)
+    public Color setRed(double redValue)
     {
         if ((redValue >= MIN_VALUE) && (redValue <= MAX_VALUE))
         {
-            red = redValue;
+            red = (int) redValue;
         }
         else
         {
@@ -71,11 +71,11 @@ public class Color
     {
         return green;
     }
-    public Color setGreen(int greenValue)
+    public Color setGreen(double greenValue)
     {
         if ((greenValue >= MIN_VALUE) && (greenValue <= MAX_VALUE))
         {
-            green = greenValue;
+            green = (int) greenValue;
         }
         else
         {
@@ -89,11 +89,11 @@ public class Color
     {
         return blue;
     }
-    public Color setBlue(int blueValue)
+    public Color setBlue(double blueValue)
     {
         if ((blueValue >= MIN_VALUE) && (blueValue <= MAX_VALUE))
         {
-            blue = blueValue;
+            blue = (int) blueValue;
         }
         else
         {
@@ -107,11 +107,11 @@ public class Color
     {
         return alpha;
     }
-    public Color setAlpha(int alphaValue)
+    public Color setAlpha(double alphaValue)
     {
         if ((alphaValue >= MIN_VALUE) && (alphaValue <= MAX_VALUE))
         {
-            alpha = alphaValue;
+            alpha = (int) alphaValue;
         }
         else
         {
@@ -140,7 +140,7 @@ public class Color
     @Override
     public boolean equals(Object otherColor)
     {
-        if (otherColor instanceof Color)
+        if ((otherColor instanceof Color) == true)
         {
             Color color = (Color) otherColor;
 
