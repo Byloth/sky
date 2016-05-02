@@ -161,4 +161,10 @@ public class Color
 
         return false;
     }
+
+    @Override
+    public String toString()
+    {
+        return "color(" + red + ", " + green + ", " + blue + ")";
+    }
 }

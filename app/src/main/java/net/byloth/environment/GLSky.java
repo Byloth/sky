@@ -163,6 +163,10 @@ public class GLSky extends UpdatableGLView
 
         setUniform("screenResolution", surfaceSize);
 
+        Log.d(TAG, "Top Color: " + timedShaders[0].getCurrentColor().toString());
+        Log.d(TAG, "Middle Color: " + timedShaders[1].getCurrentColor().toString());
+        Log.d(TAG, "Bottom Color: " + timedShaders[2].getCurrentColor().toString());
+
         setUniform("topColor", timedShaders[0].getCurrentColor());
         setUniform("middleColor", timedShaders[1].getCurrentColor());
         setUniform("bottomColor", timedShaders[2].getCurrentColor());

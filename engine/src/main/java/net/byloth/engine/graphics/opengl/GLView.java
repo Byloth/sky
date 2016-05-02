@@ -67,11 +67,6 @@ abstract public class GLView
         return GLES20.glGetAttribLocation(program, attributeName);
     }
 
-    public GLView setAttribute()
-    {
-        return this;
-    }
-
     public int enableVertexArray(String vertexArrayName)
     {
         int vertexArrayLocation = getAttributeLocation(vertexArrayName);
