@@ -1,5 +1,6 @@
 package net.byloth.engine.graphics.opengl;
 
+import android.opengl.GLSurfaceView;
 import android.os.Handler;
 
 /**
@@ -7,6 +8,8 @@ import android.os.Handler;
  */
 abstract public class UpdatableGLView extends GLView
 {
+    private GLSurfaceView glSurfaceView;
+
     private long frameInterval;
 
     private Handler updatingHandler;
@@ -24,6 +27,7 @@ abstract public class UpdatableGLView extends GLView
             {
                 onUpdate();
 
+                glSurfaceView.requestRender();
                 updatingHandler.removeCallbacks(updateRunner);
 
                 if (frameInterval > 0)
@@ -32,6 +36,13 @@ abstract public class UpdatableGLView extends GLView
                 }
             }
         };
+    }
+
+    public UpdatableGLView onSurfaceCreated(GLWallpaperService glWallpaperService)
+    {
+        glSurfaceView = glWallpaperService.getSurfaceView();
+
+        return this;
     }
 
     public UpdatableGLView onPause()

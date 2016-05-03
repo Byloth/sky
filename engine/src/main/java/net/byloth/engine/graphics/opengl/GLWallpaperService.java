@@ -15,7 +15,14 @@ abstract public class GLWallpaperService extends WallpaperService
 {
     static final private String TAG = "GLWallpaperService";
 
+    private GLEngine.WallpaperGLSurfaceView glSurfaceView;
+
     abstract protected GLSurfaceView.Renderer getNewRenderer();
+
+    public GLEngine.WallpaperGLSurfaceView getSurfaceView()
+    {
+        return glSurfaceView;
+    }
 
     @Override
     public Engine onCreateEngine()
@@ -26,8 +33,6 @@ abstract public class GLWallpaperService extends WallpaperService
     public class GLEngine extends Engine
     {
         private boolean renderHasBeenSet;
-
-        private WallpaperGLSurfaceView glSurfaceView;
 
         @Override
         public void onCreate(SurfaceHolder surfaceHolder)

@@ -2,10 +2,12 @@ package net.byloth.environment;
 
 import android.content.Context;
 import android.opengl.GLES20;
+import android.opengl.GLSurfaceView;
 import android.util.Log;
 
 import net.byloth.engine.graphics.Vector2;
 import net.byloth.engine.graphics.opengl.GLView;
+import net.byloth.engine.graphics.opengl.GLWallpaperService;
 import net.byloth.engine.graphics.opengl.UpdatableGLView;
 import net.byloth.engine.graphics.opengl.helpers.GLCompiler;
 import net.byloth.engine.utils.DayTime;
@@ -119,10 +121,12 @@ public class GLSky extends UpdatableGLView
         initializeColors(sunTimesUpdater);
     }
 
-    public GLSky onSurfaceCreated(Context context)
+    public GLSky onSurfaceCreated(GLWallpaperService glWallpaperService)
     {
+        super.onSurfaceCreated(glWallpaperService);
+
         loadVertex(VERTEX, VERTEX_DRAW_ORDER);
-        loadProgram(context, R.raw.sky_vertex_shader, R.raw.sky_fragment_shader);
+        loadProgram(glWallpaperService, R.raw.sky_vertex_shader, R.raw.sky_fragment_shader);
 
         return this;
     }
@@ -142,7 +146,7 @@ public class GLSky extends UpdatableGLView
     }
 
     @Override
-    public UpdatableGLView onUpdate()
+    public GLSky onUpdate()
     {
         for (TimedShader timedShader : timedShaders)
         {
@@ -155,7 +159,7 @@ public class GLSky extends UpdatableGLView
     }
 
     @Override
-    public GLView onDrawFrame()
+    public GLSky onDrawFrame()
     {
         super.onDrawFrame();
 
