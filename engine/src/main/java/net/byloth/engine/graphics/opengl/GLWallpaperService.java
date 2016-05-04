@@ -19,7 +19,7 @@ abstract public class GLWallpaperService extends WallpaperService
 
     abstract protected GLSurfaceView.Renderer getNewRenderer();
 
-    public GLEngine.WallpaperGLSurfaceView getSurfaceView()
+    public GLEngine.WallpaperGLSurfaceView getGlSurfaceView()
     {
         return glSurfaceView;
     }

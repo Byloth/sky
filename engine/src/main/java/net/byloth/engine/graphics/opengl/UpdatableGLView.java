@@ -38,9 +38,9 @@ abstract public class UpdatableGLView extends GLView
         };
     }
 
-    public UpdatableGLView onSurfaceCreated(GLWallpaperService glWallpaperService)
+    public UpdatableGLView onSurfaceCreated(GLSurfaceView glSurfaceViewInstance)
     {
-        glSurfaceView = glWallpaperService.getSurfaceView();
+        glSurfaceView = glSurfaceViewInstance;
 
         return this;
     }

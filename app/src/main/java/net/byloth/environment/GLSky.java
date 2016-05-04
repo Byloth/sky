@@ -123,7 +123,7 @@ public class GLSky extends UpdatableGLView
 
     public GLSky onSurfaceCreated(GLWallpaperService glWallpaperService)
     {
-        super.onSurfaceCreated(glWallpaperService);
+        super.onSurfaceCreated(glWallpaperService.getGlSurfaceView());
 
         loadVertex(VERTEX, VERTEX_DRAW_ORDER);
         loadProgram(glWallpaperService, R.raw.sky_vertex_shader, R.raw.sky_fragment_shader);
