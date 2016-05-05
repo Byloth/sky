@@ -2,6 +2,7 @@ package net.byloth.engine.graphics.opengl;
 
 import android.content.Context;
 import android.opengl.GLES20;
+import android.opengl.GLSurfaceView;
 import android.support.annotation.RawRes;
 
 import net.byloth.engine.graphics.Color;
@@ -22,26 +23,27 @@ abstract public class GLView
     static final private int VERTEX_STRIDE = COORDS_PER_VERTEX * 4;
 
     private int program;
-
     private int vertexCount;
+    private int vertexDrawOrderLength;
 
     private FloatBuffer vertexBuffer;
     private ShortBuffer drawListBuffer;
+    private GLSurfaceView glSurfaceView;
 
-    public GLView loadProgram(String vertexShaderSource, String fragmentShaderSource)
+    protected GLView loadProgram(String vertexShaderSource, String fragmentShaderSource)
     {
         program = GLCompiler.linkProgram(vertexShaderSource, fragmentShaderSource);
 
         return this;
     }
-    public GLView loadProgram(Context context, @RawRes int vertexShaderResourceId, @RawRes int fragmentShaderResourceId)
+    protected GLView loadProgram(Context context, @RawRes int vertexShaderResourceId, @RawRes int fragmentShaderResourceId)
     {
         program = GLCompiler.linkProgram(context, vertexShaderResourceId, fragmentShaderResourceId);
 
         return this;
     }
 
-    public GLView loadVertex(float[] vertex, short[] vertexDrawOrder)
+    protected GLView loadVertex(float[] vertex, short[] vertexDrawOrder)
     {
         vertexCount = vertex.length / COORDS_PER_VERTEX;
 
@@ -51,6 +53,8 @@ abstract public class GLView
         vertexBuffer = coordsByteBuffer.asFloatBuffer();
         vertexBuffer.put(vertex);
         vertexBuffer.position(0);
+
+        vertexDrawOrderLength = vertexDrawOrder.length;
 
         ByteBuffer coordsDrawOrderByteBuffer = ByteBuffer.allocateDirect(vertexDrawOrder.length * 2);
         coordsDrawOrderByteBuffer.order(ByteOrder.nativeOrder());
@@ -62,12 +66,12 @@ abstract public class GLView
         return this;
     }
 
-    public int getAttributeLocation(String attributeName)
+    protected int getAttributeLocation(String attributeName)
     {
         return GLES20.glGetAttribLocation(program, attributeName);
     }
 
-    public int enableVertexArray(String vertexArrayName)
+    protected int enableVertexArray(String vertexArrayName)
     {
         int vertexArrayLocation = getAttributeLocation(vertexArrayName);
 
@@ -77,19 +81,19 @@ abstract public class GLView
         return vertexArrayLocation;
     }
 
-    public GLView disableVertexArray(int vertexArrayLocation)
+    protected GLView disableVertexArray(int vertexArrayLocation)
     {
         GLES20.glDisableVertexAttribArray(vertexArrayLocation);
 
         return this;
     }
 
-    public int getUniformLocation(String uniformName)
+    protected int getUniformLocation(String uniformName)
     {
         return GLES20.glGetUniformLocation(program, uniformName);
     }
 
-    public GLView setUniform(String uniformName, Vector2 vector2)
+    protected GLView setUniform(String uniformName, Vector2 vector2)
     {
         int uniformLocation = getUniformLocation(uniformName);
 
@@ -97,7 +101,7 @@ abstract public class GLView
 
         return this;
     }
-    public GLView setUniform(String uniformName, Color color)
+    protected GLView setUniform(String uniformName, Color color)
     {
         int uniformLocation = getUniformLocation(uniformName);
 
@@ -106,9 +110,49 @@ abstract public class GLView
         return this;
     }
 
-    public GLView drawFrame(int vertexDrawOrderLength)
+    protected GLView requestRender()
+    {
+        glSurfaceView.requestRender();
+
+        return this;
+    }
+
+    protected GLView drawElements()
     {
         GLES20.glDrawElements(GLES20.GL_TRIANGLE_FAN, vertexDrawOrderLength, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
+
+        return this;
+    }
+
+    abstract protected GLView onDraw();
+
+    public GLView onPause()
+    {
+        return this;
+    }
+
+    public GLView onResume()
+    {
+        return this;
+    }
+
+    public GLView onSurfaceCreated(GLSurfaceView glSurfaceViewInstance)
+    {
+        glSurfaceView = glSurfaceViewInstance;
+
+        return this;
+    }
+
+    public GLView onVisibilityChanged(boolean visible)
+    {
+        if (visible == true)
+        {
+            onResume();
+        }
+        else
+        {
+            onPause();
+        }
 
         return this;
     }
@@ -117,6 +161,19 @@ abstract public class GLView
     {
         GLES20.glUseProgram(program);
 
+        onDraw();
+
         return this;
+    }
+
+    public class UpdateThread extends Thread
+    {
+        // TODO: Finire di implementare questa classe.
+
+        @Override
+        public void run()
+        {
+            super.run();
+        }
     }
 }

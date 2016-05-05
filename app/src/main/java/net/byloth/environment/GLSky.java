@@ -1,24 +1,17 @@
 package net.byloth.environment;
 
-import android.content.Context;
-import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
 import net.byloth.engine.graphics.Vector2;
-import net.byloth.engine.graphics.opengl.GLView;
 import net.byloth.engine.graphics.opengl.GLWallpaperService;
 import net.byloth.engine.graphics.opengl.UpdatableGLView;
-import net.byloth.engine.graphics.opengl.helpers.GLCompiler;
 import net.byloth.engine.utils.DayTime;
 import net.byloth.engine.graphics.Color;
 import net.byloth.engine.graphics.TimedColor;
 import net.byloth.engine.graphics.TimedShader;
 import net.byloth.sky.R;
 import net.byloth.sky.updaters.SunTimesUpdater;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 /**
  * Created by Matteo on 26/03/2016.
@@ -121,6 +114,11 @@ public class GLSky extends UpdatableGLView
         initializeColors(sunTimesUpdater);
     }
 
+    @Override
+    public GLSky onSurfaceCreated(GLSurfaceView glSurfaceView)
+    {
+        throw new UnsupportedOperationException();
+    }
     public GLSky onSurfaceCreated(GLWallpaperService glWallpaperService)
     {
         super.onSurfaceCreated(glWallpaperService.getGlSurfaceView());
@@ -159,23 +157,17 @@ public class GLSky extends UpdatableGLView
     }
 
     @Override
-    public GLSky onDrawFrame()
+    public GLSky onDraw()
     {
-        super.onDrawFrame();
-
         int vertexArrayLocation = enableVertexArray("position");
 
         setUniform("screenResolution", surfaceSize);
-
-        Log.d(TAG, "Top Color: " + timedShaders[0].getCurrentColor().toString());
-        Log.d(TAG, "Middle Color: " + timedShaders[1].getCurrentColor().toString());
-        Log.d(TAG, "Bottom Color: " + timedShaders[2].getCurrentColor().toString());
 
         setUniform("topColor", timedShaders[0].getCurrentColor());
         setUniform("middleColor", timedShaders[1].getCurrentColor());
         setUniform("bottomColor", timedShaders[2].getCurrentColor());
 
-        drawFrame(VERTEX_DRAW_ORDER.length);
+        drawElements();
 
         disableVertexArray(vertexArrayLocation);
 

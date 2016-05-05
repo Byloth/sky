@@ -15,6 +15,8 @@ abstract public class UpdatableGLView extends GLView
     private Handler updatingHandler;
     private Runnable updateRunner;
 
+    // TODO: Implementare questa classe, direttamente nella 'GLView' e con un thread di aggiornamento dedicato.
+
     public UpdatableGLView()
     {
         frameInterval = 0;
@@ -84,26 +86,6 @@ abstract public class UpdatableGLView extends GLView
         else
         {
             frameInterval = (int) frameIntervalValue;
-        }
-
-        return this;
-    }
-    public UpdatableGLView setFramePerSecond(double framePerSecondValue)
-    {
-        if (framePerSecondValue < 0)
-        {
-            throw new IllegalArgumentException();
-        }
-        else
-        {
-            if (framePerSecondValue == 0)
-            {
-                frameInterval = 0;
-            }
-            else
-            {
-                frameInterval = (int) (1000.0d / framePerSecondValue);
-            }
         }
 
         return this;
