@@ -65,6 +65,8 @@ public class GLWallpaperDrawer extends GLWallpaperService
 
     public class GLWallpaperRenderer implements GLSurfaceView.Renderer
     {
+        static final private String TAG = "GLWallpaperRenderer";
+
         private float[] mvpMatrix = new float[16];
         private float[] projectionMatrix = new float[16];
         private float[] viewMatrix = new float[16];

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.support.annotation.RawRes;
+import android.util.Log;
 
 import net.byloth.engine.graphics.Color;
 import net.byloth.engine.graphics.Vector2;
@@ -26,9 +27,17 @@ abstract public class GLView
     private int vertexCount;
     private int vertexDrawOrderLength;
 
+    private long updatingInterval;
+
     private FloatBuffer vertexBuffer;
     private ShortBuffer drawListBuffer;
     private GLSurfaceView glSurfaceView;
+    private UpdateThread updateThread;
+
+    public GLView()
+    {
+        updateThread = new UpdateThread();
+    }
 
     protected GLView loadProgram(String vertexShaderSource, String fragmentShaderSource)
     {
@@ -110,6 +119,25 @@ abstract public class GLView
         return this;
     }
 
+    public GLView setUpdatingInterval(long updatingIntervalValue)
+    {
+        if (updatingIntervalValue >= 0)
+        {
+            updatingInterval = updatingIntervalValue;
+        }
+        else
+        {
+            throw new IllegalArgumentException();
+        }
+
+        return this;
+    }
+
+    protected boolean onUpdate()
+    {
+        return false;
+    }
+
     protected GLView requestRender()
     {
         glSurfaceView.requestRender();
@@ -128,11 +156,15 @@ abstract public class GLView
 
     public GLView onPause()
     {
+        updateThread.interrupt();
+
         return this;
     }
 
     public GLView onResume()
     {
+        updateThread.start();
+
         return this;
     }
 
@@ -168,12 +200,45 @@ abstract public class GLView
 
     public class UpdateThread extends Thread
     {
-        // TODO: Finire di implementare questa classe.
+        static final private String TAG = "UpdateThread";
+
+        // private boolean TODO: Dichiarare la variabile di stop del thread e terminare l'implementazione.
+
+        public UpdateThread()
+        {
+            super(TAG);
+        }
+
+        @Override
+        public void interrupt()
+        {
+            super.interrupt();
+
+            updatingInterval = -1;
+        }
 
         @Override
         public void run()
         {
-            super.run();
+            try
+            {
+                do
+                {
+                    onUpdate();
+                    requestRender();
+
+                    if (updatingInterval > 0)
+                    {
+                        Thread.sleep(updatingInterval);
+                    }
+                }
+                while(updatingInterval >= 0);
+            }
+            catch (InterruptedException e) { }
+            finally
+            {
+                Log.i(TAG, "GLView's updating thread has been interrupted!");
+            }
         }
     }
 }

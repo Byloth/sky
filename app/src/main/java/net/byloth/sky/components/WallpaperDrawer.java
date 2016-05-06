@@ -19,8 +19,6 @@ import net.byloth.sky.updaters.SunTimesUpdater;
  */
 public class WallpaperDrawer extends WallpaperService
 {
-    static final private String TAG = "WallpaperDrawer";
-
     @Override
     public Engine onCreateEngine()
     {
@@ -29,6 +27,8 @@ public class WallpaperDrawer extends WallpaperService
 
     private class RenderingEngine extends Engine
     {
+        static final private String TAG = "RenderingEngine";
+
         private Handler drawingHandler;
         private Runnable drawRunner;
 
