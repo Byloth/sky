@@ -4,8 +4,8 @@ import android.opengl.GLSurfaceView;
 import android.util.Log;
 
 import net.byloth.engine.graphics.Vector2;
+import net.byloth.engine.graphics.opengl.GLView;
 import net.byloth.engine.graphics.opengl.GLWallpaperService;
-import net.byloth.engine.graphics.opengl.UpdatableGLView;
 import net.byloth.engine.utils.DayTime;
 import net.byloth.engine.graphics.Color;
 import net.byloth.engine.graphics.TimedColor;
@@ -16,7 +16,7 @@ import net.byloth.sky.updaters.SunTimesUpdater;
 /**
  * Created by Matteo on 26/03/2016.
  */
-public class GLSky extends UpdatableGLView
+public class GLSky extends GLView
 {
     static final private String TAG = "GLSky";
 
@@ -144,7 +144,7 @@ public class GLSky extends UpdatableGLView
     }
 
     @Override
-    public GLSky onUpdate()
+    public boolean onUpdate()
     {
         for (TimedShader timedShader : timedShaders)
         {
@@ -153,7 +153,7 @@ public class GLSky extends UpdatableGLView
 
         Log.d(TAG, "Frame updated!");
 
-        return this;
+        return false;
     }
 
     @Override

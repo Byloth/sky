@@ -23,6 +23,8 @@ abstract public class GLView
     static final private int COORDS_PER_VERTEX = 3;
     static final private int VERTEX_STRIDE = COORDS_PER_VERTEX * 4;
 
+    static final private String TAG = "GLView";
+
     private int program;
     private int vertexCount;
     private int vertexDrawOrderLength;
@@ -36,6 +38,8 @@ abstract public class GLView
 
     public GLView()
     {
+        updatingInterval = 17;  // 60 FPS
+
         updateThread = new UpdateThread();
     }
 
@@ -140,7 +144,10 @@ abstract public class GLView
 
     protected GLView requestRender()
     {
-        glSurfaceView.requestRender();
+        if (glSurfaceView != null)
+        {
+            glSurfaceView.requestRender();
+        }
 
         return this;
     }
@@ -156,14 +163,24 @@ abstract public class GLView
 
     public GLView onPause()
     {
-        updateThread.interrupt();
+        try
+        {
+            updateThread.wait();
+        }
+        catch (InterruptedException e) { }
+        finally
+        {
+            Log.i(TAG, "GLView's updating thread has been interrupted!");
+        }
 
         return this;
     }
 
     public GLView onResume()
     {
-        updateThread.start();
+        // TODO: Risolvere l'eccezione: "IllegalMonitorStateException: object not locked by thread before notify()".
+        
+        updateThread.notify();
 
         return this;
     }
@@ -171,6 +188,8 @@ abstract public class GLView
     public GLView onSurfaceCreated(GLSurfaceView glSurfaceViewInstance)
     {
         glSurfaceView = glSurfaceViewInstance;
+
+        updateThread.start();
 
         return this;
     }
@@ -202,19 +221,9 @@ abstract public class GLView
     {
         static final private String TAG = "UpdateThread";
 
-        // private boolean TODO: Dichiarare la variabile di stop del thread e terminare l'implementazione.
-
         public UpdateThread()
         {
             super(TAG);
-        }
-
-        @Override
-        public void interrupt()
-        {
-            super.interrupt();
-
-            updatingInterval = -1;
         }
 
         @Override
@@ -222,17 +231,30 @@ abstract public class GLView
         {
             try
             {
+                boolean continueUpdating;
+
                 do
                 {
-                    onUpdate();
-                    requestRender();
-
-                    if (updatingInterval > 0)
+                    do
                     {
-                        Thread.sleep(updatingInterval);
+                        continueUpdating = onUpdate();
+
+                        requestRender();
+
+                        if (updatingInterval > 0)
+                        {
+                            Thread.sleep(updatingInterval);
+                        }
+
+                        Log.d(TAG, "Thread updated!");
                     }
+                    while (continueUpdating == true);
+
+                    Log.d(TAG, "Thread wait!");
+
+                    wait();
                 }
-                while(updatingInterval >= 0);
+                while (isInterrupted() == false);
             }
             catch (InterruptedException e) { }
             finally
