@@ -163,14 +163,14 @@ abstract public class GLView
 
     public GLView onPause()
     {
-        updateThread.start();
+        updateThread.stop();
 
         return this;
     }
 
     public GLView onResume()
     {
-        updateThread.stop();
+        updateThread.start();
 
         return this;
     }
@@ -202,6 +202,8 @@ abstract public class GLView
 
         onDraw();
 
+        Log.d(TAG, "Frame drawed!");
+
         return this;
     }
 
@@ -217,7 +219,7 @@ abstract public class GLView
         public synchronized void start()
         {
             if (isRunning == false)
-            +{
+            {
                 haveToStop = false;
 
                 currentThread = new Thread(this);
