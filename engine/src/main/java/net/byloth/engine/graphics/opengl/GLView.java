@@ -163,24 +163,14 @@ abstract public class GLView
 
     public GLView onPause()
     {
-        try
-        {
-            updateThread.wait();
-        }
-        catch (InterruptedException e) { }
-        finally
-        {
-            Log.i(TAG, "GLView's updating thread has been interrupted!");
-        }
+        updateThread.start();
 
         return this;
     }
 
     public GLView onResume()
     {
-        // TODO: Risolvere l'eccezione: "IllegalMonitorStateException: object not locked by thread before notify()".
-        
-        updateThread.notify();
+        updateThread.stop();
 
         return this;
     }
@@ -188,8 +178,6 @@ abstract public class GLView
     public GLView onSurfaceCreated(GLSurfaceView glSurfaceViewInstance)
     {
         glSurfaceView = glSurfaceViewInstance;
-
-        updateThread.start();
 
         return this;
     }
@@ -217,13 +205,29 @@ abstract public class GLView
         return this;
     }
 
-    public class UpdateThread extends Thread
+    public class UpdateThread implements Runnable
     {
         static final private String TAG = "UpdateThread";
 
-        public UpdateThread()
+        private boolean isRunning;
+        private boolean haveToStop;
+
+        private Thread currentThread;
+
+        public synchronized void start()
         {
-            super(TAG);
+            if (isRunning == false)
+            +{
+                haveToStop = false;
+
+                currentThread = new Thread(this);
+                currentThread.start();
+            }
+        }
+
+        public synchronized void stop()
+        {
+            haveToStop = true;
         }
 
         @Override
@@ -233,32 +237,28 @@ abstract public class GLView
             {
                 boolean continueUpdating;
 
+                isRunning = true;
+
                 do
                 {
-                    do
+                    continueUpdating = onUpdate();
+
+                    requestRender();
+
+                    if (updatingInterval > 0)
                     {
-                        continueUpdating = onUpdate();
-
-                        requestRender();
-
-                        if (updatingInterval > 0)
-                        {
-                            Thread.sleep(updatingInterval);
-                        }
-
-                        Log.d(TAG, "Thread updated!");
+                        Thread.sleep(updatingInterval);
                     }
-                    while (continueUpdating == true);
 
-                    Log.d(TAG, "Thread wait!");
-
-                    wait();
+                    Log.d(TAG, "Thread updated!");
                 }
-                while (isInterrupted() == false);
+                while ((continueUpdating == true) && (haveToStop == false));
             }
             catch (InterruptedException e) { }
             finally
             {
+                isRunning = false;
+
                 Log.i(TAG, "GLView's updating thread has been interrupted!");
             }
         }
