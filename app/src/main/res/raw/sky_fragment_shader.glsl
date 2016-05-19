@@ -1,11 +1,5 @@
 #version 100
 
-// Precisione di calcolo, da parte della GPU, dei "float".
-//
-//  - "highp" per la posizione dei vertici (non sempre supportato).
-//  - "mediump" per le coordinate delle texture.
-//  - "lowp" per i colori.
-
 precision lowp float;
 
 const float middleValue = 0.333;
