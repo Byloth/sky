@@ -13,11 +13,11 @@ attribute vec4 position;
 
 uniform mat4 mvpMatrix;
 
-varying vec2 gl_TextureCoords;
+varying vec2 v_TextureCoords;
 
 void main() // Tipo di ritorno "vec4"
 {
-    gl_TextureCoords = textureCoords;
+    v_TextureCoords = textureCoords;
 
     gl_Position = mvpMatrix * position;
 

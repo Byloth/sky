@@ -79,6 +79,11 @@ abstract public class GLView
         return this;
     }
 
+    protected int getProgram()
+    {
+        return program;
+    }
+
     protected int getAttributeLocation(String attributeName)
     {
         return GLES20.glGetAttribLocation(program, attributeName);

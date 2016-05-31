@@ -6,8 +6,10 @@ import android.opengl.Matrix;
 import android.util.Log;
 
 import net.byloth.engine.graphics.opengl.GLWallpaperService;
+import net.byloth.engine.graphics.opengl.SquareGLView;
 import net.byloth.environment.GLSky;
 import net.byloth.sky.LiveWallpaper;
+import net.byloth.sky.R;
 import net.byloth.sky.updaters.SunTimesUpdater;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -21,12 +23,14 @@ public class GLWallpaperDrawer extends GLWallpaperService
     static final private String TAG = "GLWallpaperDrawer";
 
     private GLSky sky;
+    private SquareGLView image;
 
     public GLWallpaperDrawer()
     {
         SunTimesUpdater sunTimesUpdater = LiveWallpaper.getInstance().getSunTimesUpdater();
 
         sky = new GLSky(sunTimesUpdater);
+        image = new SquareGLView();
 
         sunTimesUpdater.setOnSunTimesUpdateListener(new SunTimesUpdater.OnSunTimesUpdateListener()
         {
@@ -78,6 +82,8 @@ public class GLWallpaperDrawer extends GLWallpaperService
 
             sky.onSurfaceCreated(GLWallpaperDrawer.this);
 
+            image.loadTexture(GLWallpaperDrawer.this, R.drawable.stars);
+
             Log.d(TAG, "Surface created!");
         }
 
@@ -103,7 +109,8 @@ public class GLWallpaperDrawer extends GLWallpaperService
             Matrix.setLookAtM(viewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
             Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
 
-            sky.onDrawFrame();
+            sky.onDrawFrame(mvpMatrix);
+            image.onDrawFrame(mvpMatrix);
 
             Log.d(TAG, "Frame drawed!");
         }
