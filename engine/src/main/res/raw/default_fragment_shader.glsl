@@ -15,7 +15,7 @@ varying vec2 v_TextureCoords;
 
 void main() // Tipo di ritorno: "vec4"
 {
-    gl_FragColor = color * texture2D(texture, v_TextureCoords);
+    gl_FragColor = texture2D(texture, v_TextureCoords); // color * texture2D(texture, v_TextureCoords);
 
     // return gl_FragColor;
 }
