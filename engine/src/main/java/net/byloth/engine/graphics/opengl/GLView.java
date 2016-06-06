@@ -79,6 +79,11 @@ abstract public class GLView
         return this;
     }
 
+    protected int getProgram()
+    {
+        return program;
+    }
+
     protected int getAttributeLocation(String attributeName)
     {
         return GLES20.glGetAttribLocation(program, attributeName);
@@ -159,7 +164,7 @@ abstract public class GLView
         return this;
     }
 
-    abstract protected GLView onDraw();
+    abstract protected GLView onDraw(float[] mvpMatrix);
 
     public GLView onPause()
     {
@@ -196,11 +201,11 @@ abstract public class GLView
         return this;
     }
 
-    public GLView onDrawFrame()
+    public GLView onDrawFrame(float[] mvpMatrix)
     {
         GLES20.glUseProgram(program);
 
-        onDraw();
+        onDraw(mvpMatrix);
 
         Log.d(TAG, "Frame drawed!");
 

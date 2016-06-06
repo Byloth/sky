@@ -1,7 +1,11 @@
 package net.byloth.engine.graphics.opengl.helpers;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
+import android.opengl.GLUtils;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.RawRes;
 import android.util.Log;
 
@@ -89,6 +93,40 @@ final public class GLCompiler
         String fragmentShaderSource = FileLoader.loadTextResource(context, fragmentShaderResourceId);
 
         return linkProgram(vertexShaderSource, fragmentShaderSource);
+    }
+
+    static public int loadTexture(Context context, @DrawableRes int textureResourceId)
+    {
+        int[] textureLocation = new int[1];
+
+        GLES20.glGenTextures(1, textureLocation, 0);
+
+        if (textureLocation[0] != 0)
+        {
+            BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+            bitmapOptions.inScaled = false;
+
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), textureResourceId, bitmapOptions);
+
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureLocation[0]);
+
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
+
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+
+            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+
+            bitmap.recycle();
+        }
+
+        if (textureLocation[0] == 0)
+        {
+            Log.e(TAG, "Could not loading required texture!");
+        }
+
+        return textureLocation[0];
     }
 
     static public void checkOperationError(String operationName)

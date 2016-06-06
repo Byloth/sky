@@ -157,7 +157,7 @@ public class GLSky extends GLView
     }
 
     @Override
-    public GLSky onDraw()
+    public GLSky onDraw(float[] mvpMatrix)
     {
         int vertexArrayLocation = enableVertexArray("position");
 
