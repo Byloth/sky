@@ -31,12 +31,23 @@ public class SquareGLView extends GLView
 
     static final private short VERTEX_DRAW_ORDER[] = { 0, 1, 2, 0, 2, 3 };
 
+    // Immagine 1
+    /*
+        static final private float TEXTURE_VERTEX[] = {
+
+                0.5f, 1.0f,
+                0f, 1.0f,
+                0f, 0f,
+                0.5f, 0f
+        };
+    */
+    // Immagine 2
     static final private float TEXTURE_VERTEX[] = {
 
-            0.5f, 0.5f,
-            -0.5f, 0.5f,
-            -0.5f, -0.5f,
-            0.5f, -0.5f
+            0.5f, 1.0f,
+            0f, 1.0f,
+            0f, 0f,
+            0.5f, 0f
     };
 
     private int texture;
@@ -102,7 +113,12 @@ public class SquareGLView extends GLView
 
         GLES20.glUniformMatrix4fv(mvpMatrixLocation, 1, false, mvpMatrix, 0);
 
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glEnable(GLES20.GL_BLEND);
+
         drawElements();
+
+        GLES20.glDisable(GLES20.GL_BLEND);
 
         disableVertexArray(vertexArrayLocation);
 
