@@ -36,7 +36,7 @@ final public class Time
         {
             int value;
 
-            if ((applyModule == true) && ((iterationCount - 1) > 0))
+            if ((applyModule == true) || (iterationCount > 0))
             {
                 value = (int) (timeDifference / divisor) % definitions[iterationCount - 1].divisor;
             }
@@ -70,9 +70,9 @@ final public class Time
         Calendar calendar = Calendar.getInstance();
         Date now = calendar.getTime();
 
-        return getDifferenceTimeAsString(pastDate, now);
+        return getTimeDifferenceAsString(pastDate, now);
     }
-    static public String getDifferenceTimeAsString(Date firstDate, Date secondDate)
+    static public String getTimeDifferenceAsString(Date firstDate, Date secondDate)
     {
         long firstDateTime = firstDate.getTime();
         long secondDateTime = secondDate.getTime();
