@@ -3,6 +3,7 @@ package net.byloth.sky.components;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.os.SystemClock;
 import android.util.Log;
 
 import net.byloth.engine.graphics.opengl.GLWallpaperService;
@@ -30,7 +31,16 @@ public class GLWallpaperDrawer extends GLWallpaperService
         SunTimesUpdater sunTimesUpdater = LiveWallpaper.getInstance().getSunTimesUpdater();
 
         sky = new GLSky(sunTimesUpdater);
-        image = new SquareGLView();
+        image = new SquareGLView()
+        {
+            @Override
+            protected boolean onUpdate()
+            {
+                return true;
+            }
+        };
+
+        image.setUpdatingInterval(17);
 
         sunTimesUpdater.setOnSunTimesUpdateListener(new SunTimesUpdater.OnSunTimesUpdateListener()
         {
@@ -74,6 +84,7 @@ public class GLWallpaperDrawer extends GLWallpaperService
         private float[] mvpMatrix = new float[16];
         private float[] projectionMatrix = new float[16];
         private float[] viewMatrix = new float[16];
+        private float[] rotationMatrix = new float[16];
 
         @Override
         public void onSurfaceCreated(GL10 gl, EGLConfig config)
@@ -104,13 +115,22 @@ public class GLWallpaperDrawer extends GLWallpaperService
         @Override
         public void onDrawFrame(GL10 gl)
         {
+            float[] scratch = new float[16];
+
+            long time = SystemClock.uptimeMillis() % 4000L;
+            float angle = 0.090f * ((int) time);
+
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
             Matrix.setLookAtM(viewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
             Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
 
             sky.onDrawFrame(mvpMatrix);
-            image.onDrawFrame(mvpMatrix);
+
+            Matrix.setRotateM(rotationMatrix, 0, angle, 0, 0, -1.0f);
+            Matrix.multiplyMM(scratch, 0, mvpMatrix, 0, rotationMatrix, 0);
+
+            image.onDrawFrame(scratch);
 
             Log.d(TAG, "Frame drawed!");
         }
