@@ -234,7 +234,10 @@ abstract public class GLView
 
         public synchronized void stop()
         {
-            haveToStop = true;
+            if (isRunning == true)
+            {
+                haveToStop = true;
+            }
         }
 
         @Override

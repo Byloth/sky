@@ -74,6 +74,7 @@ public class GLWallpaperDrawer extends GLWallpaperService
             super.onVisibilityChanged(visible);
 
             sky.onVisibilityChanged(visible);
+            image.onVisibilityChanged(visible);
         }
     }
 
@@ -93,6 +94,7 @@ public class GLWallpaperDrawer extends GLWallpaperService
 
             sky.onSurfaceCreated(GLWallpaperDrawer.this);
 
+            image.onSurfaceCreated(GLWallpaperDrawer.this, getGlSurfaceView());
             image.loadTexture(GLWallpaperDrawer.this, R.drawable.stars);
 
             Log.d(TAG, "Surface created!");
