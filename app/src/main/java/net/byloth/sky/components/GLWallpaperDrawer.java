@@ -80,8 +80,6 @@ public class GLWallpaperDrawer extends GLWallpaperService
 
     public class GLWallpaperRenderer implements GLSurfaceView.Renderer
     {
-        static final private String TAG = "GLWallpaperRenderer";
-
         private float[] mvpMatrix = new float[16];
         private float[] projectionMatrix = new float[16];
         private float[] viewMatrix = new float[16];
@@ -117,22 +115,21 @@ public class GLWallpaperDrawer extends GLWallpaperService
         @Override
         public void onDrawFrame(GL10 gl)
         {
-            float[] scratch = new float[16];
-
-            long time = SystemClock.uptimeMillis() % 4000L;
-            float angle = 0.090f * ((int) time);
-
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-            Matrix.setLookAtM(viewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+            Matrix.setLookAtM(viewMatrix, 0, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
             Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
 
             sky.onDrawFrame(mvpMatrix);
 
-            Matrix.setRotateM(rotationMatrix, 0, angle, 0, 0, -1.0f);
-            Matrix.multiplyMM(scratch, 0, mvpMatrix, 0, rotationMatrix, 0);
+            // TODO: Capire come spostare, nel cielo, le stelle e come ruotarle.
 
-            image.onDrawFrame(scratch);
+                                          // eye,  eye,  eye,  cntr, cntr, cntr, up,   up,   up
+            Matrix.setLookAtM(viewMatrix, 0, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+            // Matrix.setRotateM(rotationMatrix, 0, angle, 0, 0, -1.0f);
+            Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+
+            image.onDrawFrame(mvpMatrix);
 
             Log.d(TAG, "Frame drawed!");
         }

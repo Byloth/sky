@@ -19,6 +19,8 @@ import net.byloth.sky.updaters.SunTimesUpdater;
  */
 public class WallpaperDrawer extends WallpaperService
 {
+    static final private String TAG = "WallpaperDrawer";
+
     @Override
     public Engine onCreateEngine()
     {
@@ -27,8 +29,6 @@ public class WallpaperDrawer extends WallpaperService
 
     private class RenderingEngine extends Engine
     {
-        static final private String TAG = "RenderingEngine";
-
         private Handler drawingHandler;
         private Runnable drawRunner;
 
@@ -109,7 +109,7 @@ public class WallpaperDrawer extends WallpaperService
                 }
             }
 
-         // Log.i(LiveWallpaper.APPLICATION_NAME, "Wallpaper was updated & drawn correctly!");
+            // Log.d(TAG, "Wallpaper was updated & drawn correctly!");
 
             drawingHandler.removeCallbacks(drawRunner);
             drawingHandler.postDelayed(drawRunner, FRAME_INTERVAL);
@@ -154,7 +154,7 @@ public class WallpaperDrawer extends WallpaperService
                 drawingHandler.removeCallbacks(drawRunner);
             }
 
-         // Log.i(LiveWallpaper.APPLICATION_NAME, "Visibility has changed: " + isVisible);
+            // Log.d(TAG, "Visibility has changed: " + isVisible);
         }
     }
 }

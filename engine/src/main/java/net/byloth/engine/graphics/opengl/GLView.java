@@ -39,8 +39,6 @@ abstract public class GLView
     public GLView()
     {
         updatingInterval = 17;  // 60 FPS
-
-        updateThread = new UpdateThread();
     }
 
     protected GLView loadProgram(String vertexShaderSource, String fragmentShaderSource)
@@ -166,16 +164,24 @@ abstract public class GLView
 
     abstract protected GLView onDraw(float[] mvpMatrix);
 
-    public GLView onPause()
+    public synchronized GLView onPause()
     {
-        updateThread.stop();
+        if (updateThread.isAlive() == true)
+        {
+            updateThread.interrupt();
+        }
 
         return this;
     }
 
-    public GLView onResume()
+    public synchronized GLView onResume()
     {
-        updateThread.start();
+        if ((updateThread == null) || (updateThread.isAlive() == false))
+        {
+            updateThread = new UpdateThread();
+
+            updateThread.start();
+        }
 
         return this;
     }
@@ -212,44 +218,31 @@ abstract public class GLView
         return this;
     }
 
-    public class UpdateThread implements Runnable
+    public class UpdateThread extends Thread
     {
-        static final private String TAG = "UpdateThread";
-
-        private boolean isRunning;
         private boolean haveToStop;
 
-        private Thread currentThread;
-
-        public synchronized void start()
+        public UpdateThread()
         {
-            if (isRunning == false)
-            {
-                haveToStop = false;
-
-                currentThread = new Thread(this);
-                currentThread.start();
-            }
+            haveToStop = false;
         }
 
-        public synchronized void stop()
+        @Override
+        public void interrupt()
         {
-            if (isRunning == true)
-            {
-                haveToStop = true;
-            }
+            super.interrupt();
+
+            haveToStop = true;
         }
 
         @Override
         public void run()
         {
+            boolean continueUpdating = true;
+
             try
             {
-                boolean continueUpdating;
-
-                isRunning = true;
-
-                do
+                while ((continueUpdating == true) && (haveToStop == false))
                 {
                     continueUpdating = onUpdate();
 
@@ -262,14 +255,11 @@ abstract public class GLView
 
                     Log.d(TAG, "Thread updated!");
                 }
-                while ((continueUpdating == true) && (haveToStop == false));
             }
             catch (InterruptedException e) { }
             finally
             {
-                isRunning = false;
-
-                Log.i(TAG, "GLView's updating thread has been interrupted!");
+                Log.d(TAG, "Updating thread has been interrupted!");
             }
         }
     }
