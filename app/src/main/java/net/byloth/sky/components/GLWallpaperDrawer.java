@@ -124,6 +124,7 @@ public class GLWallpaperDrawer extends GLWallpaperService
 
             // TODO: Capire come spostare, nel cielo, le stelle e come ruotarle.
 
+                                          //  x     y     z      x     y     z    x     y     z
                                           // eye,  eye,  eye,  cntr, cntr, cntr, up,   up,   up
             Matrix.setLookAtM(viewMatrix, 0, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
             // Matrix.setRotateM(rotationMatrix, 0, angle, 0, 0, -1.0f);

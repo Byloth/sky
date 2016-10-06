@@ -106,6 +106,8 @@ public class SquareGLView extends GLView
 
         textureVertexBuffer.position(0);
 
+        // TODO #1: Sostituire queste due righe con chiamata al metodo "enableVertexArray();"
+        // TODO #2: Creare i metodi, nella GLView, per settare colore, texture e textureCoords autonomamente...
         GLES20.glVertexAttribPointer(textureCoordsLocation, TEXTURE_COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, TEXTURE_VERTEX_STRIDE, textureVertexBuffer);
         GLES20.glEnableVertexAttribArray(textureCoordsLocation);
 
