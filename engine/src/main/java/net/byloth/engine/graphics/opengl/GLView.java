@@ -87,14 +87,32 @@ abstract public class GLView
         return GLES20.glGetAttribLocation(program, attributeName);
     }
 
-    protected int enableVertexArray(String vertexArrayName)
+    protected int setVertexAttribute(String vertexAttributeName, FloatBuffer vertexBuffer)
     {
-        int vertexArrayLocation = getAttributeLocation(vertexArrayName);
+        int vertexArrayLocation = getAttributeLocation(vertexAttributeName);
 
-        GLES20.glEnableVertexAttribArray(vertexArrayLocation);
+        vertexBuffer.position(0);
+
         GLES20.glVertexAttribPointer(vertexArrayLocation, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, VERTEX_STRIDE, vertexBuffer);
+        GLES20.glEnableVertexAttribArray(vertexArrayLocation);
 
         return vertexArrayLocation;
+    }
+    protected int setVertexAttribute(String vertexAttributeName, FloatBuffer vertexBuffer, int coordsPerVertex, int vertexStride)
+    {
+        int vertexArrayLocation = getAttributeLocation(vertexAttributeName);
+
+        vertexBuffer.position(0);
+
+        GLES20.glVertexAttribPointer(vertexArrayLocation, coordsPerVertex, GLES20.GL_FLOAT, false, vertexStride, vertexBuffer);
+        GLES20.glEnableVertexAttribArray(vertexArrayLocation);
+
+        return vertexArrayLocation;
+    }
+
+    protected int enableVertexArray(String vertexArrayName)
+    {
+        return setVertexAttribute(vertexArrayName, vertexBuffer);
     }
 
     protected GLView disableVertexArray(int vertexArrayLocation)

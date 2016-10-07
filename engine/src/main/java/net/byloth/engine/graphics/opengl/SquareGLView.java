@@ -42,6 +42,7 @@ public class SquareGLView extends GLView
         };
     */
     // Immagine 2
+    /*
     static final private float TEXTURE_VERTEX[] = {
 
             0.5f, 1.0f,
@@ -49,6 +50,7 @@ public class SquareGLView extends GLView
             0f, 0f,
             0.5f, 0f
     };
+    */
 
     private int texture;
 
@@ -56,18 +58,22 @@ public class SquareGLView extends GLView
 
     public SquareGLView loadTexture(Context context, @DrawableRes int textureResourceId)
     {
-        super.loadVertex(VERTEX, VERTEX_DRAW_ORDER);
-
-        ByteBuffer textureCoordsByteBuffer = ByteBuffer.allocateDirect(TEXTURE_VERTEX.length * 4);
-        textureCoordsByteBuffer.order(ByteOrder.nativeOrder());
-
-        textureVertexBuffer = textureCoordsByteBuffer.asFloatBuffer();
-        textureVertexBuffer.put(TEXTURE_VERTEX);
-        textureVertexBuffer.position(0);
-
+        loadVertex(VERTEX, VERTEX_DRAW_ORDER);
         loadProgram(context, R.raw.default_vertex_shader, R.raw.default_fragment_shader);
 
         texture = GLCompiler.loadTexture(context, textureResourceId);
+
+        return this;
+    }
+
+    // TODO: L'inizializzazione della variabile 'textureVertexBuffer' è obbligatoria!
+    public SquareGLView setTextureVertex(float[] textureVertex, short[] textureVertexDrawOrder)
+    {
+        ByteBuffer textureCoordsByteBuffer = ByteBuffer.allocateDirect(textureVertex.length * 4);
+        textureCoordsByteBuffer.order(ByteOrder.nativeOrder());
+
+        textureVertexBuffer = textureCoordsByteBuffer.asFloatBuffer();
+        textureVertexBuffer.put(textureVertex);
 
         return this;
     }
@@ -96,20 +102,18 @@ public class SquareGLView extends GLView
         setUniform("color", new Color(255, 0, 255));
 
         int textureLocation = GLES20.glGetAttribLocation(program, "texture");
-        int textureCoordsLocation = GLES20.glGetAttribLocation(program, "textureCoords");
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture);
 
         GLES20.glUniform1i(textureLocation, 0);
 
-        textureVertexBuffer.position(0);
-
-        // TODO #1: Sostituire queste due righe con chiamata al metodo "enableVertexArray();"
         // TODO #2: Creare i metodi, nella GLView, per settare colore, texture e textureCoords autonomamente...
-        GLES20.glVertexAttribPointer(textureCoordsLocation, TEXTURE_COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, TEXTURE_VERTEX_STRIDE, textureVertexBuffer);
-        GLES20.glEnableVertexAttribArray(textureCoordsLocation);
+
+        if (textureVertexBuffer != null)
+        {
+            setVertexAttribute("textureCoords", textureVertexBuffer, TEXTURE_COORDS_PER_VERTEX, TEXTURE_VERTEX_STRIDE);
+        }
 
         int mvpMatrixLocation = GLES20.glGetUniformLocation(program, "mvpMatrix");
 
