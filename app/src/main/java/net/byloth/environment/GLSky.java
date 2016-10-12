@@ -58,6 +58,8 @@ public class GLSky extends GLView
         new Color(0, 13, 25)
     };
 
+    private int vertexArrayLocation;
+
     private DayTime dayTime;
     private Vector2 surfaceSize;
 
@@ -144,6 +146,26 @@ public class GLSky extends GLView
     }
 
     @Override
+    protected GLSky beginDraw()
+    {
+        super.beginDraw();
+
+        vertexArrayLocation = enableVertexArray("position");
+
+        return this;
+    }
+
+    @Override
+    protected GLSky endDraw()
+    {
+        super.endDraw();
+
+        disableVertexArray(vertexArrayLocation);
+
+        return this;
+    }
+
+    @Override
     public boolean onUpdate()
     {
         for (TimedShader timedShader : timedShaders)
@@ -159,7 +181,7 @@ public class GLSky extends GLView
     @Override
     public GLSky onDraw(float[] mvpMatrix)
     {
-        int vertexArrayLocation = enableVertexArray("position");
+        beginDraw();
 
         setUniform("screenResolution", surfaceSize);
 
@@ -167,9 +189,8 @@ public class GLSky extends GLView
         setUniform("middleColor", timedShaders[1].getCurrentColor());
         setUniform("bottomColor", timedShaders[2].getCurrentColor());
 
-        drawElements();
-
-        disableVertexArray(vertexArrayLocation);
+        draw();
+        endDraw();
 
         return this;
     }

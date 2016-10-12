@@ -3,7 +3,6 @@ package net.byloth.sky.components;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.os.SystemClock;
 import android.util.Log;
 
 import net.byloth.engine.graphics.opengl.GLWallpaperService;
@@ -120,7 +119,7 @@ public class GLWallpaperDrawer extends GLWallpaperService
             Matrix.setLookAtM(viewMatrix, 0, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
             Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
 
-            sky.onDrawFrame(mvpMatrix);
+            sky.onDraw(mvpMatrix);
 
             // TODO: Capire come spostare, nel cielo, le stelle e come ruotarle.
 
@@ -130,7 +129,7 @@ public class GLWallpaperDrawer extends GLWallpaperService
             // Matrix.setRotateM(rotationMatrix, 0, angle, 0, 0, -1.0f);
             Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
 
-            image.onDrawFrame(mvpMatrix);
+            image.onDraw(mvpMatrix);
 
             Log.d(TAG, "Frame drawed!");
         }

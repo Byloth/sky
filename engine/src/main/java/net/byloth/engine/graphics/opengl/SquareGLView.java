@@ -28,6 +28,13 @@ public class SquareGLView extends GLView
             -0.5f, -0.5f, 0.0f,
             0.5f, -0.5f, 0.0f
     };
+    static final private float TEXTURE_VERTEX[] = {
+
+            1f, 1f,
+            0f, 1f,
+            0f, 0f,
+            1f, 0f
+    };
 
     static final private short VERTEX_DRAW_ORDER[] = { 0, 1, 2, 0, 2, 3 };
 
@@ -63,11 +70,12 @@ public class SquareGLView extends GLView
 
         texture = GLCompiler.loadTexture(context, textureResourceId);
 
+        setTextureVertex(TEXTURE_VERTEX);
+
         return this;
     }
 
-    // TODO: L'inizializzazione della variabile 'textureVertexBuffer' è obbligatoria!
-    public SquareGLView setTextureVertex(float[] textureVertex, short[] textureVertexDrawOrder)
+    public SquareGLView setTextureVertex(float[] textureVertex)
     {
         ByteBuffer textureCoordsByteBuffer = ByteBuffer.allocateDirect(textureVertex.length * 4);
         textureCoordsByteBuffer.order(ByteOrder.nativeOrder());
@@ -94,9 +102,12 @@ public class SquareGLView extends GLView
     }
     
     @Override
-    protected SquareGLView onDraw(float[] mvpMatrix)
+    public SquareGLView onDraw(float[] mvpMatrix)
     {
         int program = getProgram();
+
+        beginDraw();
+
         int vertexArrayLocation = enableVertexArray("position");
 
         setUniform("color", new Color(255, 0, 255));
@@ -108,6 +119,7 @@ public class SquareGLView extends GLView
 
         GLES20.glUniform1i(textureLocation, 0);
 
+        // TODO #1: Allineare l'implementazione di questo metodo con il corrispettivo della classe GLSky. 
         // TODO #2: Creare i metodi, nella GLView, per settare colore, texture e textureCoords autonomamente...
 
         if (textureVertexBuffer != null)
@@ -122,7 +134,7 @@ public class SquareGLView extends GLView
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
         GLES20.glEnable(GLES20.GL_BLEND);
 
-        drawElements();
+
 
         GLES20.glDisable(GLES20.GL_BLEND);
 

@@ -173,14 +173,24 @@ abstract public class GLView
         return this;
     }
 
-    protected GLView drawElements()
+    protected GLView beginDraw()
+    {
+        GLES20.glUseProgram(program);
+
+        return this;
+    }
+    protected GLView draw()
     {
         GLES20.glDrawElements(GLES20.GL_TRIANGLE_FAN, vertexDrawOrderLength, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
 
         return this;
     }
+    protected GLView endDraw()
+    {
+        Log.d(TAG, "Frame drawed!");
 
-    abstract protected GLView onDraw(float[] mvpMatrix);
+        return this;
+    }
 
     public synchronized GLView onPause()
     {
@@ -225,16 +235,7 @@ abstract public class GLView
         return this;
     }
 
-    public GLView onDrawFrame(float[] mvpMatrix)
-    {
-        GLES20.glUseProgram(program);
-
-        onDraw(mvpMatrix);
-
-        Log.d(TAG, "Frame drawed!");
-
-        return this;
-    }
+    public abstract GLView onDraw(float[] mvpMatrix);
 
     public class UpdateThread extends Thread
     {
