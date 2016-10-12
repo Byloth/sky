@@ -6,7 +6,7 @@ import android.opengl.Matrix;
 import android.util.Log;
 
 import net.byloth.engine.graphics.opengl.GLWallpaperService;
-import net.byloth.engine.graphics.opengl.SquareGLView;
+import net.byloth.engine.graphics.opengl.TextureGLView;
 import net.byloth.environment.GLSky;
 import net.byloth.sky.LiveWallpaper;
 import net.byloth.sky.R;
@@ -23,14 +23,14 @@ public class GLWallpaperDrawer extends GLWallpaperService
     static final private String TAG = "GLWallpaperDrawer";
 
     private GLSky sky;
-    private SquareGLView image;
+    private TextureGLView image;
 
     public GLWallpaperDrawer()
     {
         SunTimesUpdater sunTimesUpdater = LiveWallpaper.getInstance().getSunTimesUpdater();
 
         sky = new GLSky(sunTimesUpdater);
-        image = new SquareGLView()
+        image = new TextureGLView()
         {
             @Override
             protected boolean onUpdate()
@@ -125,11 +125,11 @@ public class GLWallpaperDrawer extends GLWallpaperService
 
                                           //  x     y     z      x     y     z    x     y     z
                                           // eye,  eye,  eye,  cntr, cntr, cntr, up,   up,   up
-            Matrix.setLookAtM(viewMatrix, 0, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+            Matrix.setLookAtM(viewMatrix, 0, 0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
             // Matrix.setRotateM(rotationMatrix, 0, angle, 0, 0, -1.0f);
             Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
 
-            image.onDraw(mvpMatrix);
+            // image.onDraw(mvpMatrix);
 
             Log.d(TAG, "Frame drawed!");
         }

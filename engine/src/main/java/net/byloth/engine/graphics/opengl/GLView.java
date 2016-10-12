@@ -144,6 +144,16 @@ abstract public class GLView
         return this;
     }
 
+    // TODO: Creare un oggetto che rappresenti una Matrix sottoforma di oggetto.
+    protected GLView setUniformMatrix(String uniformMatrixName, float[] uniformMatrix)
+    {
+        int uniformLocation = getUniformLocation(uniformMatrixName);
+
+        GLES20.glUniformMatrix4fv(uniformLocation, 1, false, uniformMatrix, 0);
+
+        return this;
+    }
+
     public GLView setUpdatingInterval(long updatingIntervalValue)
     {
         if (updatingIntervalValue >= 0)

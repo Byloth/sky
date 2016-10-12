@@ -158,9 +158,9 @@ public class GLSky extends GLView
     @Override
     protected GLSky endDraw()
     {
-        super.endDraw();
-
         disableVertexArray(vertexArrayLocation);
+
+        super.endDraw();
 
         return this;
     }

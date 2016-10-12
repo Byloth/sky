@@ -3,16 +3,38 @@ package net.byloth.environment;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 
-import net.byloth.engine.graphics.opengl.SquareGLView;
+import net.byloth.engine.graphics.opengl.TextureGLView;
 import net.byloth.sky.R;
 
 /**
  * Created by Matteo on 06/10/2016.
  */
 
-public class GLStars extends SquareGLView
+// TODO: Creare una classe intermedia tra la GLStars e la TextureGLView.
+//  Dovrà rappresentare una raccolta di oggetti con la medesima Texture.
+
+public class GLStars extends TextureGLView
 {
     private static final int UPDATING_INTERVAL = (1000 / 60);
+
+    // Immagine 1
+    static final private float TEXTURE_VERTEX[] = {
+
+            0.5f, 1.0f,
+            0f, 1.0f,
+            0f, 0f,
+            0.5f, 0f
+    };
+    // Immagine 2
+    /*
+    static final private float TEXTURE_VERTEX[] = {
+
+            0.5f, 1.0f,
+            0f, 1.0f,
+            0f, 0f,
+            0.5f, 0f
+    };
+    */
 
     public GLStars()
     {
@@ -25,6 +47,7 @@ public class GLStars extends SquareGLView
         super.onSurfaceCreated(context, glSurfaceView);
 
         loadTexture(context, R.drawable.stars);
+        setTextureVertex(TEXTURE_VERTEX);
 
         return this;
     }
