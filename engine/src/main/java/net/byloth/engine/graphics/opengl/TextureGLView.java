@@ -3,6 +3,7 @@ package net.byloth.engine.graphics.opengl;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
 import android.support.annotation.DrawableRes;
 
 import net.byloth.engine.R;
@@ -41,6 +42,17 @@ public class TextureGLView extends GLView
     private int texture;
     private int vertexArrayLocation;
 
+    private float angle; // TODO: Rimuovere questa variabile temporanea.
+
+    private float[] rotationMatrix = new float[16];
+
+    private float[] modelMatrix = new float[16];
+    private float[] viewMatrix = new float[16];
+
+    private float[] modelViewMatrix = new float[16];
+
+    private float[] mvpMatrix = new float[16];
+
     private FloatBuffer textureVertexBuffer;
 
     public TextureGLView loadTexture(Context context, @DrawableRes int textureResourceId)
@@ -51,6 +63,8 @@ public class TextureGLView extends GLView
         texture = GLCompiler.loadTexture(context, textureResourceId);
 
         setTextureVertex(TEXTURE_VERTEX);
+
+        angle = 0;
 
         return this;
     }
@@ -125,10 +139,12 @@ public class TextureGLView extends GLView
 
         return this;
     }
-    
+
     @Override
-    public TextureGLView onDraw(float[] mvpMatrix)
+    public TextureGLView onDraw(float[] projectionMatrix)
     {
+        angle += 1;
+
         beginDraw();
 
         setUniform("color", new Color(255, 0, 255));
@@ -138,12 +154,22 @@ public class TextureGLView extends GLView
         // TODO: E' necessario settare nuovamente, ogni volta, il textureVertex affiché venga disegnato correttamente...
         setTextureVertex(new float[] {
 
-                0.5f, 1.0f,
-                0f, 1.0f,
                 0f, 0f,
+                0f, 1.0f,
+                0.5f, 1.0f,
                 0.5f, 0f
         });
         setVertexAttribute("textureCoords", textureVertexBuffer, TEXTURE_COORDS_PER_VERTEX, TEXTURE_VERTEX_STRIDE);
+
+        Matrix.setIdentityM(modelMatrix, 0);
+
+        Matrix.setRotateM(rotationMatrix, 0, angle, 0, 0, -1.0f);
+        Matrix.multiplyMM(modelMatrix, 0, rotationMatrix, 0, modelMatrix, 0);
+
+        Matrix.setLookAtM(viewMatrix, 0, 0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+        Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+
+        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
 
         setUniformMatrix("mvpMatrix", mvpMatrix);
 

@@ -8,6 +8,8 @@ import android.service.wallpaper.WallpaperService;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+import javax.microedition.khronos.opengles.GL10;
+
 /**
  * Created by Matteo on 06/12/2015.
  */

@@ -197,7 +197,7 @@ abstract public class GLView
     }
     protected GLView endDraw()
     {
-        Log.d(TAG, "Frame drawed!");
+        Log.d(TAG, "View drawed!");
 
         return this;
     }
@@ -245,7 +245,7 @@ abstract public class GLView
         return this;
     }
 
-    public abstract GLView onDraw(float[] mvpMatrix);
+    public abstract GLView onDraw(float[] projectionMatrix);
 
     public class UpdateThread extends Thread
     {

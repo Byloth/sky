@@ -79,10 +79,7 @@ public class GLWallpaperDrawer extends GLWallpaperService
 
     public class GLWallpaperRenderer implements GLSurfaceView.Renderer
     {
-        private float[] mvpMatrix = new float[16];
         private float[] projectionMatrix = new float[16];
-        private float[] viewMatrix = new float[16];
-        private float[] rotationMatrix = new float[16];
 
         @Override
         public void onSurfaceCreated(GL10 gl, EGLConfig config)
@@ -116,20 +113,8 @@ public class GLWallpaperDrawer extends GLWallpaperService
         {
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-            Matrix.setLookAtM(viewMatrix, 0, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-            Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
-
-            sky.onDraw(mvpMatrix);
-
-            // TODO: Capire come spostare, nel cielo, le stelle e come ruotarle.
-
-                                          //  x     y     z      x     y     z    x     y     z
-                                          // eye,  eye,  eye,  cntr, cntr, cntr, up,   up,   up
-            Matrix.setLookAtM(viewMatrix, 0, 0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-            // Matrix.setRotateM(rotationMatrix, 0, angle, 0, 0, -1.0f);
-            Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
-
-            // image.onDraw(mvpMatrix);
+            sky.onDraw();
+            image.onDraw(projectionMatrix);
 
             Log.d(TAG, "Frame drawed!");
         }

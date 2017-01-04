@@ -178,8 +178,7 @@ public class GLSky extends GLView
         return false;
     }
 
-    @Override
-    public GLSky onDraw(float[] mvpMatrix)
+    public GLSky onDraw()
     {
         beginDraw();
 
@@ -193,5 +192,11 @@ public class GLSky extends GLView
         endDraw();
 
         return this;
+    }
+
+    @Override
+    public GLSky onDraw(float[] projectionMatrix)
+    {
+        throw new UnsupportedOperationException();
     }
 }
