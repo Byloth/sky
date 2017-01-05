@@ -14,31 +14,23 @@ public class Color
     static final public int MIN_VALUE = 0;
     static final public int MAX_VALUE = 255;
 
-    static final public Color WHITE = new Color(255, 255, 255, 255);
-    static final public Color RED = new Color(255, 0, 0, 255);
-    static final public Color YELLOW = new Color(255, 255, 0, 255);
-    static final public Color GREEN = new Color(0, 255, 0, 255);
-    static final public Color CYAN = new Color(0, 255, 255, 255);
-    static final public Color BLUE = new Color(0, 0, 255, 255);
-    static final public Color FUCHSIA = new Color(255, 0, 255, 255);
-    static final public Color BLACK = new Color(0, 0, 0, 255);
+    static final public Color WHITE = new Color(255, 255, 255);
+    static final public Color RED = new Color(255, 0, 0);
+    static final public Color YELLOW = new Color(255, 255, 0);
+    static final public Color GREEN = new Color(0, 255, 0);
+    static final public Color CYAN = new Color(0, 255, 255);
+    static final public Color BLUE = new Color(0, 0, 255);
+    static final public Color FUCHSIA = new Color(255, 0, 255);
+    static final public Color BLACK = new Color(0, 0, 0);
     static final public Color TRANSPARENT = new Color(0, 0, 0, 0);
 
     public Color()
     {
-        this.red = MIN_VALUE;
-        this.green = MIN_VALUE;
-        this.blue = MIN_VALUE;
-
-        this.alpha = MAX_VALUE;
+        this(MIN_VALUE, MIN_VALUE, MIN_VALUE);
     }
     public Color(double redValue, double greenValue, double blueValue)
     {
-        setRed(redValue);
-        setGreen(greenValue);
-        setBlue(blueValue);
-
-        this.alpha = MAX_VALUE;
+        this(redValue, greenValue, blueValue, MAX_VALUE);
     }
     public Color(double redValue, double greenValue, double blueValue, double alphaValue)
     {

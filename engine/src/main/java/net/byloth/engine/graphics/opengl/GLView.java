@@ -7,7 +7,7 @@ import android.support.annotation.RawRes;
 import android.util.Log;
 
 import net.byloth.engine.graphics.Color;
-import net.byloth.engine.graphics.Vector2;
+import net.byloth.engine.Vector2;
 import net.byloth.engine.graphics.opengl.helpers.GLCompiler;
 
 import java.nio.ByteBuffer;
@@ -25,8 +25,9 @@ abstract public class GLView
 
     static final private String TAG = "GLView";
 
+    static final public int DEFAULT_UPDATING_INTERVAL = (1000 / 60); // 60 FPS
+
     private int program;
-    private int vertexCount;
     private int vertexDrawOrderLength;
 
     private long updatingInterval;
@@ -38,7 +39,7 @@ abstract public class GLView
 
     public GLView()
     {
-        updatingInterval = 17;  // 60 FPS
+        updatingInterval = DEFAULT_UPDATING_INTERVAL;
     }
 
     protected GLView loadProgram(String vertexShaderSource, String fragmentShaderSource)
@@ -56,8 +57,6 @@ abstract public class GLView
 
     protected GLView loadVertex(float[] vertex, short[] vertexDrawOrder)
     {
-        vertexCount = vertex.length / COORDS_PER_VERTEX;
-
         ByteBuffer coordsByteBuffer = ByteBuffer.allocateDirect(vertex.length * 4);
         coordsByteBuffer.order(ByteOrder.nativeOrder());
 

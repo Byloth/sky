@@ -1,4 +1,4 @@
-package net.byloth.engine.graphics;
+package net.byloth.engine;
 
 /**
  * Created by Matteo on 30/04/2016.
@@ -10,13 +10,12 @@ public class Vector2
 
     public Vector2()
     {
-        x = 0;
-        y = 0;
+        this(0, 0);
     }
     public Vector2(double xValue, double yValue)
     {
-        x = (int) xValue;
-        y = (int) yValue;
+        x = (float) xValue;
+        y = (float) yValue;
     }
 
     public float getX()

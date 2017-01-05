@@ -15,8 +15,6 @@ import net.byloth.sky.R;
 
 public class GLStars extends TextureGLView
 {
-    private static final int UPDATING_INTERVAL = (1000 / 60);
-
     // Immagine 1
     static final private float TEXTURE_VERTEX[] = {
 
@@ -36,10 +34,7 @@ public class GLStars extends TextureGLView
     };
     */
 
-    public GLStars()
-    {
-        setUpdatingInterval(UPDATING_INTERVAL);
-    }
+    public GLStars() { }
 
     @Override
     public GLStars onSurfaceCreated(Context context, GLSurfaceView glSurfaceView)

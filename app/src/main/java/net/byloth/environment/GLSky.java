@@ -3,7 +3,7 @@ package net.byloth.environment;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
-import net.byloth.engine.graphics.Vector2;
+import net.byloth.engine.Vector2;
 import net.byloth.engine.graphics.opengl.GLView;
 import net.byloth.engine.graphics.opengl.GLWallpaperService;
 import net.byloth.engine.utils.DayTime;

@@ -10,6 +10,7 @@ import net.byloth.engine.helpers.Maths;
 public class TimedShader
 {
     private Color currentColor;
+
     private TimedColor[] timedColors;
 
     public TimedShader(TimedColor[] timedColorsValues)

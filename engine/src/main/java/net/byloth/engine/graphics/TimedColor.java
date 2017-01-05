@@ -8,13 +8,12 @@ import net.byloth.engine.utils.DayTime;
 public class TimedColor
 {
     private int time;
+
     private Color color;
 
     public TimedColor()
     {
-        time = DayTime.MIN_VALUE;
-
-        color = new Color();
+        this(DayTime.MAX_VALUE, new Color());
     }
     public TimedColor(int timeValue, Color colorValue)
     {
