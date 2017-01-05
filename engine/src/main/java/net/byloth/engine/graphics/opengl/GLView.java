@@ -139,12 +139,12 @@ abstract public class GLView
     {
         int uniformLocation = getUniformLocation(uniformName);
 
-        GLES20.glUniform3fv(uniformLocation, 1, color.toFloat(), 0);
+        GLES20.glUniform4fv(uniformLocation, 1, color.toFloat(), 0);
 
         return this;
     }
 
-    // TODO: Creare un oggetto che rappresenti una Matrix sottoforma di oggetto.
+    // TODO: Creare un oggetto che rappresenti una Matrix sottoforma di oggetto?
     protected GLView setUniformMatrix(String uniformMatrixName, float[] uniformMatrix)
     {
         int uniformLocation = getUniformLocation(uniformMatrixName);

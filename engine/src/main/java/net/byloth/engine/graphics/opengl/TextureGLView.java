@@ -31,10 +31,10 @@ public class TextureGLView extends GLView
     };
     static final private float TEXTURE_VERTEX[] = {
 
-            1f, 1f,
-            0f, 1f,
-            0f, 0f,
-            1f, 0f
+            0.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f
     };
 
     static final private short VERTEX_DRAW_ORDER[] = { 0, 1, 2, 0, 2, 3 };

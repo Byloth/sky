@@ -6,9 +6,9 @@ const float middleValue = 0.333;
 
 uniform vec2 screenResolution;
 
-uniform vec3 topColor;
-uniform vec3 middleColor;
-uniform vec3 bottomColor;
+uniform vec4 topColor;
+uniform vec4 middleColor;
+uniform vec4 bottomColor;
 
 void main() // Tipo di ritorno: "vec4"
 {
@@ -16,10 +16,10 @@ void main() // Tipo di ritorno: "vec4"
 
     float colorWeight;
 
-    vec3 firstColor;
-    vec3 secondColor;
+    vec4 firstColor;
+    vec4 secondColor;
 
-    vec3 finalColor;
+    vec4 finalColor;
 
     y = gl_FragCoord.y / screenResolution.y;
 
@@ -40,7 +40,7 @@ void main() // Tipo di ritorno: "vec4"
 
     finalColor = firstColor * (1.0 - colorWeight) + secondColor * colorWeight;
 
-    gl_FragColor = vec4(finalColor, 1.0);
+    gl_FragColor = finalColor;
 
     // return gl_FragColor;
 }
