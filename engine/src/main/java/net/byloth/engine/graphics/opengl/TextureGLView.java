@@ -25,22 +25,23 @@ public class TextureGLView extends GLView implements ISpaceable
     static final private int TEXTURE_COORDS_PER_VERTEX = 2;
     static final private int TEXTURE_VERTEX_STRIDE = TEXTURE_COORDS_PER_VERTEX * 4;
 
-    static final private float VERTEX[] = {
+    static final private float[] VERTEX = {
 
-            0.5f,  0.5f, 0.0f,
-            -0.5f,  0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f
-    };
-    static final private float TEXTURE_VERTEX[] = {
-
-            0.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 1.0f,
-            1.0f, 0.0f
+        0.5f,  0.5f, 0.0f,
+        -0.5f,  0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f
     };
 
-    static final private short VERTEX_DRAW_ORDER[] = { 0, 1, 2, 0, 2, 3 };
+    static final public float[] DEFAULT_TEXTURE_VERTEX = {
+
+        // TODO: Capire il giusto ordine delle coordinate dei vertici per stampare metà texture correttamente.
+        1.0f, 1.0f,
+        0.0f, 1.0f,
+        0.0f, 0.0f,
+        1.0f, 0.0f
+    };
+    static final public short[] DEFAULT_VERTEX_DRAW_ORDER = { 0, 1, 2, 0, 2, 3 };
 
     private int texture;
     private int vertexArrayLocation;
@@ -56,6 +57,10 @@ public class TextureGLView extends GLView implements ISpaceable
 
     private float[] mvpMatrix = new float[16];
 
+    private float[] textureVertexArray;
+
+    private Color tintColor;
+
     private Vector3 position;
     private Vector3 rotation;
 
@@ -65,18 +70,19 @@ public class TextureGLView extends GLView implements ISpaceable
     {
         scale = 1;
 
+        tintColor = Color.White();
+
         position = new Vector3();
         rotation = new Vector3();
     }
 
-    public TextureGLView loadTexture(Context context, @DrawableRes int textureResourceId)
+    protected TextureGLView loadTextureVertexBuffer()
     {
-        loadVertex(VERTEX, VERTEX_DRAW_ORDER);
-        loadProgram(context, R.raw.default_vertex_shader, R.raw.default_fragment_shader);
+        ByteBuffer textureCoordsByteBuffer = ByteBuffer.allocateDirect(textureVertexArray.length * 4);
+        textureCoordsByteBuffer.order(ByteOrder.nativeOrder());
 
-        texture = GLCompiler.loadTexture(context, textureResourceId);
-
-        setTextureVertex(TEXTURE_VERTEX);
+        textureVertexBuffer = textureCoordsByteBuffer.asFloatBuffer();
+        textureVertexBuffer.put(textureVertexArray);
 
         return this;
     }
@@ -89,6 +95,17 @@ public class TextureGLView extends GLView implements ISpaceable
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureUniform);
 
         GLES20.glUniform1i(textureLocation, 0);
+
+        return this;
+    }
+
+    public TextureGLView loadTexture(Context context, @DrawableRes int textureResourceId)
+    {
+        loadVertex(VERTEX, DEFAULT_VERTEX_DRAW_ORDER);
+        loadProgram(context, R.raw.default_vertex_shader, R.raw.default_fragment_shader);
+
+        texture = GLCompiler.loadTexture(context, textureResourceId);
+        textureVertexArray = DEFAULT_TEXTURE_VERTEX;
 
         return this;
     }
@@ -146,7 +163,7 @@ public class TextureGLView extends GLView implements ISpaceable
     {
         super.onSurfaceCreated(glSurfaceView);
 
-        loadVertex(VERTEX, VERTEX_DRAW_ORDER);
+        loadVertex(VERTEX, DEFAULT_VERTEX_DRAW_ORDER);
         loadProgram(context, R.raw.default_vertex_shader, R.raw.default_fragment_shader);
 
         return this;
@@ -157,18 +174,10 @@ public class TextureGLView extends GLView implements ISpaceable
     {
         beginDraw();
 
-        setUniform("color", new Color(255, 0, 255));
-
+        setUniform("color", tintColor);
         setTextureUniform("texture", texture);
 
-        // TODO: E' necessario settare nuovamente, ogni volta, il textureVertex affiché venga disegnato correttamente...
-        setTextureVertex(new float[] {
-
-                0f, 0f,
-                0f, 1.0f,
-                0.5f, 1.0f,
-                0.5f, 0f
-        });
+        loadTextureVertexBuffer();
         setVertexAttribute("textureCoords", textureVertexBuffer, TEXTURE_COORDS_PER_VERTEX, TEXTURE_VERTEX_STRIDE);
 
         Matrix.setIdentityM(modelMatrix, 0);
@@ -229,6 +238,26 @@ public class TextureGLView extends GLView implements ISpaceable
     }
 
     @Override
+    public Vector3 getPosition()
+    {
+        return new Vector3(position);
+    }
+    @Override
+    public TextureGLView setPosition(Vector2 positionValues)
+    {
+        position = new Vector3(positionValues);
+
+        return this;
+    }
+    @Override
+    public TextureGLView setPosition(Vector3 positionValues)
+    {
+        position = new Vector3(positionValues);
+
+        return this;
+    }
+
+    @Override
     public float getXAxisRotation()
     {
         return rotation.getX();
@@ -263,7 +292,20 @@ public class TextureGLView extends GLView implements ISpaceable
     public TextureGLView setZAxisRotation(double zAxisRotationValue)
     {
         rotation.setZ(zAxisRotationValue);
-        
+
+        return this;
+    }
+
+    @Override
+    public Vector3 getRotation()
+    {
+        return new Vector3(rotation);
+    }
+    @Override
+    public TextureGLView setRotation(Vector3 rotationValues)
+    {
+        rotation = new Vector3(rotationValues);
+
         return this;
     }
 

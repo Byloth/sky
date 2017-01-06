@@ -16,4 +16,7 @@ public interface IRotatable
 
     float getZAxisRotation();
     IRotatable setZAxisRotation(double zAxisRotationValue);
+
+    Vector3 getRotation();
+    IRotatable setRotation(Vector3 rotationValues);
 }

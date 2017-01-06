@@ -18,11 +18,18 @@ public interface ISpaceable extends IPositionable, IRotatable, IScalable
     ISpaceable setZAxisPosition(double zAxisPositionValue);
 
     @Override
+    ISpaceable setPosition(Vector2 positionValues);
+    @Override
+    ISpaceable setPosition(Vector3 positionValues);
+
+    @Override
     ISpaceable setXAxisRotation(double xAxisRotationValue);
     @Override
     ISpaceable setYAxisRotation(double yAxisRotationValue);
     @Override
     ISpaceable setZAxisRotation(double zAxisRotationValue);
+    @Override
+    ISpaceable setRotation(Vector3 rotationValues);
 
     @Override
     ISpaceable setScale(double scaleValue);

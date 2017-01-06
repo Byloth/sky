@@ -47,10 +47,10 @@ public class Stars extends View
 
         timedShader = new TimedShader(new TimedColor[]
         {
-            new TimedColor(astronomicalSunriseTime, Color.WHITE),
-            new TimedColor(nauticalSunriseTime, Color.TRANSPARENT),
-            new TimedColor(nauticalSunsetTime, Color.TRANSPARENT),
-            new TimedColor(astronomicalSunsetTime, Color.WHITE)
+            new TimedColor(astronomicalSunriseTime, Color.White()),
+            new TimedColor(nauticalSunriseTime, Color.Transparent()),
+            new TimedColor(nauticalSunsetTime, Color.Transparent()),
+            new TimedColor(astronomicalSunsetTime, Color.White())
         });
     }
 
@@ -115,8 +115,8 @@ public class Stars extends View
         public Rect size;
         public RectF position;
 
-        final public float MIN_SCALE = 0.25f;
-        final public float MAX_SCALE = 0.75f;
+        static final public float MIN_SCALE = 0.25f;
+        static final public float MAX_SCALE = 0.75f;
 
         public Star(int canvasWidthValue, int canvasHeightValue)
         {

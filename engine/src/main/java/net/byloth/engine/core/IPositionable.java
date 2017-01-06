@@ -10,11 +10,15 @@ import net.byloth.engine.Vector3;
 public interface IPositionable
 {
     float getXAxisPosition();
-    IRotatable setXAxisPosition(double xAxisPositionValue);
+    IPositionable setXAxisPosition(double xAxisPositionValue);
 
     float getYAxisPosition();
-    IRotatable setYAxisPosition(double yAxisPositionValue);
+    IPositionable setYAxisPosition(double yAxisPositionValue);
 
     float getZAxisPosition();
-    IRotatable setZAxisPosition(double zAxisPositionValue);
+    IPositionable setZAxisPosition(double zAxisPositionValue);
+
+    Vector3 getPosition();
+    IPositionable setPosition(Vector2 positionValues);
+    IPositionable setPosition(Vector3 positionValues);
 }

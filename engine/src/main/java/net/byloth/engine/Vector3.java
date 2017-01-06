@@ -19,6 +19,10 @@ public class Vector3 extends Vector2
     {
         this(xyValues.getX(), xyValues.getY(), zValue);
     }
+    public Vector3(Vector3 xyzValues)
+    {
+        this(xyzValues.getX(), xyzValues.getY(), xyzValues.getZ());
+    }
     public Vector3(double xValue, double yValue, double zValue)
     {
         super(xValue, yValue);

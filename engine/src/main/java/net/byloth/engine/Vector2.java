@@ -12,6 +12,10 @@ public class Vector2
     {
         this(0, 0);
     }
+    public Vector2(Vector2 xyValues)
+    {
+        this(xyValues.getX(), xyValues.getY());
+    }
     public Vector2(double xValue, double yValue)
     {
         x = (float) xValue;
