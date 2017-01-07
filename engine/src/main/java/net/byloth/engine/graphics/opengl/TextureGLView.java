@@ -5,6 +5,7 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.support.annotation.DrawableRes;
+import android.util.Log;
 
 import net.byloth.engine.ISpaceable;
 import net.byloth.engine.R;
@@ -35,7 +36,6 @@ public class TextureGLView extends GLView implements ISpaceable
 
     static final public float[] DEFAULT_TEXTURE_VERTEX = {
 
-        // TODO: Capire il giusto ordine delle coordinate dei vertici per stampare metà texture correttamente.
         1.0f, 1.0f,
         0.0f, 1.0f,
         0.0f, 0.0f,
@@ -48,9 +48,6 @@ public class TextureGLView extends GLView implements ISpaceable
 
     private float scale;
 
-    private float[] rotationMatrix = new float[16];
-
-    private float[] modelMatrix = new float[16];
     private float[] viewMatrix = new float[16];
 
     private float[] modelViewMatrix = new float[16];
@@ -76,7 +73,44 @@ public class TextureGLView extends GLView implements ISpaceable
         rotation = new Vector3();
     }
 
-    protected TextureGLView loadTextureVertexBuffer()
+    private float[] computeModelMatrix()
+    {
+        float[] modelMatrix = new float[16];
+
+        position = new Vector3(new Vector2(0, 1));
+        scale = 0.5f;
+
+        Matrix.setIdentityM(modelMatrix, 0);
+
+        Matrix.translateM(modelMatrix, 0, position.getX(), position.getY(), position.getZ());
+
+        if (rotation.getX() != 0)
+        {
+            float[] xAxisRotationMatrix = new float[16];
+            Matrix.setRotateM(xAxisRotationMatrix, 0, rotation.getX(), 1.0f, 0.0f, 0.0f);
+            Matrix.multiplyMM(modelMatrix, 0, xAxisRotationMatrix, 0, modelMatrix, 0);
+        }
+
+        if (rotation.getY() != 0)
+        {
+            float[] yAxisRotationMatrix = new float[16];
+            Matrix.setRotateM(yAxisRotationMatrix, 0, rotation.getY(), 0.0f, 1.0f, 0.0f);
+            Matrix.multiplyMM(modelMatrix, 0, yAxisRotationMatrix, 0, modelMatrix, 0);
+        }
+
+        if (rotation.getZ() != 0)
+        {
+            float[] zAxisRotationMatrix = new float[16];
+            Matrix.setRotateM(zAxisRotationMatrix, 0, rotation.getZ(), 0.0f, 0.0f, 1.0f);
+            Matrix.multiplyMM(modelMatrix, 0, zAxisRotationMatrix, 0, modelMatrix, 0);
+        }
+
+        Matrix.scaleM(modelMatrix, 0, scale, scale, scale);
+
+        return modelMatrix;
+    }
+
+    private TextureGLView loadTextureVertexBuffer()
     {
         ByteBuffer textureCoordsByteBuffer = ByteBuffer.allocateDirect(textureVertexArray.length * 4);
         textureCoordsByteBuffer.order(ByteOrder.nativeOrder());
@@ -112,11 +146,7 @@ public class TextureGLView extends GLView implements ISpaceable
 
     public TextureGLView setTextureVertex(float[] textureVertex)
     {
-        ByteBuffer textureCoordsByteBuffer = ByteBuffer.allocateDirect(textureVertex.length * 4);
-        textureCoordsByteBuffer.order(ByteOrder.nativeOrder());
-
-        textureVertexBuffer = textureCoordsByteBuffer.asFloatBuffer();
-        textureVertexBuffer.put(textureVertex);
+        textureVertexArray = textureVertex;
 
         return this;
     }
@@ -180,13 +210,11 @@ public class TextureGLView extends GLView implements ISpaceable
         loadTextureVertexBuffer();
         setVertexAttribute("textureCoords", textureVertexBuffer, TEXTURE_COORDS_PER_VERTEX, TEXTURE_VERTEX_STRIDE);
 
-        Matrix.setIdentityM(modelMatrix, 0);
+        float[] modelMatrix = computeModelMatrix();
 
-//        Matrix.setRotateM(rotationMatrix, 0, angle, 0, 0, -1.0f);
-//        Matrix.multiplyMM(modelMatrix, 0, rotationMatrix, 0, modelMatrix, 0);
-
-        Matrix.setLookAtM(viewMatrix, 0, 0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-        Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+        // TODO: Spostare queste due righe di codice fuori dalla TextureGLView.
+            Matrix.setLookAtM(viewMatrix, 0, 0.0f, 0.0f, 5.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+            Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
 
         Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
 

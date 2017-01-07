@@ -90,6 +90,13 @@ public class GLWallpaperDrawer extends GLWallpaperService
 
             image.onSurfaceCreated(GLWallpaperDrawer.this, getGlSurfaceView());
             image.loadTexture(GLWallpaperDrawer.this, R.drawable.stars);
+            image.setTextureVertex(new float[] {
+
+                0.5f, 1.0f,
+                0.0f, 1.0f,
+                0.0f, 0.0f,
+                0.5f, 0.0f
+            });
 
             Log.d(TAG, "Surface created!");
         }

@@ -1,28 +1,18 @@
 package net.byloth.sky;
 
-import android.Manifest;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Build;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import net.byloth.engine.utils.DayTime;
-import net.byloth.engine.utils.SunTimes;
 import net.byloth.sky.components.DailyAlarmReceiver;
 import net.byloth.sky.updaters.LocationUpdater;
 import net.byloth.sky.updaters.SunTimesUpdater;
-
-import java.util.List;
 
 /**
  * Created by Matteo on 02/03/16.
