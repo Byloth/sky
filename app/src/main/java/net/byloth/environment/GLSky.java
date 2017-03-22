@@ -184,9 +184,22 @@ public class GLSky extends GLView
 
         setUniform("screenResolution", surfaceSize);
 
-        setUniform("topColor", timedShaders[0].getCurrentColor());
-        setUniform("middleColor", timedShaders[1].getCurrentColor());
-        setUniform("bottomColor", timedShaders[2].getCurrentColor());
+        Color topColor = timedShaders[0].getCurrentColor();
+        Color middleColor = timedShaders[1].getCurrentColor();
+        Color bottomColor = timedShaders[2].getCurrentColor();
+
+        if ((topColor == null) ||
+                (topColor.getAlpha() == 0) ||
+                (topColor.getRed() == 0) ||
+                (topColor.getGreen() == 0) ||
+                (topColor.getBlue() == 0))
+        {
+            Log.e(TAG, "Color isn't valid!");
+        }
+
+        setUniform("topColor", topColor);
+        setUniform("middleColor", middleColor);
+        setUniform("bottomColor", bottomColor);
 
         draw();
         endDraw();
@@ -195,7 +208,7 @@ public class GLSky extends GLView
     }
 
     @Override
-    public GLSky onDraw(float[] projectionMatrix)
+    public GLSky onDraw(float[] viewMatrix, float[] projectionMatrix)
     {
         throw new UnsupportedOperationException();
     }

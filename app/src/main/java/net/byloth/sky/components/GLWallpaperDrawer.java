@@ -79,6 +79,7 @@ public class GLWallpaperDrawer extends GLWallpaperService
 
     public class GLWallpaperRenderer implements GLSurfaceView.Renderer
     {
+        private float[] viewMatrix = new float[16];
         private float[] projectionMatrix = new float[16];
 
         @Override
@@ -120,8 +121,10 @@ public class GLWallpaperDrawer extends GLWallpaperService
         {
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
+            Matrix.setLookAtM(viewMatrix, 0, 0.0f, 0.0f, 5.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+
             sky.onDraw();
-            image.onDraw(projectionMatrix);
+            image.onDraw(viewMatrix, projectionMatrix);
 
             Log.d(TAG, "Frame drawed!");
         }

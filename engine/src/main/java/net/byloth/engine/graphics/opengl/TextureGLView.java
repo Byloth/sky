@@ -48,10 +48,8 @@ public class TextureGLView extends GLView implements ISpaceable
 
     private float scale;
 
-    private float[] viewMatrix = new float[16];
-
+    private float[] modelMatrix = new float[16];
     private float[] modelViewMatrix = new float[16];
-
     private float[] mvpMatrix = new float[16];
 
     private float[] textureVertexArray;
@@ -73,15 +71,13 @@ public class TextureGLView extends GLView implements ISpaceable
         rotation = new Vector3();
     }
 
-    private float[] computeModelMatrix()
+    private TextureGLView computeModelMatrix()
     {
-        float[] modelMatrix = new float[16];
-
-        position = new Vector3(new Vector2(0, 1));
-        scale = 0.5f;
+        // TODO: Remove this...
+            position = new Vector3(new Vector2(0, 0));
+            scale = 1.0f;
 
         Matrix.setIdentityM(modelMatrix, 0);
-
         Matrix.translateM(modelMatrix, 0, position.getX(), position.getY(), position.getZ());
 
         if (rotation.getX() != 0)
@@ -107,7 +103,7 @@ public class TextureGLView extends GLView implements ISpaceable
 
         Matrix.scaleM(modelMatrix, 0, scale, scale, scale);
 
-        return modelMatrix;
+        return this;
     }
 
     private TextureGLView loadTextureVertexBuffer()
@@ -200,7 +196,7 @@ public class TextureGLView extends GLView implements ISpaceable
     }
 
     @Override
-    public TextureGLView onDraw(float[] projectionMatrix)
+    public TextureGLView onDraw(float[] viewMatrix, float[] projectionMatrix)
     {
         beginDraw();
 
@@ -210,12 +206,9 @@ public class TextureGLView extends GLView implements ISpaceable
         loadTextureVertexBuffer();
         setVertexAttribute("textureCoords", textureVertexBuffer, TEXTURE_COORDS_PER_VERTEX, TEXTURE_VERTEX_STRIDE);
 
-        float[] modelMatrix = computeModelMatrix();
+        computeModelMatrix();
 
-        // TODO: Spostare queste due righe di codice fuori dalla TextureGLView.
-            Matrix.setLookAtM(viewMatrix, 0, 0.0f, 0.0f, 5.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-            Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
-
+        Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
         Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
 
         setUniformMatrix("mvpMatrix", mvpMatrix);

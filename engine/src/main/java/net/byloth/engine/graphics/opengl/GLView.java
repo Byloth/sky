@@ -244,7 +244,7 @@ abstract public class GLView
         return this;
     }
 
-    public abstract GLView onDraw(float[] projectionMatrix);
+    public abstract GLView onDraw(float[] viewMatrix, float[] projectionMatrix);
 
     public class UpdateThread extends Thread
     {
