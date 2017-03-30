@@ -1,7 +1,5 @@
 package net.byloth.engine.graphics;
 
-import android.util.Log;
-
 import net.byloth.engine.utils.DayTime;
 import net.byloth.engine.graphics.helpers.ColorsShaders;
 import net.byloth.engine.helpers.Maths;
@@ -84,15 +82,6 @@ public class TimedShader
         if ((firstTimedColor.equals(secondTimedColor) == true) || (firstTimedColor.getTime() == currentTime))
         {
             currentColor = firstTimedColor.getColor();
-
-            if ((currentColor == null) ||
-                    (currentColor.getAlpha() == 0) ||
-                    (currentColor.getRed() == 0) ||
-                    (currentColor.getGreen() == 0) ||
-                    (currentColor.getBlue() == 0))
-            {
-                Log.e(TAG, "Color isn't valid!");
-            }
         }
         else
         {
@@ -112,17 +101,7 @@ public class TimedShader
             }
 
             shadingRatio = Maths.proportion(totalTimeSpan, ColorsShaders.MAX_SHADING_RATIO, currentTimeSpan);
-
             currentColor = ColorsShaders.alphaBlend(firstTimedColor.getColor(), shadingRatio, secondTimedColor.getColor());
-
-            if ((currentColor == null) ||
-                    (currentColor.getAlpha() == 0) ||
-                    (currentColor.getRed() == 0) ||
-                    (currentColor.getGreen() == 0) ||
-                    (currentColor.getBlue() == 0))
-            {
-                Log.e(TAG, "Color isn't valid!");
-            }
         }
 
         return currentColor;

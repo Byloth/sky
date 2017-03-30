@@ -108,12 +108,21 @@ public class GLSky extends GLView
         };
     }
 
+    private void updateCurrentColors()
+    {
+        for (TimedShader timedShader : timedShaders)
+        {
+            timedShader.updateCurrentColor(dayTime);
+        }
+    }
+
     public GLSky(SunTimesUpdater sunTimesUpdater)
     {
         dayTime = new DayTime();
         surfaceSize = new Vector2();
 
         initializeColors(sunTimesUpdater);
+        updateCurrentColors();
     }
 
     @Override
@@ -141,6 +150,7 @@ public class GLSky extends GLView
     public GLSky reinitializeColors(SunTimesUpdater sunTimesUpdater)
     {
         initializeColors(sunTimesUpdater);
+        updateCurrentColors();
 
         return this;
     }
@@ -168,10 +178,7 @@ public class GLSky extends GLView
     @Override
     public boolean onUpdate()
     {
-        for (TimedShader timedShader : timedShaders)
-        {
-            timedShader.updateCurrentColor(dayTime);
-        }
+        updateCurrentColors();
 
         Log.d(TAG, "Frame updated!");
 
@@ -187,15 +194,6 @@ public class GLSky extends GLView
         Color topColor = timedShaders[0].getCurrentColor();
         Color middleColor = timedShaders[1].getCurrentColor();
         Color bottomColor = timedShaders[2].getCurrentColor();
-
-        if ((topColor == null) ||
-                (topColor.getAlpha() == 0) ||
-                (topColor.getRed() == 0) ||
-                (topColor.getGreen() == 0) ||
-                (topColor.getBlue() == 0))
-        {
-            Log.e(TAG, "Color isn't valid!");
-        }
 
         setUniform("topColor", topColor);
         setUniform("middleColor", middleColor);

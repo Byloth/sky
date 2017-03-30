@@ -83,6 +83,7 @@ public class TextureGLView extends GLView implements ISpaceable
         if (rotation.getX() != 0)
         {
             float[] xAxisRotationMatrix = new float[16];
+
             Matrix.setRotateM(xAxisRotationMatrix, 0, rotation.getX(), 1.0f, 0.0f, 0.0f);
             Matrix.multiplyMM(modelMatrix, 0, xAxisRotationMatrix, 0, modelMatrix, 0);
         }
@@ -90,6 +91,7 @@ public class TextureGLView extends GLView implements ISpaceable
         if (rotation.getY() != 0)
         {
             float[] yAxisRotationMatrix = new float[16];
+
             Matrix.setRotateM(yAxisRotationMatrix, 0, rotation.getY(), 0.0f, 1.0f, 0.0f);
             Matrix.multiplyMM(modelMatrix, 0, yAxisRotationMatrix, 0, modelMatrix, 0);
         }
@@ -97,6 +99,7 @@ public class TextureGLView extends GLView implements ISpaceable
         if (rotation.getZ() != 0)
         {
             float[] zAxisRotationMatrix = new float[16];
+
             Matrix.setRotateM(zAxisRotationMatrix, 0, rotation.getZ(), 0.0f, 0.0f, 1.0f);
             Matrix.multiplyMM(modelMatrix, 0, zAxisRotationMatrix, 0, modelMatrix, 0);
         }
