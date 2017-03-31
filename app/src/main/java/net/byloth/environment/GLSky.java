@@ -106,6 +106,8 @@ public class GLSky extends GLView
                 new TimedColor(astronomicalSunsetTime, NIGHT_COLORS[2])
             })
         };
+
+        updateCurrentColors();
     }
 
     private void updateCurrentColors()
@@ -122,7 +124,6 @@ public class GLSky extends GLView
         surfaceSize = new Vector2();
 
         initializeColors(sunTimesUpdater);
-        updateCurrentColors();
     }
 
     @Override
@@ -150,7 +151,6 @@ public class GLSky extends GLView
     public GLSky reinitializeColors(SunTimesUpdater sunTimesUpdater)
     {
         initializeColors(sunTimesUpdater);
-        updateCurrentColors();
 
         return this;
     }
