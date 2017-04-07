@@ -16,7 +16,7 @@ import net.byloth.sky.R;
 public class GLStars extends TextureGLView
 {
     // Immagine 1
-    static final private float TEXTURE_VERTEX[] = {
+    static final private float[] TEXTURE_VERTEX = {
 
         0.5f, 1.0f,
         0.0f, 1.0f,
@@ -25,7 +25,7 @@ public class GLStars extends TextureGLView
     };
     // Immagine 2
     /*
-    static final private float TEXTURE_VERTEX[] = {
+    static final private float[] TEXTURE_VERTEX = {
 
         1.0f, 1.0f,
         0.5f, 1.0f,

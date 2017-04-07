@@ -2,13 +2,28 @@ package net.byloth.engine.graphics.opengl;
 
 import net.byloth.engine.ISpaceable;
 
+import java.util.List;
+
 /**
  * Created by Matteo on 31/03/2017.
  */
 
-public abstract class ParticleGLView extends GLView
+// TODO: Deve davvero estendere la classe TextureGLView?
+public abstract class ParticleGLView<TParticle extends ParticleGLView.Particle> extends TextureGLView
 {
-    private Particle[] particles;
+    private List<TParticle> particles;
+
+    @Override
+    public ParticleGLView setTextureVertex(float[] textureVertex)
+    {
+        throw new UnsupportedOperationException();
+    }
+    public ParticleGLView setTextureVertex(float[][] textureVertex)
+    {
+        // TODO: ???
+
+        return this;
+    }
 
     // TODO #1: Terminare l'implmentazione di questa classe.
     //          E' necessario capire come rappresentare la classe
@@ -20,5 +35,6 @@ public abstract class ParticleGLView extends GLView
     public abstract class Particle implements ISpaceable
     {
         // TODO #2: Convertire questa classe in un'interfaccia?
+        public abstract int getType();
     }
 }

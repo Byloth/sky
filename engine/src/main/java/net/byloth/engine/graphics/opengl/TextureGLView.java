@@ -71,7 +71,7 @@ public class TextureGLView extends GLView implements ISpaceable
         rotation = new Vector3();
     }
 
-    private TextureGLView computeModelMatrix()
+    protected TextureGLView computeModelMatrix()
     {
         // TODO: Remove this...
             position = new Vector3(new Vector2(0, 0));
@@ -109,7 +109,7 @@ public class TextureGLView extends GLView implements ISpaceable
         return this;
     }
 
-    private TextureGLView loadTextureVertexBuffer()
+    protected TextureGLView loadTextureVertexBuffer()
     {
         ByteBuffer textureCoordsByteBuffer = ByteBuffer.allocateDirect(textureVertexArray.length * 4);
         textureCoordsByteBuffer.order(ByteOrder.nativeOrder());
