@@ -3,6 +3,7 @@ package net.byloth.environment;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 
+import net.byloth.engine.Vector3;
 import net.byloth.engine.graphics.opengl.TextureGLView;
 import net.byloth.sky.R;
 
@@ -15,24 +16,24 @@ import net.byloth.sky.R;
 
 public class GLStars extends TextureGLView
 {
-    // Immagine 1
-    static final private float[] TEXTURE_VERTEX = {
+    static final private float[][] TEXTURE_VERTEXES = {
 
-        0.5f, 1.0f,
-        0.0f, 1.0f,
-        0.0f, 0.0f,
-        0.5f, 0.0f
-    };
-    // Immagine 2
-    /*
-    static final private float[] TEXTURE_VERTEX = {
+        {
+            0.5f, 1.0f,
+            0.0f, 1.0f,
+            0.0f, 0.0f,
+            0.5f, 0.0f
+        },
+        {
 
-        1.0f, 1.0f,
-        0.5f, 1.0f,
-        0.5f, 0.0f,
-        1.0f, 0.0f
+            1.0f, 1.0f,
+            0.5f, 1.0f,
+            0.5f, 0.0f,
+            1.0f, 0.0f
+        }
     };
-    */
+
+    private float rotation = 0;
 
     public GLStars() { }
 
@@ -42,7 +43,7 @@ public class GLStars extends TextureGLView
         super.onSurfaceCreated(context, glSurfaceView);
 
         loadTexture(context, R.drawable.stars);
-        setTextureVertex(TEXTURE_VERTEX);
+        setTextureVertex(TEXTURE_VERTEXES[0]);
 
         return this;
     }
@@ -50,6 +51,17 @@ public class GLStars extends TextureGLView
     @Override
     protected boolean onUpdate()
     {
-        return true;
+        // TODO: Questa logica di aggiornamento fa CAGARE!!!
+        //
+        // Bisogna trovare una nuova logica...
+        //
+        // Forse, passando un'istanza di un oggetto con tutte
+        //  le proprietà aggiornabili come parametro dell' onUpdate() ?
+        //
+            rotation += 0.1;
+
+            setRotation(new Vector3(rotation, 0, 0));
+
+            return true;
     }
 }

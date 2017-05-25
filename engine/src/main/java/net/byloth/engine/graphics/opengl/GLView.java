@@ -176,7 +176,13 @@ abstract public class GLView
     {
         if (glSurfaceView != null)
         {
-            glSurfaceView.requestRender();
+            // TODO: Questa chiamata non forza il draw del GLSky.
+            //
+            // E' necessario capire che cazzo gli prende e per quale
+            //  motivo non dovrebbe funzionare come si deve...
+            // Qualche configurazione errata di OpenGL?
+            //
+                glSurfaceView.requestRender();
         }
 
         return this;
@@ -280,8 +286,6 @@ abstract public class GLView
                     {
                         Thread.sleep(updatingInterval);
                     }
-
-                    Log.d(TAG, "Thread updated!");
                 }
             }
             catch (InterruptedException e) { }
