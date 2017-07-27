@@ -24,14 +24,14 @@ public class GLWallpaperDrawer extends GLWallpaperService
     static final private String TAG = "GLWallpaperDrawer";
 
     private GLSky sky;
-    private GLStars stars;
+//    private GLStars stars;
 
     public GLWallpaperDrawer()
     {
         SunTimesUpdater sunTimesUpdater = LiveWallpaper.getInstance().getSunTimesUpdater();
 
         sky = new GLSky(sunTimesUpdater);
-        stars = new GLStars();
+//        stars = new GLStars();
 
         sunTimesUpdater.setOnSunTimesUpdateListener(new SunTimesUpdater.OnSunTimesUpdateListener()
         {
@@ -65,7 +65,7 @@ public class GLWallpaperDrawer extends GLWallpaperService
             super.onVisibilityChanged(visible);
 
             sky.onVisibilityChanged(visible);
-            stars.onVisibilityChanged(visible);
+//            stars.onVisibilityChanged(visible);
         }
     }
 
@@ -80,7 +80,7 @@ public class GLWallpaperDrawer extends GLWallpaperService
             GLES20.glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 
             sky.onSurfaceCreated(GLWallpaperDrawer.this);
-            stars.onSurfaceCreated(GLWallpaperDrawer.this, getGlSurfaceView());
+//            stars.onSurfaceCreated(GLWallpaperDrawer.this, getGlSurfaceView());
 
             Log.d(TAG, "Surface created!");
         }
@@ -107,7 +107,7 @@ public class GLWallpaperDrawer extends GLWallpaperService
             Matrix.setLookAtM(viewMatrix, 0, 0.0f, 0.0f, 5.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
             sky.onDraw();
-            stars.onDraw(viewMatrix, projectionMatrix);
+//            stars.onDraw(viewMatrix, projectionMatrix);
 
             Log.d(TAG, "Frame drawed!");
         }
